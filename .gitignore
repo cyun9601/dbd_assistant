@@ -1,0 +1,15 @@
+# 의미기반 AI용 모델/라이브러리 — 용량이 크고(>100MB) 재생성 가능.
+# 'python download_model.py' 로 언제든 다시 받는다. (GitHub 100MB 제한 회피)
+models/
+vendor/
+
+# 파이썬/노드 부산물
+__pycache__/
+*.pyc
+node_modules/
+package-lock.json
+package.json
+
+# OS/IDE
+.DS_Store
+Thumbs.db

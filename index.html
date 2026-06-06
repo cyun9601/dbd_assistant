@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DBD 살인마 퍽 검색기</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🔪</text></svg>" />
+<style>
+  :root {
+    --bg: #0c0c0f; --panel: #16161c; --panel2: #1e1e26;
+    --line: #2a2a35; --text: #e9e9ef; --muted: #9a9aa8;
+    --accent: #c0392b; --accent2: #e67e22; --good: #2ecc71;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Pretendard", "Malgun Gothic", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(12,12,15,.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line); padding: 14px 16px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0 0 10px; letter-spacing: .5px; }
+  h1 small { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
+  .searchrow { display: flex; gap: 8px; align-items: stretch; }
+  #q {
+    flex: 1; background: var(--panel2); border: 1px solid var(--line);
+    color: var(--text); border-radius: 10px; padding: 12px 14px; font-size: 16px;
+    outline: none;
+  }
+  #q:focus { border-color: var(--accent2); }
+  #clear {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 10px; padding: 0 14px; cursor: pointer; font-size: 18px;
+  }
+  .modes { display: flex; gap: 6px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+  .mode-btn {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 13px;
+  }
+  .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #model { background: var(--panel2); border: 1px solid var(--line); color: var(--text);
+    border-radius: 999px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
+  .reason { margin-top: 6px; font-size: 12.5px; color: #8fd6a6;
+    border-left: 2px solid #2e7d4f; padding-left: 8px; }
+  .hint { color: var(--muted); font-size: 12px; margin-left: auto; }
+  #status { font-size: 12px; color: var(--accent2); margin-top: 8px; min-height: 16px; }
+  main { max-width: 920px; margin: 0 auto; padding: 16px; }
+  .examples { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .chip {
+    background: var(--panel); border: 1px solid var(--line); color: var(--muted);
+    padding: 5px 10px; border-radius: 999px; font-size: 12px; cursor: pointer;
+  }
+  .chip:hover { color: var(--text); border-color: var(--accent2); }
+  .count { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  .card {
+    display: flex; gap: 14px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px; margin-bottom: 10px;
+  }
+  .card .ic { width: 64px; height: 64px; flex: 0 0 64px; }
+  .card .ic img { width: 100%; height: 100%; object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+  .card .body { flex: 1; min-width: 0; }
+  .card .top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .card .name { font-size: 16px; font-weight: 700; }
+  .card .owner { font-size: 12px; color: var(--muted); }
+  .card .score { margin-left: auto; font-size: 11px; color: var(--good);
+    border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+  .card .desc { margin-top: 7px; font-size: 13.5px; line-height: 1.6; color: #cfcfda; }
+  .desc .Highlight1 { color: #f1c40f; font-weight: 700; }
+  .desc .Highlight2 { color: #5dade2; font-weight: 700; }
+  .desc .Highlight3 { color: #e67e22; font-weight: 700; }
+  .desc b { color: #fff; }
+  .desc .ReminderText { color: var(--muted); font-style: italic; font-size: 12.5px; }
+  .hl { background: #5a3a00; color: #ffd866; border-radius: 3px; padding: 0 1px; }
+  .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+  footer { color: #55555f; font-size: 11px; text-align: center; padding: 24px 0; }
+  footer a { color: #777; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🔪 DBD 살인마 퍽 검색기 <small id="perkcount"></small></h1>
+    <div class="searchrow">
+      <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
+      <button id="clear" title="지우기">✕</button>
+    </div>
+    <div class="modes">
+      <button class="mode-btn active" data-mode="keyword">키워드 + 유의어</button>
+      <button class="mode-btn" data-mode="semantic">의미 기반 AI</button>
+      <button class="mode-btn" data-mode="llm">AI 정밀 검색</button>
+      <select id="model" title="모델 선택" style="display:none">
+        <optgroup label="Anthropic (ANTHROPIC_API_KEY)">
+          <option value="claude-opus-4-8">Opus 4.8 (정확)</option>
+          <option value="claude-haiku-4-5">Haiku 4.5 (빠름)</option>
+        </optgroup>
+        <optgroup label="OpenAI (OPENAI_API_KEY)">
+          <option value="gpt-4.1">GPT-4.1 (정확)</option>
+          <option value="gpt-4.1-mini">GPT-4.1 mini (빠름)</option>
+          <option value="gpt-4o">GPT-4o</option>
+          <option value="gpt-4o-mini">GPT-4o mini</option>
+        </optgroup>
+      </select>
+      <span class="hint" id="modehint">즉시 · 오프라인</span>
+    </div>
+    <div id="status"></div>
+  </div>
+</header>
+<main>
+  <div class="examples" id="examples"></div>
+  <div class="count" id="count"></div>
+  <div id="results"></div>
+</main>
+<footer>
+  데이터 출처: dbd-db.com · 살인마 퍽 전용 · 로컬에서 동작
+</footer>
+
+<script src="perks_data.js"></script>
+<script src="synonyms.js"></script>
+<script src="search.js"></script>
+<script>
+const { rankKeyword, highlightMatches, expandedQueryTerms } = window.DBDSearch;
+
+const PERKS = window.PERKS || [];
+const SYN = window.SYNONYMS || [];
+const $ = (s) => document.querySelector(s);
+const results = $("#results");
+const countEl = $("#count");
+const statusEl = $("#status");
+
+$("#perkcount").textContent = `(${PERKS.length}개)`;
+
+let mode = "keyword";
+let semantic = null; // lazy-loaded state
+
+const EXAMPLES = [
+  "살인마 속도가 빨라졌어",
+  "발전기 수리가 막혔어",
+  "내 오라가 보이는 것 같아",
+  "비명 지르면 위치 들킴",
+  "갈고리에서 빨리 풀려나는 퍽",
+  "판자에 맞고 경직이 길어졌어",
+];
+
+// 예시 칩
+const exWrap = $("#examples");
+EXAMPLES.forEach((t) => {
+  const c = document.createElement("button");
+  c.className = "chip"; c.textContent = t;
+  c.onclick = () => { $("#q").value = t; runSearch(); };
+  exWrap.appendChild(c);
+});
+
+// 모드 전환
+const HINTS = {
+  keyword: "즉시 · 오프라인",
+  semantic: "AI 임베딩 · 첫 사용 시 모델 다운로드",
+  llm: "LLM 정밀 매칭 · 로컬 서버 + API 키 필요",
+};
+document.querySelectorAll(".mode-btn").forEach((b) => {
+  b.onclick = async () => {
+    document.querySelectorAll(".mode-btn").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    mode = b.dataset.mode;
+    $("#modehint").textContent = HINTS[mode];
+    $("#model").style.display = mode === "llm" ? "" : "none";
+    if (mode === "semantic") await ensureSemantic();
+    runSearch();
+  };
+});
+$("#model").onchange = () => { if (mode === "llm") runSearch(); };
+
+$("#clear").onclick = () => { $("#q").value = ""; runSearch(); $("#q").focus(); };
+
+let timer = null;
+$("#q").addEventListener("input", () => {
+  if (mode === "llm") return; // LLM 모드는 매 타이핑마다 호출하지 않음 (Enter로 실행)
+  clearTimeout(timer);
+  timer = setTimeout(runSearch, mode === "keyword" ? 80 : 250);
+});
+$("#q").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && mode === "llm") runSearch();
+});
+
+function render(list, q) {
+  if (!q.trim()) {
+    countEl.textContent = "";
+    const tip = mode === "llm" ? "퍽 효과를 적고 Enter — LLM이 전체 퍽과 대조해 찾아줍니다." :
+      "위에 퍽 효과를 적으면 가장 비슷한 살인마 퍽을 찾아드려요.";
+    results.innerHTML = `<div class="empty">${tip}</div>`;
+    return;
+  }
+  if (!list.length) {
+    countEl.textContent = "";
+    results.innerHTML = `<div class="empty">일치하는 퍽을 못 찾았어요. 다른 표현으로 바꿔보세요.</div>`;
+    return;
+  }
+  const terms = mode === "keyword" ? expandedQueryTerms(q, SYN) : [];
+  countEl.textContent = `${list.length}개 결과 (가능성 높은 순)`;
+  results.innerHTML = list.map(({ perk, score, pct, confidence, reason }) => {
+    const desc = mode === "keyword" ? highlightMatches(perk.desc_html, terms) : perk.desc_html;
+    let badge = "";
+    if (mode === "semantic") badge = `${Math.round(pct)}%`;
+    else if (mode === "llm") badge = `${confidence}%`;
+    else badge = `${score.toFixed(0)}점`;
+    const reasonHtml = reason ? `<div class="reason">💡 ${reason}</div>` : "";
+    return `<div class="card">
+      <div class="ic"><img src="${perk.icon_file}" alt="" loading="lazy"></div>
+      <div class="body">
+        <div class="top">
+          <span class="name">${perk.name}</span>
+          <span class="owner">${perk.owner === 'public' ? '공용' : perk.owner}</span>
+          <span class="score">${badge}</span>
+        </div>
+        ${reasonHtml}
+        <div class="desc">${desc}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function runSearch() {
+  const q = $("#q").value;
+  if (mode === "keyword") {
+    render(rankKeyword(q, PERKS, SYN), q);
+  } else if (mode === "semantic") {
+    if (!q.trim()) { render([], q); return; }
+    if (!semantic || !semantic.ready) { await ensureSemantic(); }
+    const ranked = await semantic.rank(q);
+    render(ranked, q);
+  } else if (mode === "llm") {
+    if (!q.trim()) { render([], q); return; }
+    await runLLM(q);
+  }
+}
+
+// ---- AI 정밀 검색 (로컬 프록시 /ask) ----
+async function runLLM(q) {
+  const model = $("#model").value;
+  statusEl.textContent = "AI가 전체 퍽과 대조 중…";
+  results.innerHTML = `<div class="empty">분석 중…</div>`;
+  try {
+    const res = await fetch("/ask", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ query: q, model }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      statusEl.textContent = data.error || "오류가 발생했습니다.";
+      results.innerHTML = `<div class="empty">${data.error || "오류"}</div>`;
+      return;
+    }
+    const list = data.results.map((r) => ({ perk: r.perk, confidence: r.confidence, reason: r.reason }));
+    const u = data.usage || {};
+    const cached = u.cache_read ? ` · 캐시 ${u.cache_read}토큰` : "";
+    statusEl.textContent = `${ALLOWED_MODEL_NAMES[data.model] || data.model} 응답 완료 (입력 ${(u.input||0)+(u.cache_read||0)+(u.cache_write||0)}토큰${cached}, 출력 ${u.output||0}토큰)`;
+    render(list, q);
+  } catch (e) {
+    statusEl.textContent = "서버에 연결할 수 없습니다. run.bat 으로 실행했는지 확인하세요. (file:// 로 열면 이 모드는 동작하지 않습니다)";
+    results.innerHTML = `<div class="empty">로컬 서버가 필요합니다. run.bat 으로 실행하세요.</div>`;
+  }
+}
+const ALLOWED_MODEL_NAMES = {
+  "claude-opus-4-8": "Opus 4.8", "claude-haiku-4-5": "Haiku 4.5",
+  "gpt-4.1": "GPT-4.1", "gpt-4.1-mini": "GPT-4.1 mini", "gpt-4o": "GPT-4o", "gpt-4o-mini": "GPT-4o mini",
+};
+
+// ---- 의미 기반 (transformers.js) — 라이브러리/모델 모두 로컬에서 로드 (외부 다운로드 없음) ----
+const MODEL = "Xenova/multilingual-e5-small";
+const LIB = "/vendor/transformers/transformers.min.js";  // 로컬 라이브러리 (브라우저 ESM 빌드)
+
+function cosine(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
+
+async function ensureSemantic() {
+  if (semantic && semantic.ready) return;
+  if (semantic && semantic.loadingPromise) return semantic.loadingPromise;
+  semantic = { ready: false };
+  statusEl.textContent = "AI 모델 불러오는 중… (로컬 파일, 처음 한 번만)";
+  semantic.loadingPromise = (async () => {
+    try {
+      const { pipeline, env } = await import(LIB);
+      // 전부 로컬에서 — HuggingFace/CDN 으로 나가지 않음
+      env.allowRemoteModels = false;
+      env.allowLocalModels = true;
+      env.localModelPath = "/models/";
+      env.backends.onnx.wasm.wasmPaths = "/vendor/transformers/";
+      env.backends.onnx.wasm.numThreads = 1;
+      const extractor = await pipeline("feature-extraction", MODEL, {
+        dtype: "q8",  // models/.../onnx/model_quantized.onnx 사용
+      });
+      const embed = async (texts) => {
+        const out = await extractor(texts, { pooling: "mean", normalize: true });
+        return out.tolist();
+      };
+      // 코퍼스 임베딩 (캐시)
+      statusEl.textContent = "퍽 설명 분석 중…";
+      let matrix = await loadCache(PERKS.length);
+      if (!matrix) {
+        const passages = PERKS.map((p) => `passage: ${p.name}. ${p.desc_text}`);
+        matrix = [];
+        const B = 16;
+        for (let i = 0; i < passages.length; i += B) {
+          matrix.push(...await embed(passages.slice(i, i + B)));
+          statusEl.textContent = `퍽 설명 분석 중… ${Math.min(i + B, passages.length)}/${passages.length}`;
+        }
+        saveCache(PERKS.length, matrix);
+      }
+      semantic.matrix = matrix;
+      semantic.rank = async (q) => {
+        const [qv] = await embed([`query: ${q}`]);
+        const scored = PERKS.map((perk, i) => ({ perk, score: cosine(qv, matrix[i]) }));
+        scored.sort((a, b) => b.score - a.score);
+        const top = scored.slice(0, 30);
+        // e5 유사도는 좁은 구간(~0.8대)에 몰리므로, 결과 내 상대 신뢰도로 재조정해 순위 차이를 보이게 한다
+        const hi = top[0].score, lo = top[top.length - 1].score, span = hi - lo || 1;
+        top.forEach((x) => { x.pct = 55 + (x.score - lo) / span * 44; });
+        return top;
+      };
+      semantic.ready = true;
+      statusEl.textContent = "AI 검색 준비 완료 ✓";
+      setTimeout(() => { if (mode === "semantic") statusEl.textContent = ""; }, 2500);
+    } catch (e) {
+      console.error(e);
+      statusEl.textContent = "AI 모델 로드 실패 — run.bat 으로 실행해야 합니다. 모델이 없으면 'python download_model.py' 를 먼저 실행하세요.";
+      semantic = null;
+    }
+  })();
+  return semantic.loadingPromise;
+}
+
+// IndexedDB 임베딩 캐시 (재방문 시 즉시 로드)
+function idb() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open("dbd-perks", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("emb");
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+async function loadCache(n) {
+  try {
+    const db = await idb();
+    return await new Promise((res) => {
+      const tx = db.transaction("emb").objectStore("emb").get(MODEL + ":" + n);
+      tx.onsuccess = () => res(tx.result || null); tx.onerror = () => res(null);
+    });
+  } catch { return null; }
+}
+async function saveCache(n, matrix) {
+  try {
+    const db = await idb();
+    db.transaction("emb", "readwrite").objectStore("emb").put(matrix, MODEL + ":" + n);
+  } catch {}
+}
+
+render([], "");
+</script>
+</body>
+</html>
