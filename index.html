@@ -142,7 +142,7 @@ const EXAMPLES = [
   "발전기 수리가 막혔어",
   "내 오라가 보이는 것 같아",
   "비명 지르면 위치 들킴",
-  "갈고리에서 빨리 풀려나는 퍽",
+  "몸부림이 느려지는 퍽",
   "판자에 맞고 경직이 길어졌어",
 ];
 
@@ -280,9 +280,10 @@ async function ensureSemantic() {
   if (semantic && semantic.ready) return;
   if (semantic && semantic.loadingPromise) return semantic.loadingPromise;
   semantic = { ready: false };
-  statusEl.textContent = "AI 모델 불러오는 중… (로컬 파일, 처음 한 번만)";
+  statusEl.textContent = "AI 모델 준비 중…";
   semantic.loadingPromise = (async () => {
     try {
+      await ensureModelDownloaded();   // 모델/라이브러리 없으면 서버가 1회 자동 다운로드
       const { pipeline, env } = await import(LIB);
       // 전부 로컬에서 — HuggingFace/CDN 으로 나가지 않음
       env.allowRemoteModels = false;
@@ -326,11 +327,34 @@ async function ensureSemantic() {
       setTimeout(() => { if (mode === "semantic") statusEl.textContent = ""; }, 2500);
     } catch (e) {
       console.error(e);
-      statusEl.textContent = "AI 모델 로드 실패 — run.bat 으로 실행해야 합니다. 모델이 없으면 'python download_model.py' 를 먼저 실행하세요.";
+      statusEl.textContent = (e && e.message === "no-server")
+        ? "로컬 서버가 필요합니다. run.bat 으로 실행하세요. (file:// 로 열면 의미기반 모드는 동작하지 않습니다)"
+        : "AI 모델 준비 실패: " + (e && e.message ? e.message : e);
       semantic = null;
     }
   })();
   return semantic.loadingPromise;
+}
+
+// 모델/라이브러리가 없으면 로컬 서버에 1회 다운로드를 요청하고 진행률을 보여준다.
+async function ensureModelDownloaded() {
+  let st;
+  try {
+    st = await (await fetch("/model_status")).json();
+  } catch {
+    throw new Error("no-server");   // file:// 이거나 서버 미실행
+  }
+  if (st.ready) return;
+  statusEl.textContent = "AI 모델 다운로드 중… (처음 1회만, ~155MB)";
+  await fetch("/ensure_model", { method: "POST" });
+  while (true) {
+    await new Promise((r) => setTimeout(r, 800));
+    st = await (await fetch("/model_status")).json();
+    if (st.error) throw new Error(st.error);
+    if (st.ready) return;
+    const prog = st.count ? `(${st.index}/${st.count}) ${st.file || ""} ${st.pct}%` : "준비 중…";
+    statusEl.textContent = `AI 모델 다운로드 중… ${prog}  (처음 1회만)`;
+  }
 }
 
 // IndexedDB 임베딩 캐시 (재방문 시 즉시 로드)

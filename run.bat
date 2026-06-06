@@ -16,11 +16,8 @@ if errorlevel 1 (
   python -m pip install --quiet openai
 )
 
-REM Inform if the local semantic-AI model is not downloaded yet (optional, for offline use)
-if not exist "models\Xenova\multilingual-e5-small\onnx\model_quantized.onnx" (
-  echo [info] Semantic-AI model not found locally. Run 'python download_model.py' once
-  echo        to enable fully offline semantic search. ^(keyword / precise-AI unaffected^)
-)
+REM Semantic-AI model: downloaded automatically on first use of that mode (in the browser).
+REM To pre-download now instead, run:  python download_model.py
 
 if "%ANTHROPIC_API_KEY%"=="" if "%OPENAI_API_KEY%"=="" (
   echo [info] Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is set. Only "precise AI" mode is affected.

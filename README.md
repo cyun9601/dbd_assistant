@@ -12,11 +12,10 @@
 
 ## 데모
 
-<video src="assets/demo.mp4" controls muted width="720">
-  영상을 재생할 수 없으면 <a href="assets/demo.mp4">assets/demo.mp4</a> 를 직접 열어보세요.
-</video>
+![DBD 퍽 검색기 데모](assets/demo.gif)
 
-> VS Code 미리보기/대부분의 브라우저에서 바로 재생됩니다. 안 보이면 [assets/demo.mp4](assets/demo.mp4) 를 클릭해 여세요.
+> GIF 미리보기입니다. 소리·고화질 원본은 [assets/demo.mp4](assets/demo.mp4) 에서 볼 수 있어요.
+> (GitHub README는 상대경로 `<video>` 재생을 지원하지 않아 GIF로 표시합니다.)
 
 ---
 
@@ -118,5 +117,5 @@ dbd-db.com 에서 살인마 퍽 목록·한글 설명문을 다시 받아
 | `build_data.py` | 데이터 수집·갱신 스크립트 |
 | `download_model.py` | 의미기반 AI용 모델·라이브러리 1회 다운로드 (→ `models/`, `vendor/`) |
 | `models/`, `vendor/` | 로컬 임베딩 모델(ONNX) + transformers.js·wasm (자동 생성, 오프라인용) |
-| `assets/demo.mp4` | 실행 데모 영상 |
+| `assets/demo.gif` · `assets/demo.mp4` | 실행 데모 (README용 GIF + 원본 영상) |
 | `run.bat` | 실행기 (SDK 자동 설치 + 서버 기동 + 브라우저 열기) |

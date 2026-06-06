@@ -11,7 +11,10 @@ usage: python server.py  (또는 run.bat)
 import json
 import os
 import sys
+import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
+import download_model as dm
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PORT = 8777
@@ -179,6 +182,35 @@ def ask_llm(query, model):
     return {"results": out, "usage": usage, "model": model}
 
 
+# ---- 의미기반 모델 자동 다운로드 (첫 사용 시 1회) ----
+_dl = {"status": "idle", "index": 0, "count": 0, "file": "", "pct": 0, "error": None}
+_dl_lock = threading.Lock()
+
+
+def _run_download():
+    def on_file(i, n, name):
+        _dl.update(index=i, count=n, file=name, pct=0)
+
+    def on_progress(read, total):
+        _dl["pct"] = (read * 100 // total) if total else 0
+
+    try:
+        dm.download_all(on_file, on_progress)
+        _dl.update(status="done", pct=100)
+    except Exception as e:  # noqa
+        _dl.update(status="error", error=str(e))
+
+
+def start_download():
+    """누락 모델/라이브러리를 백그라운드로 받기 시작 (이미 진행 중이면 무시)."""
+    with _dl_lock:
+        if _dl["status"] == "running":
+            return
+        _dl.update(status="running", index=0, count=len(dm.missing()),
+                   file="", pct=0, error=None)
+        threading.Thread(target=_run_download, daemon=True).start()
+
+
 class Handler(SimpleHTTPRequestHandler):
     # 로컬 모델/라이브러리 제공에 필요한 MIME 타입 보강
     extensions_map = {
@@ -196,6 +228,20 @@ class Handler(SimpleHTTPRequestHandler):
     def log_message(self, fmt, *args):  # 조용히
         pass
 
+    def do_GET(self):
+        if self.path.split("?")[0].rstrip("/") == "/model_status":
+            self._send_json(200, {
+                "ready": dm.all_present(),
+                "status": _dl["status"],
+                "index": _dl["index"],
+                "count": _dl["count"],
+                "file": _dl["file"],
+                "pct": _dl["pct"],
+                "error": _dl["error"],
+            })
+            return
+        super().do_GET()
+
     def _send_json(self, code, obj):
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
@@ -205,7 +251,14 @@ class Handler(SimpleHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self):
-        if self.path.rstrip("/") != "/ask":
+        path = self.path.rstrip("/")
+        if path == "/ensure_model":
+            # 의미기반 모델/라이브러리가 없으면 백그라운드 다운로드 시작
+            if not dm.all_present():
+                start_download()
+            self._send_json(200, {"ready": dm.all_present(), "status": _dl["status"]})
+            return
+        if path != "/ask":
             self.send_error(404)
             return
         try:
