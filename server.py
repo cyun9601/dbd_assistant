@@ -51,6 +51,27 @@ PERKS_BY_ROLE = {
     for role in ROLE_WORD
 }
 
+# ---- 즐겨찾기 (사용자별 로컬 파일, .gitignore 처리됨) ----
+FAV_PATH = os.path.join(HERE, "favorites.json")
+_fav_lock = threading.Lock()
+
+
+def load_favorites():
+    """favorites.json 에서 퍽 id 목록을 읽는다. 없거나 깨졌으면 빈 목록."""
+    try:
+        with open(FAV_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+    except (FileNotFoundError, ValueError):
+        return []
+    ids = data.get("favorites", []) if isinstance(data, dict) else data
+    # 실제 존재하는 퍽 id 만 유지 (데이터 갱신으로 사라진 id 정리)
+    return [i for i in ids if i in PERK_BY_ID]
+
+
+def save_favorites(ids):
+    with open(FAV_PATH, "w", encoding="utf-8") as f:
+        json.dump({"favorites": ids}, f, ensure_ascii=False, indent=1)
+
 
 def build_instructions(role):
     word = ROLE_WORD[role]
@@ -240,7 +261,8 @@ class Handler(SimpleHTTPRequestHandler):
         pass
 
     def do_GET(self):
-        if self.path.split("?")[0].rstrip("/") == "/model_status":
+        path = self.path.split("?")[0].rstrip("/")
+        if path == "/model_status":
             self._send_json(200, {
                 "ready": dm.all_present(),
                 "status": _dl["status"],
@@ -250,6 +272,9 @@ class Handler(SimpleHTTPRequestHandler):
                 "pct": _dl["pct"],
                 "error": _dl["error"],
             })
+            return
+        if path == "/favorites":
+            self._send_json(200, {"favorites": load_favorites()})
             return
         super().do_GET()
 
@@ -268,6 +293,29 @@ class Handler(SimpleHTTPRequestHandler):
             if not dm.all_present():
                 start_download()
             self._send_json(200, {"ready": dm.all_present(), "status": _dl["status"]})
+            return
+        if path == "/favorites":
+            # 즐겨찾기 토글: {"id": "...", "on": true/false}
+            # 또는 전체 설정: {"favorites": ["id1", "id2", ...]}
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length) or b"{}")
+            except Exception as e:  # noqa
+                self._send_json(400, {"error": f"잘못된 요청: {e}"})
+                return
+            with _fav_lock:
+                favs = load_favorites()
+                if isinstance(payload.get("favorites"), list):
+                    favs = [i for i in payload["favorites"] if i in PERK_BY_ID]
+                else:
+                    pid = payload.get("id")
+                    if pid in PERK_BY_ID:
+                        if payload.get("on") and pid not in favs:
+                            favs.append(pid)
+                        elif not payload.get("on") and pid in favs:
+                            favs.remove(pid)
+                save_favorites(favs)
+            self._send_json(200, {"favorites": favs})
             return
         if path != "/ask":
             self.send_error(404)

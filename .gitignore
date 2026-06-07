@@ -10,6 +10,9 @@ node_modules/
 package-lock.json
 package.json
 
+# 즐겨찾기 — 사용자별 로컬 데이터 (서버가 자동 생성, 공유하지 않음)
+favorites.json
+
 # OS/IDE
 .DS_Store
 Thumbs.db

@@ -50,6 +50,13 @@
   }
   .role-btn[data-role="killer"].active { background: var(--accent); border-color: var(--accent); color: #fff; }
   .role-btn[data-role="survivor"].active { background: var(--surv); border-color: var(--surv); color: #fff; }
+  .fav-toggle {
+    margin-left: auto; background: var(--panel2); border: 1px solid var(--line);
+    color: var(--muted); padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    font-size: 14px; font-weight: 600;
+  }
+  .fav-toggle.active { background: #3a3000; border-color: #f1c40f; color: #f1c40f; }
+  .fav-toggle .fav-count { opacity: .85; font-size: 12px; margin-left: 2px; }
   .card .owner.surv { color: #7fb8e0; }
   #model { background: var(--panel2); border: 1px solid var(--line); color: var(--text);
     border-radius: 999px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
@@ -76,7 +83,14 @@
   .card .top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .card .name { font-size: 16px; font-weight: 700; }
   .card .owner { font-size: 12px; color: var(--muted); }
-  .card .score { margin-left: auto; font-size: 11px; color: var(--good);
+  .card .star {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    font-size: 19px; line-height: 1; color: #555; padding: 0 2px;
+    transition: color .12s, transform .12s;
+  }
+  .card .star:hover { transform: scale(1.15); color: #f1c40f; }
+  .card .star.on { color: #f1c40f; }
+  .card .score { font-size: 11px; color: var(--good);
     border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
   .card .desc { margin-top: 7px; font-size: 13.5px; line-height: 1.6; color: #cfcfda; }
   .desc .Highlight1 { color: #f1c40f; font-weight: 700; }
@@ -97,6 +111,7 @@
     <div class="roles" id="roles">
       <button class="role-btn active" data-role="killer">🔪 살인마</button>
       <button class="role-btn" data-role="survivor">🩹 생존자</button>
+      <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
     </div>
     <div class="searchrow">
       <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
@@ -148,9 +163,51 @@ const statusEl = $("#status");
 let mode = "keyword";
 let role = "killer";          // 현재 선택된 역할 (살인마/생존자)
 let semantic = null;          // lazy-loaded state
+let favView = false;          // 즐겨찾기 보기 on/off
+let favorites = new Set();    // 즐겨찾기한 퍽 id 집합
 
 const ROLE_WORD = { killer: "살인마", survivor: "생존자" };
 const perksForRole = () => PERKS.filter((p) => p.role === role);
+
+// ---- 즐겨찾기 ----
+const FAV_LS_KEY = "dbd-favorites";   // 서버 미사용(file://) 시 폴백 저장소
+const isFav = (id) => favorites.has(id);
+const favPerksForRole = () => perksForRole().filter((p) => isFav(p.id));
+
+function updateFavCount() {
+  $("#favCount").textContent = favPerksForRole().length;
+}
+
+// 시작 시 서버에서 즐겨찾기 로드 (서버 없으면 localStorage 폴백)
+async function loadFavorites() {
+  try {
+    const res = await fetch("/favorites");
+    if (res.ok) { favorites = new Set((await res.json()).favorites || []); return; }
+  } catch { /* 서버 없음 */ }
+  try { favorites = new Set(JSON.parse(localStorage.getItem(FAV_LS_KEY) || "[]")); }
+  catch { favorites = new Set(); }
+}
+
+// 토글 영속화: 서버(favorites.json)에 기록, 실패하면 localStorage
+async function persistFavorite(id, on) {
+  try {
+    const res = await fetch("/favorites", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id, on }),
+    });
+    if (res.ok) { favorites = new Set((await res.json()).favorites || []); return; }
+    throw new Error("bad");
+  } catch {
+    try { localStorage.setItem(FAV_LS_KEY, JSON.stringify([...favorites])); } catch {}
+  }
+}
+
+function exitFavView() {
+  if (!favView) return;
+  favView = false;
+  $("#favBtn").classList.remove("active");
+}
 
 const EXAMPLES = {
   killer: [
@@ -191,6 +248,7 @@ function renderExamples() {
 function applyRole() {
   $("#perkcount").textContent = `(${ROLE_WORD[role]} ${perksForRole().length}개)`;
   $("#q").placeholder = PLACEHOLDER[role];
+  updateFavCount();
   renderExamples();
 }
 applyRole();
@@ -203,6 +261,7 @@ const HINTS = {
 };
 document.querySelectorAll(".mode-btn").forEach((b) => {
   b.onclick = async () => {
+    exitFavView();
     document.querySelectorAll(".mode-btn").forEach((x) => x.classList.remove("active"));
     b.classList.add("active");
     mode = b.dataset.mode;
@@ -222,21 +281,50 @@ document.querySelectorAll(".role-btn").forEach((b) => {
     b.classList.add("active");
     role = b.dataset.role;
     applyRole();
-    runSearch();
+    favView ? renderFavorites() : runSearch();
   };
 });
 
-$("#clear").onclick = () => { $("#q").value = ""; runSearch(); $("#q").focus(); };
+// 즐겨찾기 보기 토글
+$("#favBtn").onclick = () => {
+  favView = !favView;
+  $("#favBtn").classList.toggle("active", favView);
+  if (favView) renderFavorites();
+  else runSearch();
+};
+
+$("#clear").onclick = () => { $("#q").value = ""; exitFavView(); runSearch(); $("#q").focus(); };
 
 let timer = null;
 $("#q").addEventListener("input", () => {
+  exitFavView();              // 검색을 시작하면 즐겨찾기 보기 해제
   if (mode === "llm") return; // LLM 모드는 매 타이핑마다 호출하지 않음 (Enter로 실행)
   clearTimeout(timer);
   timer = setTimeout(runSearch, mode === "keyword" ? 80 : 250);
 });
 $("#q").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && mode === "llm") runSearch();
+  if (e.key === "Enter" && mode === "llm") { exitFavView(); runSearch(); }
 });
+
+// 퍽 카드 1개의 HTML. 별표(즐겨찾기) 토글 포함.
+function cardHtml(perk, { badge = "", reason = "", desc } = {}) {
+  const fav = isFav(perk.id);
+  const reasonHtml = reason ? `<div class="reason">💡 ${reason}</div>` : "";
+  const badgeHtml = badge ? `<span class="score">${badge}</span>` : "";
+  return `<div class="card">
+    <div class="ic"><img src="${perk.icon_file}" alt="" loading="lazy"></div>
+    <div class="body">
+      <div class="top">
+        <span class="name">${perk.name}</span>
+        <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${perk.owner === 'public' ? '공용' : perk.owner}</span>
+        <button class="star${fav ? ' on' : ''}" data-fav-id="${perk.id}" title="즐겨찾기" aria-pressed="${fav}">${fav ? '★' : '☆'}</button>
+        ${badgeHtml}
+      </div>
+      ${reasonHtml}
+      <div class="desc">${desc != null ? desc : perk.desc_html}</div>
+    </div>
+  </div>`;
+}
 
 function render(list, q) {
   if (!q.trim()) {
@@ -259,21 +347,36 @@ function render(list, q) {
     if (mode === "semantic") badge = `${Math.round(pct)}%`;
     else if (mode === "llm") badge = `${confidence}%`;
     else badge = `${score.toFixed(0)}점`;
-    const reasonHtml = reason ? `<div class="reason">💡 ${reason}</div>` : "";
-    return `<div class="card">
-      <div class="ic"><img src="${perk.icon_file}" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="top">
-          <span class="name">${perk.name}</span>
-          <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${perk.owner === 'public' ? '공용' : perk.owner}</span>
-          <span class="score">${badge}</span>
-        </div>
-        ${reasonHtml}
-        <div class="desc">${desc}</div>
-      </div>
-    </div>`;
+    return cardHtml(perk, { badge, reason, desc });
   }).join("");
 }
+
+// 즐겨찾기 보기: 현재 역할의 즐겨찾기 퍽을 이름순으로 (검색/모드 무관)
+function renderFavorites() {
+  const list = favPerksForRole().slice().sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  if (!list.length) {
+    countEl.textContent = "";
+    results.innerHTML = `<div class="empty">아직 즐겨찾기한 ${ROLE_WORD[role]} 퍽이 없어요.<br>카드 오른쪽의 ☆ 를 눌러 추가하세요.</div>`;
+    return;
+  }
+  countEl.textContent = `⭐ 즐겨찾기 ${list.length}개 (${ROLE_WORD[role]})`;
+  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+}
+
+// 별표 클릭(이벤트 위임) — 카드는 매번 새로 그려지므로 컨테이너에 한 번만 바인딩
+results.addEventListener("click", (e) => {
+  const btn = e.target.closest(".star");
+  if (!btn) return;
+  const id = btn.dataset.favId;
+  const on = !favorites.has(id);
+  if (on) favorites.add(id); else favorites.delete(id);
+  btn.classList.toggle("on", on);
+  btn.textContent = on ? "★" : "☆";
+  btn.setAttribute("aria-pressed", String(on));
+  updateFavCount();
+  persistFavorite(id, on);
+  if (favView && !on) renderFavorites();   // 즐겨찾기 보기 중 해제하면 목록에서 사라지게
+});
 
 async function runSearch() {
   const q = $("#q").value;
@@ -438,6 +541,8 @@ async function saveCache(n, matrix) {
 }
 
 render([], "");
+// 즐겨찾기 로드(비동기) 후 카운트/보기 갱신
+loadFavorites().then(() => { updateFavCount(); if (favView) renderFavorites(); });
 </script>
 </body>
 </html>
