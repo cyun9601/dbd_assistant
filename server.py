@@ -2,7 +2,7 @@
 """
 DBD 퍽 검색기 로컬 서버.
 - 정적 파일(index.html, perks_data.js, icons/ ...)을 제공
-- POST /ask : 살인마 퍽 전체를 LLM 컨텍스트에 넣고(프롬프트 캐싱) 질문과 매칭
+- POST /ask : 역할(살인마/생존자)별 퍽 전체를 LLM 컨텍스트에 넣고(프롬프트 캐싱) 질문과 매칭
 
 공급자는 모델 이름으로 구분: claude-* → Anthropic, 그 외 → OpenAI.
 API 키는 각각 환경변수 ANTHROPIC_API_KEY / OPENAI_API_KEY 에서 읽는다 (브라우저로 노출 안 됨).
@@ -39,34 +39,45 @@ def provider_of(model):
 PROVIDER_KEY = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY"}
 PROVIDER_PKG = {"anthropic": "anthropic", "openai": "openai"}
 
-# 살인마 퍽 데이터 로드 (서버 측)
+# 퍽 데이터 로드 (서버 측) — 역할(살인마/생존자)별로 분리
 with open(os.path.join(HERE, "perks.json"), encoding="utf-8") as f:
     PERKS = json.load(f)
 PERK_BY_ID = {p["id"]: p for p in PERKS}
 
-INSTRUCTIONS = (
-    "당신은 데드 바이 데이라이트(DBD) 살인마 퍽 검색 도우미입니다.\n"
-    "사용자는 게임 중 겪은 현상이나 퍽 효과를 한국어로(때로는 모호하게) 설명합니다.\n"
-    "아래 살인마 퍽 목록에서 가장 가능성 높은 퍽들을 찾아 순위대로 반환하세요.\n\n"
-    "규칙:\n"
-    "- 사용자가 돌려 말하거나 줄임말/구어체를 써도 의미를 추론해 매칭하세요.\n"
-    "- 관련 있는 퍽만 포함하세요. 보통 1~6개. 억지로 채우지 마세요.\n"
-    "- confidence는 0~100 사이 정수 (확신도).\n"
-    "- reason은 왜 매칭되는지 한국어 한 줄로 간결하게.\n"
-    "- id는 반드시 아래 목록의 id를 그대로 사용하세요.\n\n"
-    "[살인마 퍽 목록]  형식: id | 이름 | 소유자 | 효과\n"
-)
+ROLE_WORD = {"killer": "살인마", "survivor": "생존자"}
+DEFAULT_ROLE = "killer"
+PERKS_BY_ROLE = {
+    role: [p for p in PERKS if p.get("role", "killer") == role]
+    for role in ROLE_WORD
+}
 
 
-def build_corpus():
+def build_instructions(role):
+    word = ROLE_WORD[role]
+    return (
+        f"당신은 데드 바이 데이라이트(DBD) {word} 퍽 검색 도우미입니다.\n"
+        "사용자는 게임 중 겪은 현상이나 퍽 효과를 한국어로(때로는 모호하게) 설명합니다.\n"
+        f"아래 {word} 퍽 목록에서 가장 가능성 높은 퍽들을 찾아 순위대로 반환하세요.\n\n"
+        "규칙:\n"
+        "- 사용자가 돌려 말하거나 줄임말/구어체를 써도 의미를 추론해 매칭하세요.\n"
+        "- 관련 있는 퍽만 포함하세요. 보통 1~6개. 억지로 채우지 마세요.\n"
+        "- confidence는 0~100 사이 정수 (확신도).\n"
+        "- reason은 왜 매칭되는지 한국어 한 줄로 간결하게.\n"
+        "- id는 반드시 아래 목록의 id를 그대로 사용하세요.\n\n"
+        f"[{word} 퍽 목록]  형식: id | 이름 | 소유자 | 효과\n"
+    )
+
+
+def build_corpus(role):
     lines = []
-    for p in PERKS:
+    for p in PERKS_BY_ROLE[role]:
         owner = "공용" if p["owner"] == "public" else p["owner"]
         lines.append(f"{p['id']} | {p['name']} | {owner} | {p['desc_text']}")
-    return INSTRUCTIONS + "\n".join(lines)
+    return build_instructions(role) + "\n".join(lines)
 
 
-CORPUS = build_corpus()
+# 역할별 코퍼스를 미리 만들어 둠 (각각 프롬프트 캐싱 대상)
+CORPUS = {role: build_corpus(role) for role in ROLE_WORD}
 
 OUTPUT_SCHEMA = {
     "type": "json_schema",
@@ -95,12 +106,12 @@ OUTPUT_SCHEMA = {
 _clients = {}
 
 
-def _ask_anthropic(query, model):
+def _ask_anthropic(query, model, role):
     import anthropic  # 지연 임포트: 미설치 시 친절한 에러
     client = _clients.get("anthropic") or _clients.setdefault("anthropic", anthropic.Anthropic())
 
-    # 살인마 퍽 코퍼스는 system 에 두고 캐싱 → 매 질문마다 캐시 읽기(원가 0.1배)
-    system = [{"type": "text", "text": CORPUS, "cache_control": {"type": "ephemeral"}}]
+    # 역할별 퍽 코퍼스는 system 에 두고 캐싱 → 매 질문마다 캐시 읽기(원가 0.1배)
+    system = [{"type": "text", "text": CORPUS[role], "cache_control": {"type": "ephemeral"}}]
     kwargs = dict(
         model=model,
         max_tokens=2048,
@@ -124,7 +135,7 @@ def _ask_anthropic(query, model):
     return json.loads(text), usage
 
 
-def _ask_openai(query, model):
+def _ask_openai(query, model, role):
     from openai import OpenAI  # 지연 임포트
     client = _clients.get("openai") or _clients.setdefault("openai", OpenAI())
 
@@ -133,7 +144,7 @@ def _ask_openai(query, model):
         model=model,
         max_completion_tokens=2048,
         messages=[
-            {"role": "system", "content": CORPUS},
+            {"role": "system", "content": CORPUS[role]},
             {"role": "user", "content": query},
         ],
         response_format={
@@ -160,18 +171,18 @@ def _ask_openai(query, model):
     return json.loads(text), usage
 
 
-def ask_llm(query, model):
+def ask_llm(query, model, role):
     """질문을 LLM에 보내고 매칭된 퍽 결과를 반환."""
     if provider_of(model) == "anthropic":
-        data, usage = _ask_anthropic(query, model)
+        data, usage = _ask_anthropic(query, model, role)
     else:
-        data, usage = _ask_openai(query, model)
+        data, usage = _ask_openai(query, model, role)
 
-    # id → 퍽 정보 매핑, 모르는 id 는 버림
+    # id → 퍽 정보 매핑. 모르는 id, 또는 요청한 역할이 아닌 퍽은 버림(방어)
     out = []
     for r in data.get("results", []):
         perk = PERK_BY_ID.get(r.get("id"))
-        if not perk:
+        if not perk or perk.get("role", "killer") != role:
             continue
         out.append({
             "perk": perk,
@@ -179,7 +190,7 @@ def ask_llm(query, model):
             "reason": r.get("reason", ""),
         })
     out.sort(key=lambda x: x["confidence"], reverse=True)
-    return {"results": out, "usage": usage, "model": model}
+    return {"results": out, "usage": usage, "model": model, "role": role}
 
 
 # ---- 의미기반 모델 자동 다운로드 (첫 사용 시 1회) ----
@@ -272,6 +283,9 @@ class Handler(SimpleHTTPRequestHandler):
         model = payload.get("model") or DEFAULT_MODEL
         if model not in ALLOWED_MODELS:
             model = DEFAULT_MODEL
+        role = payload.get("role") or DEFAULT_ROLE
+        if role not in CORPUS:
+            role = DEFAULT_ROLE
         if not query:
             self._send_json(400, {"error": "질문이 비어 있습니다."})
             return
@@ -286,7 +300,7 @@ class Handler(SimpleHTTPRequestHandler):
             return
 
         try:
-            result = ask_llm(query, model)
+            result = ask_llm(query, model, role)
             self._send_json(200, result)
         except ModuleNotFoundError:
             pkg = PROVIDER_PKG[provider]

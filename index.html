@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>DBD 살인마 퍽 검색기</title>
+<title>DBD 퍽 검색기</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🔪</text></svg>" />
 <style>
   :root {
     --bg: #0c0c0f; --panel: #16161c; --panel2: #1e1e26;
     --line: #2a2a35; --text: #e9e9ef; --muted: #9a9aa8;
     --accent: #c0392b; --accent2: #e67e22; --good: #2ecc71;
+    --surv: #2980b9;
   }
   * { box-sizing: border-box; }
   body {
@@ -42,6 +43,14 @@
     padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 13px;
   }
   .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .roles { display: flex; gap: 8px; margin-top: 10px; }
+  .role-btn {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    padding: 8px 18px; border-radius: 999px; cursor: pointer; font-size: 14px; font-weight: 600;
+  }
+  .role-btn[data-role="killer"].active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .role-btn[data-role="survivor"].active { background: var(--surv); border-color: var(--surv); color: #fff; }
+  .card .owner.surv { color: #7fb8e0; }
   #model { background: var(--panel2); border: 1px solid var(--line); color: var(--text);
     border-radius: 999px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
   .reason { margin-top: 6px; font-size: 12.5px; color: #8fd6a6;
@@ -84,7 +93,11 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>🔪 DBD 살인마 퍽 검색기 <small id="perkcount"></small></h1>
+    <h1>🔪 DBD 퍽 검색기 <small id="perkcount"></small></h1>
+    <div class="roles" id="roles">
+      <button class="role-btn active" data-role="killer">🔪 살인마</button>
+      <button class="role-btn" data-role="survivor">🩹 생존자</button>
+    </div>
     <div class="searchrow">
       <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
       <button id="clear" title="지우기">✕</button>
@@ -116,7 +129,7 @@
   <div id="results"></div>
 </main>
 <footer>
-  데이터 출처: dbd-db.com · 살인마 퍽 전용 · 로컬에서 동작
+  데이터 출처: dbd-db.com · 살인마 + 생존자 퍽 · 로컬에서 동작
 </footer>
 
 <script src="perks_data.js"></script>
@@ -132,28 +145,55 @@ const results = $("#results");
 const countEl = $("#count");
 const statusEl = $("#status");
 
-$("#perkcount").textContent = `(${PERKS.length}개)`;
-
 let mode = "keyword";
-let semantic = null; // lazy-loaded state
+let role = "killer";          // 현재 선택된 역할 (살인마/생존자)
+let semantic = null;          // lazy-loaded state
 
-const EXAMPLES = [
-  "살인마 속도가 빨라졌어",
-  "발전기 수리가 막혔어",
-  "내 오라가 보이는 것 같아",
-  "비명 지르면 위치 들킴",
-  "몸부림이 느려지는 퍽",
-  "판자에 맞고 경직이 길어졌어",
-];
+const ROLE_WORD = { killer: "살인마", survivor: "생존자" };
+const perksForRole = () => PERKS.filter((p) => p.role === role);
 
-// 예시 칩
+const EXAMPLES = {
+  killer: [
+    "살인마 속도가 빨라졌어",
+    "발전기 수리가 막혔어",
+    "내 오라가 보이는 것 같아",
+    "비명 지르면 위치 들킴",
+    "몸부림이 느려지는 퍽",
+    "판자에 맞고 경직이 길어졌어",
+  ],
+  survivor: [
+    "다친 동료 위치가 보여",
+    "달리기 시작할 때 확 빨라져",
+    "치료 속도 빨라지는 퍽",
+    "혼자서 일어나는 퍽",
+    "갈고리에서 풀려나는 퍽",
+    "빈사 상태에서 기어가는 속도",
+  ],
+};
+const PLACEHOLDER = {
+  killer: "퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어",
+  survivor: "퍽 효과를 적어보세요. 예) 다친 동료 위치가 보여",
+};
+
+// 예시 칩 (역할에 맞춰 다시 그림)
 const exWrap = $("#examples");
-EXAMPLES.forEach((t) => {
-  const c = document.createElement("button");
-  c.className = "chip"; c.textContent = t;
-  c.onclick = () => { $("#q").value = t; runSearch(); };
-  exWrap.appendChild(c);
-});
+function renderExamples() {
+  exWrap.innerHTML = "";
+  EXAMPLES[role].forEach((t) => {
+    const c = document.createElement("button");
+    c.className = "chip"; c.textContent = t;
+    c.onclick = () => { $("#q").value = t; runSearch(); };
+    exWrap.appendChild(c);
+  });
+}
+
+// 역할 적용: 퍽 개수 · 예시 · 플레이스홀더 갱신
+function applyRole() {
+  $("#perkcount").textContent = `(${ROLE_WORD[role]} ${perksForRole().length}개)`;
+  $("#q").placeholder = PLACEHOLDER[role];
+  renderExamples();
+}
+applyRole();
 
 // 모드 전환
 const HINTS = {
@@ -174,6 +214,18 @@ document.querySelectorAll(".mode-btn").forEach((b) => {
 });
 $("#model").onchange = () => { if (mode === "llm") runSearch(); };
 
+// 역할 전환 (살인마/생존자)
+document.querySelectorAll(".role-btn").forEach((b) => {
+  b.onclick = () => {
+    if (b.dataset.role === role) return;
+    document.querySelectorAll(".role-btn").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    role = b.dataset.role;
+    applyRole();
+    runSearch();
+  };
+});
+
 $("#clear").onclick = () => { $("#q").value = ""; runSearch(); $("#q").focus(); };
 
 let timer = null;
@@ -189,8 +241,8 @@ $("#q").addEventListener("keydown", (e) => {
 function render(list, q) {
   if (!q.trim()) {
     countEl.textContent = "";
-    const tip = mode === "llm" ? "퍽 효과를 적고 Enter — LLM이 전체 퍽과 대조해 찾아줍니다." :
-      "위에 퍽 효과를 적으면 가장 비슷한 살인마 퍽을 찾아드려요.";
+    const tip = mode === "llm" ? `퍽 효과를 적고 Enter — LLM이 ${ROLE_WORD[role]} 퍽 전체와 대조해 찾아줍니다.` :
+      `위에 퍽 효과를 적으면 가장 비슷한 ${ROLE_WORD[role]} 퍽을 찾아드려요.`;
     results.innerHTML = `<div class="empty">${tip}</div>`;
     return;
   }
@@ -213,7 +265,7 @@ function render(list, q) {
       <div class="body">
         <div class="top">
           <span class="name">${perk.name}</span>
-          <span class="owner">${perk.owner === 'public' ? '공용' : perk.owner}</span>
+          <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${perk.owner === 'public' ? '공용' : perk.owner}</span>
           <span class="score">${badge}</span>
         </div>
         ${reasonHtml}
@@ -226,7 +278,7 @@ function render(list, q) {
 async function runSearch() {
   const q = $("#q").value;
   if (mode === "keyword") {
-    render(rankKeyword(q, PERKS, SYN), q);
+    render(rankKeyword(q, perksForRole(), SYN), q);
   } else if (mode === "semantic") {
     if (!q.trim()) { render([], q); return; }
     if (!semantic || !semantic.ready) { await ensureSemantic(); }
@@ -241,13 +293,13 @@ async function runSearch() {
 // ---- AI 정밀 검색 (로컬 프록시 /ask) ----
 async function runLLM(q) {
   const model = $("#model").value;
-  statusEl.textContent = "AI가 전체 퍽과 대조 중…";
+  statusEl.textContent = `AI가 ${ROLE_WORD[role]} 퍽 전체와 대조 중…`;
   results.innerHTML = `<div class="empty">분석 중…</div>`;
   try {
     const res = await fetch("/ask", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ query: q, model }),
+      body: JSON.stringify({ query: q, model, role }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -314,7 +366,11 @@ async function ensureSemantic() {
       semantic.matrix = matrix;
       semantic.rank = async (q) => {
         const [qv] = await embed([`query: ${q}`]);
-        const scored = PERKS.map((perk, i) => ({ perk, score: cosine(qv, matrix[i]) }));
+        // 코퍼스는 전체(306개)를 임베딩해 두고, 순위 산출 시 현재 역할만 추린다
+        const scored = [];
+        PERKS.forEach((perk, i) => {
+          if (perk.role === role) scored.push({ perk, score: cosine(qv, matrix[i]) });
+        });
         scored.sort((a, b) => b.score - a.score);
         const top = scored.slice(0, 30);
         // e5 유사도는 좁은 구간(~0.8대)에 몰리므로, 결과 내 상대 신뢰도로 재조정해 순위 차이를 보이게 한다

@@ -13,3 +13,6 @@ package.json
 # OS/IDE
 .DS_Store
 Thumbs.db
+
+# 편집기 원자적 쓰기 임시 파일 (Dropbox가 파일을 잠그면 정리가 안 되고 남을 수 있음)
+*.tmp.*
