@@ -10,6 +10,7 @@ usage: python server.py  (또는 run.bat)
 """
 import json
 import os
+import socket
 import sys
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -71,6 +72,88 @@ def load_favorites():
 def save_favorites(ids):
     with open(FAV_PATH, "w", encoding="utf-8") as f:
         json.dump({"favorites": ids}, f, ensure_ascii=False, indent=1)
+
+
+# ---- 태그 ----
+# 기본 태그는 tags.json(레포에 포함, 공유). 사용자가 수정한 분량만 tags_user.json
+# (.gitignore 처리)에 따로 저장하고, 조회 시 둘을 병합해 "유효 태그"를 만든다.
+TAGS_BASE_PATH = os.path.join(HERE, "tags.json")
+TAGS_USER_PATH = os.path.join(HERE, "tags_user.json")
+MAX_TAGS_PER_PERK = 8
+_tags_lock = threading.Lock()
+
+
+def _load_json(path, default):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, ValueError):
+        return default
+
+
+def _split_tags_doc(doc):
+    """{tags:[...], perks:{id:[...]}} 문서를 (어휘, 퍽맵)으로."""
+    if not isinstance(doc, dict):
+        return [], {}
+    vocab = doc.get("tags") if isinstance(doc.get("tags"), list) else []
+    perks = doc.get("perks") if isinstance(doc.get("perks"), dict) else {}
+    return vocab, perks
+
+
+def save_user_tags(vocab_extra, perks_override):
+    with open(TAGS_USER_PATH, "w", encoding="utf-8") as f:
+        json.dump({"tags": vocab_extra, "perks": perks_override},
+                  f, ensure_ascii=False, indent=1)
+
+
+def effective_tags():
+    """기본 + 사용자 오버라이드 병합. (어휘, 퍽맵, 오버라이드된 id목록) 반환."""
+    base_vocab, base_perks = _split_tags_doc(_load_json(TAGS_BASE_PATH, {}))
+    user_vocab, user_perks = _split_tags_doc(_load_json(TAGS_USER_PATH, {}))
+
+    perks, overridden = {}, []
+    for pid in PERK_BY_ID:                       # 실제 존재하는 퍽만
+        if pid in user_perks and isinstance(user_perks[pid], list):
+            perks[pid] = list(user_perks[pid])   # 사용자 오버라이드 우선
+            overridden.append(pid)
+        elif pid in base_perks:
+            perks[pid] = list(base_perks[pid])
+
+    # 어휘 순서: 기본 → 사용자 추가 → 실제 사용된 것 (중복 제거)
+    vocab = list(base_vocab)
+    for src in (user_vocab, *perks.values()):
+        for t in src:
+            if t not in vocab:
+                vocab.append(t)
+    return vocab, perks, overridden
+
+
+def update_user_tag(pid, tags=None, reset=False):
+    """사용자 오버라이드 갱신(또는 reset 시 제거)하고 저장. 락 안에서 호출."""
+    user_vocab, user_perks = _split_tags_doc(_load_json(TAGS_USER_PATH, {}))
+    base_vocab, _ = _split_tags_doc(_load_json(TAGS_BASE_PATH, {}))
+
+    if reset:
+        user_perks.pop(pid, None)
+    else:
+        clean = []
+        for t in (tags or []):
+            if isinstance(t, str):
+                t = t.strip()
+                if t and t not in clean:
+                    clean.append(t)
+        user_perks[pid] = clean[:MAX_TAGS_PER_PERK]
+
+    # 기본 어휘에 없는데 실제 쓰이는 사용자 정의 태그만 user_vocab에 유지
+    used = set()
+    for v in user_perks.values():
+        used.update(v)
+    user_vocab = [t for t in dict.fromkeys(user_vocab) if t not in base_vocab and t in used]
+    for t in used:
+        if t not in base_vocab and t not in user_vocab:
+            user_vocab.append(t)
+
+    save_user_tags(user_vocab, user_perks)
 
 
 def build_instructions(role):
@@ -276,6 +359,10 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/favorites":
             self._send_json(200, {"favorites": load_favorites()})
             return
+        if path == "/tags":
+            vocab, perks, overridden = effective_tags()
+            self._send_json(200, {"tags": vocab, "perks": perks, "overridden": overridden})
+            return
         super().do_GET()
 
     def _send_json(self, code, obj):
@@ -316,6 +403,29 @@ class Handler(SimpleHTTPRequestHandler):
                             favs.remove(pid)
                 save_favorites(favs)
             self._send_json(200, {"favorites": favs})
+            return
+        if path == "/tags":
+            # 한 퍽의 태그 설정: {"id": "...", "tags": [...]} 또는 {"id": "...", "reset": true}
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length) or b"{}")
+            except Exception as e:  # noqa
+                self._send_json(400, {"error": f"잘못된 요청: {e}"})
+                return
+            pid = payload.get("id")
+            if pid not in PERK_BY_ID:
+                self._send_json(400, {"error": "알 수 없는 퍽 id"})
+                return
+            with _tags_lock:
+                update_user_tag(pid, tags=payload.get("tags"),
+                                reset=bool(payload.get("reset")))
+                vocab, perks, overridden = effective_tags()
+            self._send_json(200, {
+                "id": pid,
+                "tags": perks.get(pid, []),
+                "vocab": vocab,
+                "overridden": pid in set(overridden),
+            })
             return
         if path != "/ask":
             self.send_error(404)
@@ -360,9 +470,28 @@ class Handler(SimpleHTTPRequestHandler):
             self._send_json(500, {"error": f"LLM 호출 실패: {e}"})
 
 
+class Server(ThreadingHTTPServer):
+    # 기본값(allow_reuse_address=True)은 Windows에서 SO_REUSEADDR 때문에 이미 떠 있는
+    # 서버와 같은 포트를 "공유"하게 만든다 → 옛 서버가 요청을 가로채 구버전으로 응답하는
+    # 혼란이 생긴다. 단독 점유로 바꿔, 중복 실행 시 조용히 공유하지 않고 명확히 실패하게 한다.
+    allow_reuse_address = False
+
+    def server_bind(self):
+        if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):   # Windows
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
+
+
 def main():
     os.chdir(HERE)
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+    try:
+        server = Server(("127.0.0.1", PORT), Handler)
+    except OSError:
+        sys.stderr.write(
+            f"포트 {PORT} 를 열 수 없습니다. 이미 다른 DBD 서버가 실행 중인 것 같습니다.\n"
+            f"  - 브라우저에서 http://localhost:{PORT}/index.html 를 새로고침하거나,\n"
+            f"  - 기존 서버 창을 닫은(Ctrl+C) 뒤 다시 실행하세요.\n")
+        return
     a_ok = "설정됨 ✓" if os.environ.get("ANTHROPIC_API_KEY") else "미설정"
     o_ok = "설정됨 ✓" if os.environ.get("OPENAI_API_KEY") else "미설정"
     sys.stderr.write(f"DBD 퍽 검색기: http://localhost:{PORT}/index.html\n")

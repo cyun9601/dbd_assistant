@@ -13,6 +13,9 @@ package.json
 # 즐겨찾기 — 사용자별 로컬 데이터 (서버가 자동 생성, 공유하지 않음)
 favorites.json
 
+# 태그 — 기본 태그는 tags.json(공유), 사용자가 수정한 분량만 따로 보관(공유 안 함)
+tags_user.json
+
 # OS/IDE
 .DS_Store
 Thumbs.db

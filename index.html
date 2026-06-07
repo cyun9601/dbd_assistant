@@ -92,6 +92,42 @@
   .card .star.on { color: #f1c40f; }
   .card .score { font-size: 11px; color: var(--good);
     border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+  /* 태그 */
+  .card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; align-items: center; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 1px; font-family: inherit;
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 2px 4px 2px 9px; font-size: 11.5px; line-height: 1.5;
+  }
+  .tag .tag-label { cursor: pointer; }
+  .tag:hover { border-color: var(--accent2); color: var(--text); }
+  .tag.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .tag .tag-x { background: none; border: none; color: inherit; cursor: pointer;
+    font-size: 13px; opacity: .4; padding: 0 3px; line-height: 1; }
+  .tag .tag-x:hover { opacity: 1; color: #ff6b5b; }
+  .tag-add, .tag-reset {
+    background: none; border: 1px dashed var(--line); color: var(--muted);
+    border-radius: 999px; cursor: pointer; font-size: 12px; padding: 1px 9px; line-height: 1.6;
+  }
+  .tag-add:hover, .tag-reset:hover { border-color: var(--accent2); color: var(--text); }
+  .tag-input {
+    background: var(--panel2); border: 1px solid var(--accent2); color: var(--text);
+    border-radius: 999px; padding: 2px 9px; font-size: 11.5px; width: 96px; outline: none;
+  }
+  /* 헤더의 태그 필터 바 */
+  .tagbar { display: none; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 10px; }
+  .tagbar-label { color: var(--muted); font-size: 12px; }
+  .tagbar-clear { background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 3px 11px; font-size: 12px; cursor: pointer; }
+  .tagbar-clear:hover { color: var(--text); border-color: var(--accent2); }
+  /* 전체 태그 목록 보기 */
+  .taglist { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 0;
+    align-items: center; align-content: flex-start; }
+  .taglist-item { cursor: pointer; font-size: 13px; padding: 5px 5px 5px 12px; gap: 5px; }
+  .taglist-item .tag-count { background: var(--line); color: var(--muted);
+    border-radius: 999px; padding: 0 7px; font-size: 11px; }
+  .taglist-item.empty { opacity: .38; cursor: default; }
+  .taglist-item.empty:hover { border-color: var(--line); color: var(--muted); }
   .card .desc { margin-top: 7px; font-size: 13.5px; line-height: 1.6; color: #cfcfda; }
   .desc .Highlight1 { color: #f1c40f; font-weight: 700; }
   .desc .Highlight2 { color: #5dade2; font-weight: 700; }
@@ -112,6 +148,7 @@
       <button class="role-btn active" data-role="killer">🔪 살인마</button>
       <button class="role-btn" data-role="survivor">🩹 생존자</button>
       <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
+      <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
     </div>
     <div class="searchrow">
       <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
@@ -136,8 +173,10 @@
       <span class="hint" id="modehint">즉시 · 오프라인</span>
     </div>
     <div id="status"></div>
+    <div class="tagbar" id="tagbar"></div>
   </div>
 </header>
+<datalist id="tagvocab"></datalist>
 <main>
   <div class="examples" id="examples"></div>
   <div class="count" id="count"></div>
@@ -165,6 +204,11 @@ let role = "killer";          // 현재 선택된 역할 (살인마/생존자)
 let semantic = null;          // lazy-loaded state
 let favView = false;          // 즐겨찾기 보기 on/off
 let favorites = new Set();    // 즐겨찾기한 퍽 id 집합
+let TAGS = [];                // 전체 태그 어휘 (필터/자동완성용)
+let PERK_TAGS = {};           // 퍽 id -> 태그 배열 (유효 태그 = 기본+사용자수정 병합)
+let OVERRIDDEN = new Set();   // 사용자가 기본값에서 수정한 퍽 id
+let tagFilter = new Set();    // 활성 태그 필터 (모두 만족하는 퍽만, AND)
+let tagListView = false;      // 전체 태그 목록 보기 on/off
 
 const ROLE_WORD = { killer: "살인마", survivor: "생존자" };
 const perksForRole = () => PERKS.filter((p) => p.role === role);
@@ -207,6 +251,208 @@ function exitFavView() {
   if (!favView) return;
   favView = false;
   $("#favBtn").classList.remove("active");
+}
+
+// ---- 태그 ----
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const tagsOf = (id) => PERK_TAGS[id] || [];
+const perkHasAllTags = (id, set) => { const t = new Set(tagsOf(id)); for (const x of set) if (!t.has(x)) return false; return true; };
+
+// 시작 시 서버에서 유효 태그(기본+사용자수정 병합) 로드. 서버 없으면 태그 미표시.
+async function loadTags() {
+  try {
+    const res = await fetch("/tags");
+    if (!res.ok) return;
+    const d = await res.json();
+    TAGS = d.tags || [];
+    PERK_TAGS = d.perks || {};
+    OVERRIDDEN = new Set(d.overridden || []);
+    syncVocab();
+  } catch { /* 서버 없음(file://) — 태그 기능 비활성 */ }
+}
+
+function syncVocab() {
+  const dl = $("#tagvocab");
+  if (dl) dl.innerHTML = TAGS.map((t) => `<option value="${esc(t)}">`).join("");
+}
+
+// 한 퍽 카드의 태그 줄 내용 (칩들 + 추가 버튼 + 되돌리기)
+function tagRowInner(id) {
+  const chips = tagsOf(id).map((t) =>
+    `<span class="tag${tagFilter.has(t) ? " active" : ""}" data-tag="${esc(t)}">` +
+    `<span class="tag-label">#${esc(t)}</span>` +
+    `<button class="tag-x" title="이 퍽에서 태그 제거">×</button></span>`).join("");
+  const reset = OVERRIDDEN.has(id)
+    ? `<button class="tag-reset" title="기본 태그로 되돌리기">↺</button>` : "";
+  return chips + `<button class="tag-add" title="태그 추가">＋</button>` + reset;
+}
+
+// 서버에 태그 변경 저장 (성공 시 유효값으로 동기화). 서버 없으면 메모리에만.
+async function postTags(body) {
+  try {
+    const res = await fetch("/tags", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) return await res.json();
+  } catch {}
+  return null;
+}
+
+async function setPerkTags(id, tags) {
+  PERK_TAGS[id] = tags;            // 낙관적 반영
+  OVERRIDDEN.add(id);
+  afterTagEdit(id);
+  const r = await postTags({ id, tags });
+  if (r) {
+    PERK_TAGS[id] = r.tags;
+    OVERRIDDEN[r.overridden ? "add" : "delete"](id);
+    TAGS = r.vocab || TAGS; syncVocab();
+    afterTagEdit(id);
+  }
+}
+
+async function resetPerkTags(id) {
+  const r = await postTags({ id, reset: true });
+  if (r) {
+    PERK_TAGS[id] = r.tags;
+    OVERRIDDEN.delete(id);
+    TAGS = r.vocab || TAGS; syncVocab();
+  }
+  afterTagEdit(id);
+}
+
+// 태그 편집 후 화면 갱신: 필터 보기에서 조건을 벗어나면 목록 재구성, 아니면 해당 줄만 다시 그림
+function afterTagEdit(id) {
+  if (tagFilter.size && !perkHasAllTags(id, tagFilter)) { renderTagFilter(); return; }
+  const row = results.querySelector(`.tags[data-perk="${id}"]`);
+  if (row) row.innerHTML = tagRowInner(id);
+}
+
+function exitTagFilter() {
+  if (!tagFilter.size) return;
+  tagFilter.clear();
+  renderTagBar();
+}
+
+function toggleTagFilter(tag) {
+  exitFavView(); exitTagList();
+  if (tagFilter.has(tag)) tagFilter.delete(tag); else tagFilter.add(tag);
+  renderTagBar();
+  if (tagFilter.size) renderTagFilter(); else runSearch();
+}
+
+function renderTagBar() {
+  const bar = $("#tagbar");
+  if (!tagFilter.size) { bar.style.display = "none"; bar.innerHTML = ""; return; }
+  bar.style.display = "flex";
+  bar.innerHTML = `<span class="tagbar-label">🏷️ 태그 필터</span>` +
+    [...tagFilter].map((t) =>
+      `<span class="tag active" data-tag="${esc(t)}"><span class="tag-label">#${esc(t)}</span>` +
+      `<button class="tag-x" title="해제">×</button></span>`).join("") +
+    `<button class="tagbar-clear">전체 해제</button>`;
+}
+
+// 태그 필터 보기: 현재 역할에서 활성 태그를 모두 가진 퍽 (검색/모드 무관)
+function renderTagFilter() {
+  const list = perksForRole().filter((p) => perkHasAllTags(p.id, tagFilter))
+    .slice().sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  const label = [...tagFilter].map((t) => `#${t}`).join(" ");
+  if (!list.length) {
+    countEl.textContent = "";
+    results.innerHTML = `<div class="empty">${label} 태그를 가진 ${ROLE_WORD[role]} 퍽이 없어요.</div>`;
+    return;
+  }
+  countEl.textContent = `🏷️ ${label} — ${list.length}개 (${ROLE_WORD[role]})`;
+  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+}
+
+// 태그 추가 입력창 열기 (＋ 자리에 인라인 input)
+function openTagAdd(row, id) {
+  if (row.querySelector(".tag-input")) return;
+  const input = document.createElement("input");
+  input.className = "tag-input"; input.placeholder = "태그 추가"; input.setAttribute("list", "tagvocab");
+  row.insertBefore(input, row.querySelector(".tag-add"));
+  input.focus();
+  let done = false;
+  const cleanup = () => { input.removeEventListener("keydown", onKey); input.removeEventListener("blur", onBlur); if (input.parentNode) input.remove(); };
+  const commit = () => { if (done) return; done = true; const v = input.value.trim(); cleanup(); if (v && !tagsOf(id).includes(v)) setPerkTags(id, [...tagsOf(id), v]); };
+  const onKey = (e) => { if (e.key === "Enter") { e.preventDefault(); commit(); } else if (e.key === "Escape") { done = true; cleanup(); } };
+  const onBlur = () => commit();
+  input.addEventListener("keydown", onKey);
+  input.addEventListener("blur", onBlur);
+}
+
+// 카드 영역의 태그 상호작용 (이벤트 위임)
+results.addEventListener("click", (e) => {
+  const row = e.target.closest(".tags");
+  if (!row) return;
+  const id = row.dataset.perk;
+  if (e.target.closest(".tag-x")) { setPerkTags(id, tagsOf(id).filter((t) => t !== e.target.closest(".tag").dataset.tag)); return; }
+  if (e.target.closest(".tag-reset")) { resetPerkTags(id); return; }
+  if (e.target.closest(".tag-add")) { openTagAdd(row, id); return; }
+  const label = e.target.closest(".tag-label");
+  if (label) { toggleTagFilter(e.target.closest(".tag").dataset.tag); }
+});
+
+// 헤더 태그 필터 바 상호작용
+$("#tagbar").addEventListener("click", (e) => {
+  if (e.target.closest(".tagbar-clear")) { exitTagFilter(); runSearch(); return; }
+  const x = e.target.closest(".tag-x");
+  if (x) {
+    tagFilter.delete(e.target.closest(".tag").dataset.tag);
+    renderTagBar();
+    if (tagFilter.size) renderTagFilter(); else runSearch();
+  }
+});
+
+// ---- 전체 태그 목록 보기 ----
+function exitTagList() {
+  if (!tagListView) return;
+  tagListView = false;
+  $("#tagListBtn").classList.remove("active");
+}
+
+// 현재 역할 기준으로 각 태그가 달린 퍽 수를 세어, 많은 순으로 칩을 보여준다.
+function renderTagList() {
+  const pool = perksForRole();
+  const items = TAGS.map((t) => ({ tag: t, n: pool.filter((p) => tagsOf(p.id).includes(t)).length }))
+    .sort((a, b) => b.n - a.n || a.tag.localeCompare(b.tag, "ko"));
+  countEl.textContent = `🏷️ 전체 태그 ${TAGS.length}종 · 클릭하면 해당 태그로 필터 (${ROLE_WORD[role]} 기준)`;
+  if (!TAGS.length) {
+    results.innerHTML = `<div class="empty">태그 데이터를 불러오지 못했어요. run.bat 으로 서버를 실행했는지 확인하세요.</div>`;
+    return;
+  }
+  results.innerHTML = `<div class="taglist">` + items.map(({ tag, n }) =>
+    `<button class="tag taglist-item${n ? "" : " empty"}" data-tag="${esc(tag)}"${n ? "" : " disabled"}>` +
+    `<span class="tag-label">#${esc(tag)}</span><span class="tag-count">${n}</span></button>`).join("") +
+    `</div>`;
+}
+
+$("#tagListBtn").onclick = () => {
+  tagListView = !tagListView;
+  $("#tagListBtn").classList.toggle("active", tagListView);
+  if (tagListView) { exitFavView(); exitTagFilter(); renderTagList(); }
+  else runSearch();
+};
+
+// 태그 목록에서 태그 클릭 → 해당 태그 필터로 전환
+results.addEventListener("click", (e) => {
+  const item = e.target.closest(".taglist-item");
+  if (!item || item.disabled) return;
+  exitTagList();
+  tagFilter = new Set([item.dataset.tag]);
+  renderTagBar();
+  renderTagFilter();
+});
+
+// 현재 상태에 맞는 화면을 다시 그린다 (역할 변경·초기 로드 등에서 사용)
+function refresh() {
+  if (tagListView) renderTagList();
+  else if (tagFilter.size) renderTagFilter();
+  else if (favView) renderFavorites();
+  else runSearch();
 }
 
 const EXAMPLES = {
@@ -261,7 +507,7 @@ const HINTS = {
 };
 document.querySelectorAll(".mode-btn").forEach((b) => {
   b.onclick = async () => {
-    exitFavView();
+    exitFavView(); exitTagFilter(); exitTagList();
     document.querySelectorAll(".mode-btn").forEach((x) => x.classList.remove("active"));
     b.classList.add("active");
     mode = b.dataset.mode;
@@ -281,7 +527,7 @@ document.querySelectorAll(".role-btn").forEach((b) => {
     b.classList.add("active");
     role = b.dataset.role;
     applyRole();
-    favView ? renderFavorites() : runSearch();
+    refresh();
   };
 });
 
@@ -289,21 +535,21 @@ document.querySelectorAll(".role-btn").forEach((b) => {
 $("#favBtn").onclick = () => {
   favView = !favView;
   $("#favBtn").classList.toggle("active", favView);
-  if (favView) renderFavorites();
+  if (favView) { exitTagFilter(); exitTagList(); renderFavorites(); }
   else runSearch();
 };
 
-$("#clear").onclick = () => { $("#q").value = ""; exitFavView(); runSearch(); $("#q").focus(); };
+$("#clear").onclick = () => { $("#q").value = ""; exitFavView(); exitTagFilter(); exitTagList(); runSearch(); $("#q").focus(); };
 
 let timer = null;
 $("#q").addEventListener("input", () => {
-  exitFavView();              // 검색을 시작하면 즐겨찾기 보기 해제
+  exitFavView(); exitTagFilter(); exitTagList();   // 검색을 시작하면 즐겨찾기/태그 보기 해제
   if (mode === "llm") return; // LLM 모드는 매 타이핑마다 호출하지 않음 (Enter로 실행)
   clearTimeout(timer);
   timer = setTimeout(runSearch, mode === "keyword" ? 80 : 250);
 });
 $("#q").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && mode === "llm") { exitFavView(); runSearch(); }
+  if (e.key === "Enter" && mode === "llm") { exitFavView(); exitTagFilter(); exitTagList(); runSearch(); }
 });
 
 // 퍽 카드 1개의 HTML. 별표(즐겨찾기) 토글 포함.
@@ -322,6 +568,7 @@ function cardHtml(perk, { badge = "", reason = "", desc } = {}) {
       </div>
       ${reasonHtml}
       <div class="desc">${desc != null ? desc : perk.desc_html}</div>
+      <div class="tags" data-perk="${perk.id}">${tagRowInner(perk.id)}</div>
     </div>
   </div>`;
 }
@@ -541,8 +788,11 @@ async function saveCache(n, matrix) {
 }
 
 render([], "");
-// 즐겨찾기 로드(비동기) 후 카운트/보기 갱신
-loadFavorites().then(() => { updateFavCount(); if (favView) renderFavorites(); });
+// 즐겨찾기·태그 로드(비동기) 후 화면 갱신 (결과가 있으면 태그 칩이 보이도록 다시 그림)
+Promise.all([loadFavorites(), loadTags()]).then(() => {
+  updateFavCount();
+  refresh();
+});
 </script>
 </body>
 </html>
