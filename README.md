@@ -33,13 +33,13 @@
 
 > 처음 실행 시 Windows SmartScreen 경고가 뜨면 **추가 정보 → 실행**을 누르세요(서명 안 된 자체 빌드라 그렇습니다).
 
-### 2) 개발자용 — `run.bat`(콘솔+브라우저) 또는 `python app.py`(네이티브 창)
-소스에서 바로 실행. **파이썬 필요.** `run.bat` 은 콘솔에 서버를 띄우고 브라우저를 엽니다.
-`python app.py` 는 exe 와 동일한 네이티브 창으로 띄웁니다 (`pip install pywebview` 필요).
-
-### 3) 그냥 `index.html` 더블클릭
+### 2) 그냥 `index.html` 더블클릭
 **키워드 검색 모드**는 인터넷 없이 바로 동작합니다.
 단, **의미 기반 AI**와 **AI 정밀 검색** 모드는 로컬 서버(exe / `run.bat` / `app.py`)가 필요합니다.
+
+### 3) 개발자용 — `run.bat`(콘솔+브라우저) 또는 `python app.py`(네이티브 창)
+소스에서 바로 실행. **파이썬 필요.** `run.bat` 은 콘솔에 서버를 띄우고 브라우저를 엽니다.
+`python app.py` 는 exe 와 동일한 네이티브 창으로 띄웁니다 (`pip install pywebview` 필요).
 
 ---
 
