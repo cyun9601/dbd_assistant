@@ -169,25 +169,41 @@ def build_instructions(role):
         "사용자는 게임 중 겪은 현상이나 퍽 효과를 한국어로(때로는 모호하게) 설명합니다.\n"
         f"아래 {word} 퍽 목록에서 가장 가능성 높은 퍽들을 찾아 순위대로 반환하세요.\n\n"
         "규칙:\n"
+        "- 질문이 퍽 이름의 일부와 겹치면 그 퍽을 최우선 포함하세요.\n"
         "- 사용자가 돌려 말하거나 줄임말/구어체를 써도 의미를 추론해 매칭하세요.\n"
-        "- 관련 있는 퍽만 포함하세요. 보통 1~6개. 억지로 채우지 마세요.\n"
+        "- '태그'는 사용자가 그 퍽에 직접 붙여 둔 키워드입니다. 질문이 태그와 맞으면 강하게 매칭하세요.\n"
+        "- 관련 있는 퍽만 포함하세요. 억지로 채우지 마세요.\n"
         "- confidence는 0~100 사이 정수 (확신도).\n"
         "- reason은 왜 매칭되는지 한국어 한 줄로 간결하게.\n"
         "- id는 반드시 아래 목록의 id를 그대로 사용하세요.\n\n"
-        f"[{word} 퍽 목록]  형식: id | 이름 | 소유자 | 효과\n"
+        f"[{word} 퍽 목록]  형식: id | 이름 | 소유자 | 태그 | 효과  (태그 없으면 '-')\n"
     )
 
 
-def build_corpus(role):
+def build_corpus(role, tag_perks):
     lines = []
     for p in PERKS_BY_ROLE[role]:
         owner = "공용" if p["owner"] == "public" else p["owner"]
-        lines.append(f"{p['id']} | {p['name']} | {owner} | {p['desc_text']}")
+        tags = tag_perks.get(p["id"]) or []
+        tag_str = ", ".join(tags) if tags else "-"
+        lines.append(f"{p['id']} | {p['name']} | {owner} | {tag_str} | {p['desc_text']}")
     return build_instructions(role) + "\n".join(lines)
 
 
-# 역할별 코퍼스를 미리 만들어 둠 (각각 프롬프트 캐싱 대상)
-CORPUS = {role: build_corpus(role) for role in ROLE_WORD}
+# 역할별 코퍼스 (각각 프롬프트 캐싱 대상). 사용자 태그가 바뀌면 rebuild_corpus() 로 갱신.
+CORPUS = {}
+
+
+def rebuild_corpus():
+    """현재 유효 태그(기본+사용자 오버라이드)를 반영해 역할별 코퍼스를 다시 만든다.
+    태그 편집(/tags) 후 호출 → 다음 /ask 부터 새 태그가 프롬프트에 반영된다.
+    (코퍼스 텍스트가 바뀌면 프롬프트 캐시는 1회 미스 후 재캐싱되므로 안전)"""
+    _, tag_perks, _ = effective_tags()
+    for role in ROLE_WORD:
+        CORPUS[role] = build_corpus(role, tag_perks)
+
+
+rebuild_corpus()  # 시작 시 1회 생성
 
 OUTPUT_SCHEMA = {
     "type": "json_schema",
@@ -473,6 +489,7 @@ class Handler(SimpleHTTPRequestHandler):
                 update_user_tag(pid, tags=payload.get("tags"),
                                 reset=bool(payload.get("reset")))
                 vocab, perks, overridden = effective_tags()
+                rebuild_corpus()  # 새 태그를 LLM 검색 프롬프트에 즉시 반영
             self._send_json(200, {
                 "id": pid,
                 "tags": perks.get(pid, []),
