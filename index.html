@@ -198,6 +198,7 @@
     <div class="roles" id="roles">
       <button class="role-btn active" data-role="killer">🔪 살인마</button>
       <button class="role-btn" data-role="survivor">🩹 생존자</button>
+      <button class="fav-toggle" id="allBtn" title="이 역할의 전체 퍽 보기">📖 전체</button>
       <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
       <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
       <button class="gear-btn" id="settingsBtn" title="API 키 설정 (AI 정밀 검색용)">⚙️</button>
@@ -272,6 +273,7 @@ let PERK_TAGS = {};           // 퍽 id -> 태그 배열 (유효 태그 = 기본
 let OVERRIDDEN = new Set();   // 사용자가 기본값에서 수정한 퍽 id
 let tagFilter = new Set();    // 활성 태그 필터 (모두 만족하는 퍽만, AND)
 let tagListView = false;      // 전체 태그 목록 보기 on/off
+let allView = false;          // 전체 퍽 보기 on/off
 
 const ROLE_WORD = { killer: "살인마", survivor: "생존자" };
 const perksForRole = () => PERKS.filter((p) => p.role === role);
@@ -400,7 +402,7 @@ function exitTagFilter() {
 }
 
 function toggleTagFilter(tag) {
-  exitFavView(); exitTagList();
+  exitFavView(); exitTagList(); exitAllView();
   if (tagFilter.has(tag)) tagFilter.delete(tag); else tagFilter.add(tag);
   renderTagBar();
   if (tagFilter.size) renderTagFilter(); else runSearch();
@@ -477,6 +479,27 @@ function exitTagList() {
   $("#tagListBtn").classList.remove("active");
 }
 
+// ---- 전체 퍽 보기 ----
+function exitAllView() {
+  if (!allView) return;
+  allView = false;
+  $("#allBtn").classList.remove("active");
+}
+
+// 전체 보기: 현재 역할의 모든 퍽을 이름순으로 (검색/모드 무관)
+function renderAllPerks() {
+  const list = perksForRole().slice().sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  countEl.textContent = `📖 전체 ${list.length}개 (${ROLE_WORD[role]})`;
+  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+}
+
+$("#allBtn").onclick = () => {
+  allView = !allView;
+  $("#allBtn").classList.toggle("active", allView);
+  if (allView) { exitFavView(); exitTagFilter(); exitTagList(); renderAllPerks(); }
+  else runSearch();
+};
+
 // 현재 역할 기준으로 각 태그가 달린 퍽 수를 세어, 많은 순으로 칩을 보여준다.
 function renderTagList() {
   const pool = perksForRole();
@@ -496,7 +519,7 @@ function renderTagList() {
 $("#tagListBtn").onclick = () => {
   tagListView = !tagListView;
   $("#tagListBtn").classList.toggle("active", tagListView);
-  if (tagListView) { exitFavView(); exitTagFilter(); renderTagList(); }
+  if (tagListView) { exitFavView(); exitTagFilter(); exitAllView(); renderTagList(); }
   else runSearch();
 };
 
@@ -513,6 +536,7 @@ results.addEventListener("click", (e) => {
 // 현재 상태에 맞는 화면을 다시 그린다 (역할 변경·초기 로드 등에서 사용)
 function refresh() {
   if (tagListView) renderTagList();
+  else if (allView) renderAllPerks();
   else if (tagFilter.size) renderTagFilter();
   else if (favView) renderFavorites();
   else runSearch();
@@ -570,7 +594,7 @@ const HINTS = {
 };
 document.querySelectorAll(".mode-btn").forEach((b) => {
   b.onclick = async () => {
-    exitFavView(); exitTagFilter(); exitTagList();
+    exitFavView(); exitTagFilter(); exitTagList(); exitAllView();
     document.querySelectorAll(".mode-btn").forEach((x) => x.classList.remove("active"));
     b.classList.add("active");
     mode = b.dataset.mode;
@@ -598,21 +622,21 @@ document.querySelectorAll(".role-btn").forEach((b) => {
 $("#favBtn").onclick = () => {
   favView = !favView;
   $("#favBtn").classList.toggle("active", favView);
-  if (favView) { exitTagFilter(); exitTagList(); renderFavorites(); }
+  if (favView) { exitTagFilter(); exitTagList(); exitAllView(); renderFavorites(); }
   else runSearch();
 };
 
-$("#clear").onclick = () => { $("#q").value = ""; exitFavView(); exitTagFilter(); exitTagList(); runSearch(); $("#q").focus(); };
+$("#clear").onclick = () => { $("#q").value = ""; exitFavView(); exitTagFilter(); exitTagList(); exitAllView(); runSearch(); $("#q").focus(); };
 
 let timer = null;
 $("#q").addEventListener("input", () => {
-  exitFavView(); exitTagFilter(); exitTagList();   // 검색을 시작하면 즐겨찾기/태그 보기 해제
+  exitFavView(); exitTagFilter(); exitTagList(); exitAllView();   // 검색을 시작하면 즐겨찾기/태그/전체 보기 해제
   if (mode === "llm") return; // LLM 모드는 매 타이핑마다 호출하지 않음 (Enter로 실행)
   clearTimeout(timer);
   timer = setTimeout(runSearch, mode === "keyword" ? 80 : 250);
 });
 $("#q").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && mode === "llm") { exitFavView(); exitTagFilter(); exitTagList(); runSearch(); }
+  if (e.key === "Enter" && mode === "llm") { exitFavView(); exitTagFilter(); exitTagList(); exitAllView(); runSearch(); }
 });
 
 // 퍽 카드 1개의 HTML. 별표(즐겨찾기) 토글 포함.
@@ -641,7 +665,10 @@ function render(list, q) {
     countEl.textContent = "";
     const tip = mode === "llm" ? `퍽 효과를 적고 Enter — LLM이 ${ROLE_WORD[role]} 퍽 전체와 대조해 찾아줍니다.` :
       `위에 퍽 효과를 적으면 가장 비슷한 ${ROLE_WORD[role]} 퍽을 찾아드려요.`;
-    results.innerHTML = `<div class="empty">${tip}</div>`;
+    results.innerHTML = `<div class="empty">${tip}` +
+      `<br><button class="btn" id="showAllFromTip" style="margin-top:14px">📖 ${ROLE_WORD[role]} 퍽 전체 보기</button></div>`;
+    const sa = $("#showAllFromTip");
+    if (sa) sa.onclick = () => { if (!allView) $("#allBtn").click(); };
     return;
   }
   if (!list.length) {
