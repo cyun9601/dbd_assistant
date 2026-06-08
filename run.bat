@@ -20,9 +20,10 @@ REM Semantic-AI model: downloaded automatically on first use of that mode (in th
 REM To pre-download now instead, run:  python download_model.py
 
 if "%ANTHROPIC_API_KEY%"=="" if "%OPENAI_API_KEY%"=="" (
-  echo [info] Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is set. Only "precise AI" mode is affected.
-  echo        See the API key setup section in README.md for how to set a key.
-  echo        This .bat NEVER changes your environment variables.
+  echo [info] No API key in environment. That's fine — enter your key in the web UI's
+  echo        gear icon settings. ANTHROPIC_API_KEY / OPENAI_API_KEY are used as a
+  echo        fallback when no key is saved in the UI (a UI-saved key overrides env).
+  echo        Only "precise AI" mode needs a key. This .bat NEVER changes env variables.
 )
 
 echo Opening DBD Perk Finder at http://localhost:8777 ...

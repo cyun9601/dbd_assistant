@@ -11,14 +11,17 @@ import os
 import sys
 import urllib.request
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+import paths
+
 UA = {"User-Agent": "Mozilla/5.0"}
 
 HF_BASE = "https://huggingface.co/Xenova/multilingual-e5-small/resolve/main/"
 JSDELIVR = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3/dist/"
 
-MODEL_DIR = os.path.join(HERE, "models", "Xenova", "multilingual-e5-small")
-VENDOR_DIR = os.path.join(HERE, "vendor", "transformers")
+# 다운로드 대상은 쓰기 가능한 데이터 폴더(개발=레포, exe=%APPDATA%\dbd-assistant).
+# 서버의 /models, /vendor 정적 라우팅도 같은 폴더를 가리킨다.
+MODEL_DIR = os.path.join(paths.data_dir(), "models", "Xenova", "multilingual-e5-small")
+VENDOR_DIR = os.path.join(paths.data_dir(), "vendor", "transformers")
 
 MODEL_FILES = [
     "config.json",

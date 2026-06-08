@@ -136,6 +136,57 @@
   .desc .ReminderText { color: var(--muted); font-style: italic; font-size: 12.5px; }
   .hl { background: #5a3a00; color: #ffd866; border-radius: 3px; padding: 0 1px; }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+  /* ⚙️ 설정 (API 키) */
+  .gear-btn {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    padding: 8px 12px; border-radius: 999px; cursor: pointer; font-size: 14px;
+  }
+  .gear-btn:hover { color: var(--text); border-color: var(--accent2); }
+  .gear-btn.warn { border-color: var(--accent2); color: var(--accent2); }
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.62); z-index: 100;
+    display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    width: min(560px, 94vw); max-height: 88vh; overflow: auto; padding: 22px;
+  }
+  .modal h2 { margin: 0 0 8px; font-size: 17px; }
+  .modal .sub { color: var(--muted); font-size: 12.5px; line-height: 1.65; margin-bottom: 16px; }
+  .modal .sub b { color: var(--text); }
+  .key-row {
+    border: 1px solid var(--line); border-radius: 10px; padding: 13px;
+    margin-bottom: 12px; background: var(--panel2);
+  }
+  .key-row .kh { display: flex; align-items: baseline; gap: 8px; margin-bottom: 9px; flex-wrap: wrap; }
+  .key-row .kname { font-weight: 700; font-size: 14px; }
+  .key-row .kname small { color: var(--muted); font-weight: 400; font-size: 12px; }
+  .kstat { font-size: 12px; }
+  .kstat.set { color: var(--good); }
+  .kstat.unset { color: var(--muted); }
+  .kstat.env { color: var(--accent2); }
+  .key-row .kget { margin-left: auto; font-size: 12px; color: #7fb8e0; text-decoration: none; }
+  .key-row .kget:hover { text-decoration: underline; }
+  .key-row .kin { display: flex; gap: 6px; align-items: center; }
+  .key-row input {
+    flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line);
+    color: var(--text); border-radius: 8px; padding: 9px 11px; font-size: 13px;
+    outline: none; font-family: ui-monospace, monospace;
+  }
+  .key-row input:focus { border-color: var(--accent2); }
+  .key-row input[readonly] { color: var(--muted); cursor: default; }
+  .key-row input[readonly]:focus { border-color: var(--line); }
+  .key-row .knote { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .btn {
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 14px;
+    cursor: pointer; font-size: 13px; background: var(--panel2); color: var(--text); white-space: nowrap;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.ghost { background: none; color: var(--muted); }
+  .btn:hover:not(:disabled) { border-color: var(--accent2); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .modal-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
   footer { color: #55555f; font-size: 11px; text-align: center; padding: 24px 0; }
   footer a { color: #777; }
 </style>
@@ -149,6 +200,7 @@
       <button class="role-btn" data-role="survivor">🩹 생존자</button>
       <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
       <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
+      <button class="gear-btn" id="settingsBtn" title="API 키 설정 (AI 정밀 검색용)">⚙️</button>
     </div>
     <div class="searchrow">
       <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
@@ -159,11 +211,11 @@
       <button class="mode-btn" data-mode="semantic">의미 기반 AI</button>
       <button class="mode-btn" data-mode="llm">AI 정밀 검색</button>
       <select id="model" title="모델 선택" style="display:none">
-        <optgroup label="Anthropic (ANTHROPIC_API_KEY)">
+        <optgroup label="Anthropic — Claude">
           <option value="claude-opus-4-8">Opus 4.8 (정확)</option>
           <option value="claude-haiku-4-5">Haiku 4.5 (빠름)</option>
         </optgroup>
-        <optgroup label="OpenAI (OPENAI_API_KEY)">
+        <optgroup label="OpenAI — GPT">
           <option value="gpt-4.1">GPT-4.1 (정확)</option>
           <option value="gpt-4.1-mini">GPT-4.1 mini (빠름)</option>
           <option value="gpt-4o">GPT-4o</option>
@@ -182,6 +234,17 @@
   <div class="count" id="count"></div>
   <div id="results"></div>
 </main>
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="API 키 설정">
+    <h2>⚙️ API 키 설정</h2>
+    <div class="sub">
+      <b>AI 정밀 검색</b> 모드에만 필요합니다. 쓰려는 공급자 한 곳(<b>Anthropic</b> 또는 <b>OpenAI</b>)의 키만 있으면 됩니다.<br>
+      키는 <b>이 PC에만</b> 저장되고(Windows DPAPI 로 계정에 묶어 암호화), 외부로 전송되지 않습니다.
+    </div>
+    <div id="keyRows"></div>
+    <div class="modal-foot"><button class="btn ghost" id="settingsClose">닫기</button></div>
+  </div>
+</div>
 <footer>
   데이터 출처: dbd-db.com · 살인마 + 생존자 퍽 · 로컬에서 동작
 </footer>
@@ -653,8 +716,16 @@ async function runLLM(q) {
     });
     const data = await res.json();
     if (!res.ok) {
+      if (data.code === "no_key") {
+        statusEl.textContent = "";
+        results.innerHTML = `<div class="empty">${esc(data.error || "API 키가 없습니다.")}` +
+          `<br><button class="btn primary" id="openSettingsFromErr" style="margin-top:12px">⚙️ 설정 열기</button></div>`;
+        const b = $("#openSettingsFromErr");
+        if (b) b.onclick = openSettings;
+        return;
+      }
       statusEl.textContent = data.error || "오류가 발생했습니다.";
-      results.innerHTML = `<div class="empty">${data.error || "오류"}</div>`;
+      results.innerHTML = `<div class="empty">${esc(data.error || "오류")}</div>`;
       return;
     }
     const list = data.results.map((r) => ({ perk: r.perk, confidence: r.confidence, reason: r.reason }));
@@ -787,9 +858,123 @@ async function saveCache(n, matrix) {
   } catch {}
 }
 
+// ---- ⚙️ API 키 설정 (로컬 서버 /config) ----
+const PROVIDER_META = {
+  anthropic: { name: "Anthropic", model: "Claude", url: "https://console.anthropic.com/", hint: "sk-ant-… 붙여넣기" },
+  openai:    { name: "OpenAI",    model: "GPT",    url: "https://platform.openai.com/api-keys", hint: "sk-… / sk-proj-… 붙여넣기" },
+};
+let configCache = null;   // {provider: {set, source, masked, dpapi}} 또는 null(서버 없음)
+
+async function loadConfig() {
+  try {
+    const res = await fetch("/config");
+    if (!res.ok) { configCache = null; return null; }
+    configCache = (await res.json()).providers || null;
+  } catch { configCache = null; }   // file:// 이거나 서버 미실행
+  return configCache;
+}
+
+function renderKeyRows() {
+  const wrap = $("#keyRows");
+  if (!configCache) {
+    wrap.innerHTML = `<div class="empty">로컬 서버가 필요합니다.<br>exe(또는 run.bat)로 실행했는지 확인하세요.</div>`;
+    return;
+  }
+  wrap.innerHTML = Object.entries(PROVIDER_META).map(([prov, m]) => {
+    const st = configCache[prov] || {};
+    let stat, kin;
+    if (st.source === "config") {
+      // UI 에 저장한 키 — 환경변수보다 우선. 마스킹 표시 + 변경/삭제.
+      stat = `<span class="kstat set">✓ 저장됨${st.env_present ? " · 환경변수 대신 사용" : ""}</span>`;
+      kin = `<input type="text" value="${esc(st.masked)}" readonly />` +
+            `<button class="btn" data-act="change">변경</button>` +
+            `<button class="btn" data-act="clear" title="${st.env_present ? "저장한 키를 지우고 환경변수 값으로 되돌립니다" : "저장한 키 삭제"}">${st.env_present ? "환경변수로 ↺" : "삭제"}</button>`;
+    } else if (st.source === "env") {
+      // 환경변수 키 — 마스킹 표시. [변경] 으로 다른 키를 저장하면 환경변수 대신 적용됨.
+      stat = `<span class="kstat env">환경변수 사용 중</span>`;
+      kin = `<input type="text" value="${esc(st.masked)}" readonly />` +
+            `<button class="btn" data-act="change" title="다른 키를 입력해 환경변수 대신 사용">변경</button>`;
+    } else {
+      stat = `<span class="kstat unset">미설정</span>`;
+      kin = `<input type="password" placeholder="${m.hint}" autocomplete="off" spellcheck="false" />` +
+            `<button class="btn primary" data-act="save">저장</button>`;
+    }
+    return `<div class="key-row" data-prov="${prov}">
+      <div class="kh">
+        <span class="kname">${m.name} <small>(${m.model})</small></span>
+        ${stat}
+        <a class="kget" href="${m.url}" target="_blank" rel="noopener">키 발급 ↗</a>
+      </div>
+      <div class="kin">${kin}</div>
+    </div>`;
+  }).join("");
+}
+
+function openSettings() {
+  $("#settingsModal").classList.add("open");
+  renderKeyRows();                        // 우선 직전 캐시로 즉시 표시
+  loadConfig().then(renderKeyRows);       // 최신 상태로 갱신
+}
+function closeSettings() { $("#settingsModal").classList.remove("open"); }
+
+$("#settingsBtn").onclick = openSettings;
+$("#settingsClose").onclick = closeSettings;
+$("#settingsModal").addEventListener("click", (e) => { if (e.target.id === "settingsModal") closeSettings(); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && $("#settingsModal").classList.contains("open")) closeSettings();
+});
+
+// 저장/삭제 (이벤트 위임)
+$("#keyRows").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const row = btn.closest(".key-row");
+  const prov = row.dataset.prov;
+  const act = btn.dataset.act;
+
+  // 변경: 마스킹 표시를 비우고 새 키를 입력할 수 있는 상태로 전환
+  if (act === "change") {
+    const m = PROVIDER_META[prov];
+    row.querySelector(".kin").innerHTML =
+      `<input type="password" placeholder="${m.hint}" autocomplete="off" spellcheck="false" />` +
+      `<button class="btn primary" data-act="save">저장</button>` +
+      `<button class="btn ghost" data-act="cancel">취소</button>`;
+    row.querySelector("input").focus();
+    return;
+  }
+  if (act === "cancel") { renderKeyRows(); return; }
+
+  const input = row.querySelector("input");
+  let body;
+  if (act === "clear") body = { provider: prov, clear: true };
+  else {
+    const key = input.value.trim();
+    if (!key) { input.focus(); return; }
+    body = { provider: prov, key };
+  }
+  btn.disabled = true;
+  try {
+    const res = await fetch("/config", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) { configCache = (await res.json()).providers || configCache; renderKeyRows(); }
+    else { btn.disabled = false; }
+  } catch { btn.disabled = false; }
+});
+
+// Enter 로도 저장
+$("#keyRows").addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  const input = e.target.closest("input");
+  if (!input) return;
+  const save = input.closest(".key-row").querySelector('button[data-act="save"]');
+  if (save) save.click();
+});
+
 render([], "");
-// 즐겨찾기·태그 로드(비동기) 후 화면 갱신 (결과가 있으면 태그 칩이 보이도록 다시 그림)
-Promise.all([loadFavorites(), loadTags()]).then(() => {
+// 즐겨찾기·태그·키설정 로드(비동기) 후 화면 갱신 (결과가 있으면 태그 칩이 보이도록 다시 그림)
+Promise.all([loadFavorites(), loadTags(), loadConfig()]).then(() => {
   updateFavCount();
   refresh();
 });

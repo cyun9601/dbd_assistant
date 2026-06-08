@@ -2,22 +2,29 @@
 """
 DBD 퍽 검색기 로컬 서버.
 - 정적 파일(index.html, perks_data.js, icons/ ...)을 제공
-- POST /ask : 역할(살인마/생존자)별 퍽 전체를 LLM 컨텍스트에 넣고(프롬프트 캐싱) 질문과 매칭
+- POST /ask    : 역할(살인마/생존자)별 퍽 전체를 LLM 컨텍스트에 넣고(프롬프트 캐싱) 질문과 매칭
+- GET/POST /config : API 키를 웹 UI 에서 입력·저장 (DPAPI 암호화, 브라우저로 평문 노출 안 됨)
 
 공급자는 모델 이름으로 구분: claude-* → Anthropic, 그 외 → OpenAI.
-API 키는 각각 환경변수 ANTHROPIC_API_KEY / OPENAI_API_KEY 에서 읽는다 (브라우저로 노출 안 됨).
-usage: python server.py  (또는 run.bat)
+키 우선순위: 환경변수 → 저장된 config(secrets_store). 어느 쪽도 브라우저로 노출되지 않는다.
+usage: python server.py (개발) · app.py (네이티브 창) · exe (배포)
 """
 import json
 import os
+import posixpath
 import socket
 import sys
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 import download_model as dm
+import paths
+import secrets_store
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+# 읽기 전용 번들 자산(index.html, perks.json, icons/ …)과 쓰기 가능한 사용자 데이터
+# (즐겨찾기·사용자 태그·다운로드 모델)를 분리. 개발 모드에선 둘 다 레포 폴더.
+BUNDLE = paths.bundle_dir()
+DATA = paths.data_dir()
 PORT = 8777
 
 # 허용 모델 (프론트 드롭다운과 일치)
@@ -36,12 +43,11 @@ def provider_of(model):
     return "anthropic" if model.startswith("claude") else "openai"
 
 
-# 공급자별 필요한 환경변수와 SDK 패키지
-PROVIDER_KEY = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY"}
+# 공급자별 SDK 패키지명 (미설치 시 안내 메시지에 사용)
 PROVIDER_PKG = {"anthropic": "anthropic", "openai": "openai"}
 
 # 퍽 데이터 로드 (서버 측) — 역할(살인마/생존자)별로 분리
-with open(os.path.join(HERE, "perks.json"), encoding="utf-8") as f:
+with open(os.path.join(BUNDLE, "perks.json"), encoding="utf-8") as f:
     PERKS = json.load(f)
 PERK_BY_ID = {p["id"]: p for p in PERKS}
 
@@ -53,7 +59,7 @@ PERKS_BY_ROLE = {
 }
 
 # ---- 즐겨찾기 (사용자별 로컬 파일, .gitignore 처리됨) ----
-FAV_PATH = os.path.join(HERE, "favorites.json")
+FAV_PATH = os.path.join(DATA, "favorites.json")
 _fav_lock = threading.Lock()
 
 
@@ -77,8 +83,8 @@ def save_favorites(ids):
 # ---- 태그 ----
 # 기본 태그는 tags.json(레포에 포함, 공유). 사용자가 수정한 분량만 tags_user.json
 # (.gitignore 처리)에 따로 저장하고, 조회 시 둘을 병합해 "유효 태그"를 만든다.
-TAGS_BASE_PATH = os.path.join(HERE, "tags.json")
-TAGS_USER_PATH = os.path.join(HERE, "tags_user.json")
+TAGS_BASE_PATH = os.path.join(BUNDLE, "tags.json")     # 공유 기본 태그 (읽기 전용 번들)
+TAGS_USER_PATH = os.path.join(DATA, "tags_user.json")  # 사용자 수정분 (쓰기)
 MAX_TAGS_PER_PERK = 8
 _tags_lock = threading.Lock()
 
@@ -207,12 +213,26 @@ OUTPUT_SCHEMA = {
     },
 }
 
+# 공급자별 (api_key, client) 캐시 — 키가 바뀌면 새 클라이언트로 교체(서버 재시작 불필요).
 _clients = {}
 
 
-def _ask_anthropic(query, model, role):
-    import anthropic  # 지연 임포트: 미설치 시 친절한 에러
-    client = _clients.get("anthropic") or _clients.setdefault("anthropic", anthropic.Anthropic())
+def _client(provider, key):
+    cached = _clients.get(provider)
+    if cached and cached[0] == key:
+        return cached[1]
+    if provider == "anthropic":
+        import anthropic  # 지연 임포트: 미설치 시 친절한 에러
+        client = anthropic.Anthropic(api_key=key)
+    else:
+        from openai import OpenAI  # 지연 임포트
+        client = OpenAI(api_key=key)
+    _clients[provider] = (key, client)
+    return client
+
+
+def _ask_anthropic(query, model, role, key):
+    client = _client("anthropic", key)
 
     # 역할별 퍽 코퍼스는 system 에 두고 캐싱 → 매 질문마다 캐시 읽기(원가 0.1배)
     system = [{"type": "text", "text": CORPUS[role], "cache_control": {"type": "ephemeral"}}]
@@ -239,9 +259,8 @@ def _ask_anthropic(query, model, role):
     return json.loads(text), usage
 
 
-def _ask_openai(query, model, role):
-    from openai import OpenAI  # 지연 임포트
-    client = _clients.get("openai") or _clients.setdefault("openai", OpenAI())
+def _ask_openai(query, model, role, key):
+    client = _client("openai", key)
 
     # OpenAI 는 1024토큰 이상 프롬프트를 자동 캐싱(별도 설정 불필요).
     resp = client.chat.completions.create(
@@ -275,12 +294,12 @@ def _ask_openai(query, model, role):
     return json.loads(text), usage
 
 
-def ask_llm(query, model, role):
+def ask_llm(query, model, role, key):
     """질문을 LLM에 보내고 매칭된 퍽 결과를 반환."""
     if provider_of(model) == "anthropic":
-        data, usage = _ask_anthropic(query, model, role)
+        data, usage = _ask_anthropic(query, model, role, key)
     else:
-        data, usage = _ask_openai(query, model, role)
+        data, usage = _ask_openai(query, model, role, key)
 
     # id → 퍽 정보 매핑. 모르는 id, 또는 요청한 역할이 아닌 퍽은 버림(방어)
     out = []
@@ -338,13 +357,27 @@ class Handler(SimpleHTTPRequestHandler):
     }
 
     def __init__(self, *a, **kw):
-        super().__init__(*a, directory=HERE, **kw)
+        super().__init__(*a, directory=BUNDLE, **kw)
 
     def log_message(self, fmt, *args):  # 조용히
         pass
 
+    def translate_path(self, path):
+        # 다운로드 모델/라이브러리는 쓰기 가능한 데이터 폴더(DATA)에 있다.
+        # 그 외 정적 자산은 번들(BUNDLE)에서 제공. 개발 모드에선 둘이 같은 폴더.
+        clean = posixpath.normpath(path.split("?", 1)[0].split("#", 1)[0])
+        if clean.startswith(("/models/", "/vendor/")) or clean in ("/models", "/vendor"):
+            full = os.path.normpath(os.path.join(DATA, *clean.lstrip("/").split("/")))
+            base = os.path.normpath(DATA)
+            if full == base or full.startswith(base + os.sep):
+                return full
+        return super().translate_path(path)
+
     def do_GET(self):
         path = self.path.split("?")[0].rstrip("/")
+        if path == "/config":
+            self._send_json(200, {"providers": secrets_store.status()})
+            return
         if path == "/model_status":
             self._send_json(200, {
                 "ready": dm.all_present(),
@@ -380,6 +413,26 @@ class Handler(SimpleHTTPRequestHandler):
             if not dm.all_present():
                 start_download()
             self._send_json(200, {"ready": dm.all_present(), "status": _dl["status"]})
+            return
+        if path == "/config":
+            # API 키 저장/삭제: {"provider": "anthropic"|"openai", "key": "..."}
+            #   key 가 빈 문자열이거나 {"clear": true} 면 삭제.
+            # 평문 키는 응답에 절대 포함하지 않고, 갱신된 상태(마스킹)만 돌려준다.
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length) or b"{}")
+            except Exception as e:  # noqa
+                self._send_json(400, {"error": f"잘못된 요청: {e}"})
+                return
+            provider = payload.get("provider")
+            if provider not in secrets_store.PROVIDERS:
+                self._send_json(400, {"error": "알 수 없는 공급자"})
+                return
+            if payload.get("clear"):
+                secrets_store.clear_key(provider)
+            else:
+                secrets_store.save_key(provider, payload.get("key", ""))
+            self._send_json(200, {"providers": secrets_store.status()})
             return
         if path == "/favorites":
             # 즐겨찾기 토글: {"id": "...", "on": true/false}
@@ -449,16 +502,18 @@ class Handler(SimpleHTTPRequestHandler):
             return
 
         provider = provider_of(model)
-        key_env = PROVIDER_KEY[provider]
-        if not os.environ.get(key_env):
+        key = secrets_store.get_key(provider)
+        if not key:
+            name = "Anthropic" if provider == "anthropic" else "OpenAI"
             self._send_json(503, {
-                "error": f"API 키가 없습니다. 환경변수 {key_env} 를 설정한 뒤 서버를 다시 실행하세요.",
+                "error": f"{name} API 키가 없습니다. 우측 상단 ⚙️ 설정에서 키를 입력하세요.",
                 "code": "no_key",
+                "provider": provider,
             })
             return
 
         try:
-            result = ask_llm(query, model, role)
+            result = ask_llm(query, model, role, key)
             self._send_json(200, result)
         except ModuleNotFoundError:
             pkg = PROVIDER_PKG[provider]
@@ -482,26 +537,42 @@ class Server(ThreadingHTTPServer):
         super().server_bind()
 
 
-def main():
-    os.chdir(HERE)
+URL = f"http://localhost:{PORT}/index.html"
+
+
+def create_server():
+    """포트를 점유해 서버 객체를 만든다. 이미 떠 있으면(포트 사용 중) None."""
     try:
-        server = Server(("127.0.0.1", PORT), Handler)
+        return Server(("127.0.0.1", PORT), Handler)
     except OSError:
-        sys.stderr.write(
-            f"포트 {PORT} 를 열 수 없습니다. 이미 다른 DBD 서버가 실행 중인 것 같습니다.\n"
-            f"  - 브라우저에서 http://localhost:{PORT}/index.html 를 새로고침하거나,\n"
-            f"  - 기존 서버 창을 닫은(Ctrl+C) 뒤 다시 실행하세요.\n")
-        return
-    a_ok = "설정됨 ✓" if os.environ.get("ANTHROPIC_API_KEY") else "미설정"
-    o_ok = "설정됨 ✓" if os.environ.get("OPENAI_API_KEY") else "미설정"
-    sys.stderr.write(f"DBD 퍽 검색기: http://localhost:{PORT}/index.html\n")
-    sys.stderr.write(f"  ANTHROPIC_API_KEY: {a_ok}   OPENAI_API_KEY: {o_ok}\n")
-    sys.stderr.write("  (AI 정밀 검색 모드는 선택한 모델의 공급자 키만 필요)\n")
-    sys.stderr.write("  종료: Ctrl+C\n")
+        return None
+
+
+def serve(server):
+    """서버를 블로킹으로 구동 (Ctrl+C / 종료 시 빠져나옴)."""
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         pass
+
+
+def main():
+    os.chdir(BUNDLE)
+    server = create_server()
+    if server is None:
+        sys.stderr.write(
+            f"포트 {PORT} 를 열 수 없습니다. 이미 다른 DBD 서버가 실행 중인 것 같습니다.\n"
+            f"  - 브라우저에서 {URL} 를 새로고침하거나,\n"
+            f"  - 기존 서버 창을 닫은(Ctrl+C) 뒤 다시 실행하세요.\n")
+        return
+    st = secrets_store.status()
+    fmt = lambda p: ("설정됨 ✓ (" + ("환경변수" if p["source"] == "env" else "저장됨") + ")") \
+        if p["set"] else "미설정"  # noqa: E731
+    sys.stderr.write(f"DBD 퍽 검색기: {URL}\n")
+    sys.stderr.write(f"  Anthropic: {fmt(st['anthropic'])}   OpenAI: {fmt(st['openai'])}\n")
+    sys.stderr.write("  (AI 정밀 검색 모드는 선택한 모델의 공급자 키만 필요 · 웹 ⚙️ 설정에서 입력)\n")
+    sys.stderr.write("  종료: Ctrl+C\n")
+    serve(server)
 
 
 if __name__ == "__main__":
