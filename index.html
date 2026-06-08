@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>DBD 살인마 퍽 검색기</title>
+<title>DBD 퍽 검색기</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🔪</text></svg>" />
 <style>
   :root {
     --bg: #0c0c0f; --panel: #16161c; --panel2: #1e1e26;
     --line: #2a2a35; --text: #e9e9ef; --muted: #9a9aa8;
     --accent: #c0392b; --accent2: #e67e22; --good: #2ecc71;
+    --surv: #2980b9;
   }
   * { box-sizing: border-box; }
   body {
@@ -42,6 +43,21 @@
     padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 13px;
   }
   .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .roles { display: flex; gap: 8px; margin-top: 10px; }
+  .role-btn {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    padding: 8px 18px; border-radius: 999px; cursor: pointer; font-size: 14px; font-weight: 600;
+  }
+  .role-btn[data-role="killer"].active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .role-btn[data-role="survivor"].active { background: var(--surv); border-color: var(--surv); color: #fff; }
+  .fav-toggle {
+    margin-left: auto; background: var(--panel2); border: 1px solid var(--line);
+    color: var(--muted); padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    font-size: 14px; font-weight: 600;
+  }
+  .fav-toggle.active { background: #3a3000; border-color: #f1c40f; color: #f1c40f; }
+  .fav-toggle .fav-count { opacity: .85; font-size: 12px; margin-left: 2px; }
+  .card .owner.surv { color: #7fb8e0; }
   #model { background: var(--panel2); border: 1px solid var(--line); color: var(--text);
     border-radius: 999px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
   .reason { margin-top: 6px; font-size: 12.5px; color: #8fd6a6;
@@ -67,8 +83,51 @@
   .card .top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .card .name { font-size: 16px; font-weight: 700; }
   .card .owner { font-size: 12px; color: var(--muted); }
-  .card .score { margin-left: auto; font-size: 11px; color: var(--good);
+  .card .star {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    font-size: 19px; line-height: 1; color: #555; padding: 0 2px;
+    transition: color .12s, transform .12s;
+  }
+  .card .star:hover { transform: scale(1.15); color: #f1c40f; }
+  .card .star.on { color: #f1c40f; }
+  .card .score { font-size: 11px; color: var(--good);
     border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+  /* 태그 */
+  .card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; align-items: center; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 1px; font-family: inherit;
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 2px 4px 2px 9px; font-size: 11.5px; line-height: 1.5;
+  }
+  .tag .tag-label { cursor: pointer; }
+  .tag:hover { border-color: var(--accent2); color: var(--text); }
+  .tag.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .tag .tag-x { background: none; border: none; color: inherit; cursor: pointer;
+    font-size: 13px; opacity: .4; padding: 0 3px; line-height: 1; }
+  .tag .tag-x:hover { opacity: 1; color: #ff6b5b; }
+  .tag-add, .tag-reset {
+    background: none; border: 1px dashed var(--line); color: var(--muted);
+    border-radius: 999px; cursor: pointer; font-size: 12px; padding: 1px 9px; line-height: 1.6;
+  }
+  .tag-add:hover, .tag-reset:hover { border-color: var(--accent2); color: var(--text); }
+  .tag-input {
+    background: var(--panel2); border: 1px solid var(--accent2); color: var(--text);
+    border-radius: 999px; padding: 2px 9px; font-size: 11.5px; width: 96px; outline: none;
+  }
+  /* 헤더의 태그 필터 바 */
+  .tagbar { display: none; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 10px; }
+  .tagbar-label { color: var(--muted); font-size: 12px; }
+  .tagbar-clear { background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 3px 11px; font-size: 12px; cursor: pointer; }
+  .tagbar-clear:hover { color: var(--text); border-color: var(--accent2); }
+  /* 전체 태그 목록 보기 */
+  .taglist { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 0;
+    align-items: center; align-content: flex-start; }
+  .taglist-item { cursor: pointer; font-size: 13px; padding: 5px 5px 5px 12px; gap: 5px; }
+  .taglist-item .tag-count { background: var(--line); color: var(--muted);
+    border-radius: 999px; padding: 0 7px; font-size: 11px; }
+  .taglist-item.empty { opacity: .38; cursor: default; }
+  .taglist-item.empty:hover { border-color: var(--line); color: var(--muted); }
   .card .desc { margin-top: 7px; font-size: 13.5px; line-height: 1.6; color: #cfcfda; }
   .desc .Highlight1 { color: #f1c40f; font-weight: 700; }
   .desc .Highlight2 { color: #5dade2; font-weight: 700; }
@@ -77,6 +136,57 @@
   .desc .ReminderText { color: var(--muted); font-style: italic; font-size: 12.5px; }
   .hl { background: #5a3a00; color: #ffd866; border-radius: 3px; padding: 0 1px; }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+  /* ⚙️ 설정 (API 키) */
+  .gear-btn {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    padding: 8px 12px; border-radius: 999px; cursor: pointer; font-size: 14px;
+  }
+  .gear-btn:hover { color: var(--text); border-color: var(--accent2); }
+  .gear-btn.warn { border-color: var(--accent2); color: var(--accent2); }
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.62); z-index: 100;
+    display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    width: min(560px, 94vw); max-height: 88vh; overflow: auto; padding: 22px;
+  }
+  .modal h2 { margin: 0 0 8px; font-size: 17px; }
+  .modal .sub { color: var(--muted); font-size: 12.5px; line-height: 1.65; margin-bottom: 16px; }
+  .modal .sub b { color: var(--text); }
+  .key-row {
+    border: 1px solid var(--line); border-radius: 10px; padding: 13px;
+    margin-bottom: 12px; background: var(--panel2);
+  }
+  .key-row .kh { display: flex; align-items: baseline; gap: 8px; margin-bottom: 9px; flex-wrap: wrap; }
+  .key-row .kname { font-weight: 700; font-size: 14px; }
+  .key-row .kname small { color: var(--muted); font-weight: 400; font-size: 12px; }
+  .kstat { font-size: 12px; }
+  .kstat.set { color: var(--good); }
+  .kstat.unset { color: var(--muted); }
+  .kstat.env { color: var(--accent2); }
+  .key-row .kget { margin-left: auto; font-size: 12px; color: #7fb8e0; text-decoration: none; }
+  .key-row .kget:hover { text-decoration: underline; }
+  .key-row .kin { display: flex; gap: 6px; align-items: center; }
+  .key-row input {
+    flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line);
+    color: var(--text); border-radius: 8px; padding: 9px 11px; font-size: 13px;
+    outline: none; font-family: ui-monospace, monospace;
+  }
+  .key-row input:focus { border-color: var(--accent2); }
+  .key-row input[readonly] { color: var(--muted); cursor: default; }
+  .key-row input[readonly]:focus { border-color: var(--line); }
+  .key-row .knote { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .btn {
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 14px;
+    cursor: pointer; font-size: 13px; background: var(--panel2); color: var(--text); white-space: nowrap;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.ghost { background: none; color: var(--muted); }
+  .btn:hover:not(:disabled) { border-color: var(--accent2); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .modal-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
   footer { color: #55555f; font-size: 11px; text-align: center; padding: 24px 0; }
   footer a { color: #777; }
 </style>
@@ -84,7 +194,14 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>🔪 DBD 살인마 퍽 검색기 <small id="perkcount"></small></h1>
+    <h1>🔪 DBD 퍽 검색기 <small id="perkcount"></small></h1>
+    <div class="roles" id="roles">
+      <button class="role-btn active" data-role="killer">🔪 살인마</button>
+      <button class="role-btn" data-role="survivor">🩹 생존자</button>
+      <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
+      <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
+      <button class="gear-btn" id="settingsBtn" title="API 키 설정 (AI 정밀 검색용)">⚙️</button>
+    </div>
     <div class="searchrow">
       <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
       <button id="clear" title="지우기">✕</button>
@@ -94,11 +211,11 @@
       <button class="mode-btn" data-mode="semantic">의미 기반 AI</button>
       <button class="mode-btn" data-mode="llm">AI 정밀 검색</button>
       <select id="model" title="모델 선택" style="display:none">
-        <optgroup label="Anthropic (ANTHROPIC_API_KEY)">
+        <optgroup label="Anthropic — Claude">
           <option value="claude-opus-4-8">Opus 4.8 (정확)</option>
           <option value="claude-haiku-4-5">Haiku 4.5 (빠름)</option>
         </optgroup>
-        <optgroup label="OpenAI (OPENAI_API_KEY)">
+        <optgroup label="OpenAI — GPT">
           <option value="gpt-4.1">GPT-4.1 (정확)</option>
           <option value="gpt-4.1-mini">GPT-4.1 mini (빠름)</option>
           <option value="gpt-4o">GPT-4o</option>
@@ -108,15 +225,28 @@
       <span class="hint" id="modehint">즉시 · 오프라인</span>
     </div>
     <div id="status"></div>
+    <div class="tagbar" id="tagbar"></div>
   </div>
 </header>
+<datalist id="tagvocab"></datalist>
 <main>
   <div class="examples" id="examples"></div>
   <div class="count" id="count"></div>
   <div id="results"></div>
 </main>
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="API 키 설정">
+    <h2>⚙️ API 키 설정</h2>
+    <div class="sub">
+      <b>AI 정밀 검색</b> 모드에만 필요합니다. 쓰려는 공급자 한 곳(<b>Anthropic</b> 또는 <b>OpenAI</b>)의 키만 있으면 됩니다.<br>
+      키는 <b>이 PC에만</b> 저장되고(Windows DPAPI 로 계정에 묶어 암호화), 외부로 전송되지 않습니다.
+    </div>
+    <div id="keyRows"></div>
+    <div class="modal-foot"><button class="btn ghost" id="settingsClose">닫기</button></div>
+  </div>
+</div>
 <footer>
-  데이터 출처: dbd-db.com · 살인마 퍽 전용 · 로컬에서 동작
+  데이터 출처: dbd-db.com · 살인마 + 생존자 퍽 · 로컬에서 동작
 </footer>
 
 <script src="perks_data.js"></script>
@@ -132,28 +262,305 @@ const results = $("#results");
 const countEl = $("#count");
 const statusEl = $("#status");
 
-$("#perkcount").textContent = `(${PERKS.length}개)`;
-
 let mode = "keyword";
-let semantic = null; // lazy-loaded state
+let role = "killer";          // 현재 선택된 역할 (살인마/생존자)
+let semantic = null;          // lazy-loaded state
+let favView = false;          // 즐겨찾기 보기 on/off
+let favorites = new Set();    // 즐겨찾기한 퍽 id 집합
+let TAGS = [];                // 전체 태그 어휘 (필터/자동완성용)
+let PERK_TAGS = {};           // 퍽 id -> 태그 배열 (유효 태그 = 기본+사용자수정 병합)
+let OVERRIDDEN = new Set();   // 사용자가 기본값에서 수정한 퍽 id
+let tagFilter = new Set();    // 활성 태그 필터 (모두 만족하는 퍽만, AND)
+let tagListView = false;      // 전체 태그 목록 보기 on/off
 
-const EXAMPLES = [
-  "살인마 속도가 빨라졌어",
-  "발전기 수리가 막혔어",
-  "내 오라가 보이는 것 같아",
-  "비명 지르면 위치 들킴",
-  "갈고리에서 빨리 풀려나는 퍽",
-  "판자에 맞고 경직이 길어졌어",
-];
+const ROLE_WORD = { killer: "살인마", survivor: "생존자" };
+const perksForRole = () => PERKS.filter((p) => p.role === role);
 
-// 예시 칩
-const exWrap = $("#examples");
-EXAMPLES.forEach((t) => {
-  const c = document.createElement("button");
-  c.className = "chip"; c.textContent = t;
-  c.onclick = () => { $("#q").value = t; runSearch(); };
-  exWrap.appendChild(c);
+// ---- 즐겨찾기 ----
+const FAV_LS_KEY = "dbd-favorites";   // 서버 미사용(file://) 시 폴백 저장소
+const isFav = (id) => favorites.has(id);
+const favPerksForRole = () => perksForRole().filter((p) => isFav(p.id));
+
+function updateFavCount() {
+  $("#favCount").textContent = favPerksForRole().length;
+}
+
+// 시작 시 서버에서 즐겨찾기 로드 (서버 없으면 localStorage 폴백)
+async function loadFavorites() {
+  try {
+    const res = await fetch("/favorites");
+    if (res.ok) { favorites = new Set((await res.json()).favorites || []); return; }
+  } catch { /* 서버 없음 */ }
+  try { favorites = new Set(JSON.parse(localStorage.getItem(FAV_LS_KEY) || "[]")); }
+  catch { favorites = new Set(); }
+}
+
+// 토글 영속화: 서버(favorites.json)에 기록, 실패하면 localStorage
+async function persistFavorite(id, on) {
+  try {
+    const res = await fetch("/favorites", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id, on }),
+    });
+    if (res.ok) { favorites = new Set((await res.json()).favorites || []); return; }
+    throw new Error("bad");
+  } catch {
+    try { localStorage.setItem(FAV_LS_KEY, JSON.stringify([...favorites])); } catch {}
+  }
+}
+
+function exitFavView() {
+  if (!favView) return;
+  favView = false;
+  $("#favBtn").classList.remove("active");
+}
+
+// ---- 태그 ----
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const tagsOf = (id) => PERK_TAGS[id] || [];
+const perkHasAllTags = (id, set) => { const t = new Set(tagsOf(id)); for (const x of set) if (!t.has(x)) return false; return true; };
+
+// 시작 시 서버에서 유효 태그(기본+사용자수정 병합) 로드. 서버 없으면 태그 미표시.
+async function loadTags() {
+  try {
+    const res = await fetch("/tags");
+    if (!res.ok) return;
+    const d = await res.json();
+    TAGS = d.tags || [];
+    PERK_TAGS = d.perks || {};
+    OVERRIDDEN = new Set(d.overridden || []);
+    syncVocab();
+  } catch { /* 서버 없음(file://) — 태그 기능 비활성 */ }
+}
+
+function syncVocab() {
+  const dl = $("#tagvocab");
+  if (dl) dl.innerHTML = TAGS.map((t) => `<option value="${esc(t)}">`).join("");
+}
+
+// 한 퍽 카드의 태그 줄 내용 (칩들 + 추가 버튼 + 되돌리기)
+function tagRowInner(id) {
+  const chips = tagsOf(id).map((t) =>
+    `<span class="tag${tagFilter.has(t) ? " active" : ""}" data-tag="${esc(t)}">` +
+    `<span class="tag-label">#${esc(t)}</span>` +
+    `<button class="tag-x" title="이 퍽에서 태그 제거">×</button></span>`).join("");
+  const reset = OVERRIDDEN.has(id)
+    ? `<button class="tag-reset" title="기본 태그로 되돌리기">↺</button>` : "";
+  return chips + `<button class="tag-add" title="태그 추가">＋</button>` + reset;
+}
+
+// 서버에 태그 변경 저장 (성공 시 유효값으로 동기화). 서버 없으면 메모리에만.
+async function postTags(body) {
+  try {
+    const res = await fetch("/tags", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) return await res.json();
+  } catch {}
+  return null;
+}
+
+async function setPerkTags(id, tags) {
+  PERK_TAGS[id] = tags;            // 낙관적 반영
+  OVERRIDDEN.add(id);
+  afterTagEdit(id);
+  const r = await postTags({ id, tags });
+  if (r) {
+    PERK_TAGS[id] = r.tags;
+    OVERRIDDEN[r.overridden ? "add" : "delete"](id);
+    TAGS = r.vocab || TAGS; syncVocab();
+    afterTagEdit(id);
+  }
+}
+
+async function resetPerkTags(id) {
+  const r = await postTags({ id, reset: true });
+  if (r) {
+    PERK_TAGS[id] = r.tags;
+    OVERRIDDEN.delete(id);
+    TAGS = r.vocab || TAGS; syncVocab();
+  }
+  afterTagEdit(id);
+}
+
+// 태그 편집 후 화면 갱신: 필터 보기에서 조건을 벗어나면 목록 재구성, 아니면 해당 줄만 다시 그림
+function afterTagEdit(id) {
+  if (tagFilter.size && !perkHasAllTags(id, tagFilter)) { renderTagFilter(); return; }
+  const row = results.querySelector(`.tags[data-perk="${id}"]`);
+  if (row) row.innerHTML = tagRowInner(id);
+}
+
+function exitTagFilter() {
+  if (!tagFilter.size) return;
+  tagFilter.clear();
+  renderTagBar();
+}
+
+function toggleTagFilter(tag) {
+  exitFavView(); exitTagList();
+  if (tagFilter.has(tag)) tagFilter.delete(tag); else tagFilter.add(tag);
+  renderTagBar();
+  if (tagFilter.size) renderTagFilter(); else runSearch();
+}
+
+function renderTagBar() {
+  const bar = $("#tagbar");
+  if (!tagFilter.size) { bar.style.display = "none"; bar.innerHTML = ""; return; }
+  bar.style.display = "flex";
+  bar.innerHTML = `<span class="tagbar-label">🏷️ 태그 필터</span>` +
+    [...tagFilter].map((t) =>
+      `<span class="tag active" data-tag="${esc(t)}"><span class="tag-label">#${esc(t)}</span>` +
+      `<button class="tag-x" title="해제">×</button></span>`).join("") +
+    `<button class="tagbar-clear">전체 해제</button>`;
+}
+
+// 태그 필터 보기: 현재 역할에서 활성 태그를 모두 가진 퍽 (검색/모드 무관)
+function renderTagFilter() {
+  const list = perksForRole().filter((p) => perkHasAllTags(p.id, tagFilter))
+    .slice().sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  const label = [...tagFilter].map((t) => `#${t}`).join(" ");
+  if (!list.length) {
+    countEl.textContent = "";
+    results.innerHTML = `<div class="empty">${label} 태그를 가진 ${ROLE_WORD[role]} 퍽이 없어요.</div>`;
+    return;
+  }
+  countEl.textContent = `🏷️ ${label} — ${list.length}개 (${ROLE_WORD[role]})`;
+  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+}
+
+// 태그 추가 입력창 열기 (＋ 자리에 인라인 input)
+function openTagAdd(row, id) {
+  if (row.querySelector(".tag-input")) return;
+  const input = document.createElement("input");
+  input.className = "tag-input"; input.placeholder = "태그 추가"; input.setAttribute("list", "tagvocab");
+  row.insertBefore(input, row.querySelector(".tag-add"));
+  input.focus();
+  let done = false;
+  const cleanup = () => { input.removeEventListener("keydown", onKey); input.removeEventListener("blur", onBlur); if (input.parentNode) input.remove(); };
+  const commit = () => { if (done) return; done = true; const v = input.value.trim(); cleanup(); if (v && !tagsOf(id).includes(v)) setPerkTags(id, [...tagsOf(id), v]); };
+  const onKey = (e) => { if (e.key === "Enter") { e.preventDefault(); commit(); } else if (e.key === "Escape") { done = true; cleanup(); } };
+  const onBlur = () => commit();
+  input.addEventListener("keydown", onKey);
+  input.addEventListener("blur", onBlur);
+}
+
+// 카드 영역의 태그 상호작용 (이벤트 위임)
+results.addEventListener("click", (e) => {
+  const row = e.target.closest(".tags");
+  if (!row) return;
+  const id = row.dataset.perk;
+  if (e.target.closest(".tag-x")) { setPerkTags(id, tagsOf(id).filter((t) => t !== e.target.closest(".tag").dataset.tag)); return; }
+  if (e.target.closest(".tag-reset")) { resetPerkTags(id); return; }
+  if (e.target.closest(".tag-add")) { openTagAdd(row, id); return; }
+  const label = e.target.closest(".tag-label");
+  if (label) { toggleTagFilter(e.target.closest(".tag").dataset.tag); }
 });
+
+// 헤더 태그 필터 바 상호작용
+$("#tagbar").addEventListener("click", (e) => {
+  if (e.target.closest(".tagbar-clear")) { exitTagFilter(); runSearch(); return; }
+  const x = e.target.closest(".tag-x");
+  if (x) {
+    tagFilter.delete(e.target.closest(".tag").dataset.tag);
+    renderTagBar();
+    if (tagFilter.size) renderTagFilter(); else runSearch();
+  }
+});
+
+// ---- 전체 태그 목록 보기 ----
+function exitTagList() {
+  if (!tagListView) return;
+  tagListView = false;
+  $("#tagListBtn").classList.remove("active");
+}
+
+// 현재 역할 기준으로 각 태그가 달린 퍽 수를 세어, 많은 순으로 칩을 보여준다.
+function renderTagList() {
+  const pool = perksForRole();
+  const items = TAGS.map((t) => ({ tag: t, n: pool.filter((p) => tagsOf(p.id).includes(t)).length }))
+    .sort((a, b) => b.n - a.n || a.tag.localeCompare(b.tag, "ko"));
+  countEl.textContent = `🏷️ 전체 태그 ${TAGS.length}종 · 클릭하면 해당 태그로 필터 (${ROLE_WORD[role]} 기준)`;
+  if (!TAGS.length) {
+    results.innerHTML = `<div class="empty">태그 데이터를 불러오지 못했어요. run.bat 으로 서버를 실행했는지 확인하세요.</div>`;
+    return;
+  }
+  results.innerHTML = `<div class="taglist">` + items.map(({ tag, n }) =>
+    `<button class="tag taglist-item${n ? "" : " empty"}" data-tag="${esc(tag)}"${n ? "" : " disabled"}>` +
+    `<span class="tag-label">#${esc(tag)}</span><span class="tag-count">${n}</span></button>`).join("") +
+    `</div>`;
+}
+
+$("#tagListBtn").onclick = () => {
+  tagListView = !tagListView;
+  $("#tagListBtn").classList.toggle("active", tagListView);
+  if (tagListView) { exitFavView(); exitTagFilter(); renderTagList(); }
+  else runSearch();
+};
+
+// 태그 목록에서 태그 클릭 → 해당 태그 필터로 전환
+results.addEventListener("click", (e) => {
+  const item = e.target.closest(".taglist-item");
+  if (!item || item.disabled) return;
+  exitTagList();
+  tagFilter = new Set([item.dataset.tag]);
+  renderTagBar();
+  renderTagFilter();
+});
+
+// 현재 상태에 맞는 화면을 다시 그린다 (역할 변경·초기 로드 등에서 사용)
+function refresh() {
+  if (tagListView) renderTagList();
+  else if (tagFilter.size) renderTagFilter();
+  else if (favView) renderFavorites();
+  else runSearch();
+}
+
+const EXAMPLES = {
+  killer: [
+    "살인마 속도가 빨라졌어",
+    "발전기 수리가 막혔어",
+    "내 오라가 보이는 것 같아",
+    "비명 지르면 위치 들킴",
+    "몸부림이 느려지는 퍽",
+    "판자에 맞고 경직이 길어졌어",
+  ],
+  survivor: [
+    "다친 동료 위치가 보여",
+    "달리기 시작할 때 확 빨라져",
+    "치료 속도 빨라지는 퍽",
+    "혼자서 일어나는 퍽",
+    "갈고리에서 풀려나는 퍽",
+    "빈사 상태에서 기어가는 속도",
+  ],
+};
+const PLACEHOLDER = {
+  killer: "퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어",
+  survivor: "퍽 효과를 적어보세요. 예) 다친 동료 위치가 보여",
+};
+
+// 예시 칩 (역할에 맞춰 다시 그림)
+const exWrap = $("#examples");
+function renderExamples() {
+  exWrap.innerHTML = "";
+  EXAMPLES[role].forEach((t) => {
+    const c = document.createElement("button");
+    c.className = "chip"; c.textContent = t;
+    c.onclick = () => { $("#q").value = t; runSearch(); };
+    exWrap.appendChild(c);
+  });
+}
+
+// 역할 적용: 퍽 개수 · 예시 · 플레이스홀더 갱신
+function applyRole() {
+  $("#perkcount").textContent = `(${ROLE_WORD[role]} ${perksForRole().length}개)`;
+  $("#q").placeholder = PLACEHOLDER[role];
+  updateFavCount();
+  renderExamples();
+}
+applyRole();
 
 // 모드 전환
 const HINTS = {
@@ -163,6 +570,7 @@ const HINTS = {
 };
 document.querySelectorAll(".mode-btn").forEach((b) => {
   b.onclick = async () => {
+    exitFavView(); exitTagFilter(); exitTagList();
     document.querySelectorAll(".mode-btn").forEach((x) => x.classList.remove("active"));
     b.classList.add("active");
     mode = b.dataset.mode;
@@ -174,23 +582,65 @@ document.querySelectorAll(".mode-btn").forEach((b) => {
 });
 $("#model").onchange = () => { if (mode === "llm") runSearch(); };
 
-$("#clear").onclick = () => { $("#q").value = ""; runSearch(); $("#q").focus(); };
+// 역할 전환 (살인마/생존자)
+document.querySelectorAll(".role-btn").forEach((b) => {
+  b.onclick = () => {
+    if (b.dataset.role === role) return;
+    document.querySelectorAll(".role-btn").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    role = b.dataset.role;
+    applyRole();
+    refresh();
+  };
+});
+
+// 즐겨찾기 보기 토글
+$("#favBtn").onclick = () => {
+  favView = !favView;
+  $("#favBtn").classList.toggle("active", favView);
+  if (favView) { exitTagFilter(); exitTagList(); renderFavorites(); }
+  else runSearch();
+};
+
+$("#clear").onclick = () => { $("#q").value = ""; exitFavView(); exitTagFilter(); exitTagList(); runSearch(); $("#q").focus(); };
 
 let timer = null;
 $("#q").addEventListener("input", () => {
+  exitFavView(); exitTagFilter(); exitTagList();   // 검색을 시작하면 즐겨찾기/태그 보기 해제
   if (mode === "llm") return; // LLM 모드는 매 타이핑마다 호출하지 않음 (Enter로 실행)
   clearTimeout(timer);
   timer = setTimeout(runSearch, mode === "keyword" ? 80 : 250);
 });
 $("#q").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && mode === "llm") runSearch();
+  if (e.key === "Enter" && mode === "llm") { exitFavView(); exitTagFilter(); exitTagList(); runSearch(); }
 });
+
+// 퍽 카드 1개의 HTML. 별표(즐겨찾기) 토글 포함.
+function cardHtml(perk, { badge = "", reason = "", desc } = {}) {
+  const fav = isFav(perk.id);
+  const reasonHtml = reason ? `<div class="reason">💡 ${reason}</div>` : "";
+  const badgeHtml = badge ? `<span class="score">${badge}</span>` : "";
+  return `<div class="card">
+    <div class="ic"><img src="${perk.icon_file}" alt="" loading="lazy"></div>
+    <div class="body">
+      <div class="top">
+        <span class="name">${perk.name}</span>
+        <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${perk.owner === 'public' ? '공용' : perk.owner}</span>
+        <button class="star${fav ? ' on' : ''}" data-fav-id="${perk.id}" title="즐겨찾기" aria-pressed="${fav}">${fav ? '★' : '☆'}</button>
+        ${badgeHtml}
+      </div>
+      ${reasonHtml}
+      <div class="desc">${desc != null ? desc : perk.desc_html}</div>
+      <div class="tags" data-perk="${perk.id}">${tagRowInner(perk.id)}</div>
+    </div>
+  </div>`;
+}
 
 function render(list, q) {
   if (!q.trim()) {
     countEl.textContent = "";
-    const tip = mode === "llm" ? "퍽 효과를 적고 Enter — LLM이 전체 퍽과 대조해 찾아줍니다." :
-      "위에 퍽 효과를 적으면 가장 비슷한 살인마 퍽을 찾아드려요.";
+    const tip = mode === "llm" ? `퍽 효과를 적고 Enter — LLM이 ${ROLE_WORD[role]} 퍽 전체와 대조해 찾아줍니다.` :
+      `위에 퍽 효과를 적으면 가장 비슷한 ${ROLE_WORD[role]} 퍽을 찾아드려요.`;
     results.innerHTML = `<div class="empty">${tip}</div>`;
     return;
   }
@@ -207,26 +657,41 @@ function render(list, q) {
     if (mode === "semantic") badge = `${Math.round(pct)}%`;
     else if (mode === "llm") badge = `${confidence}%`;
     else badge = `${score.toFixed(0)}점`;
-    const reasonHtml = reason ? `<div class="reason">💡 ${reason}</div>` : "";
-    return `<div class="card">
-      <div class="ic"><img src="${perk.icon_file}" alt="" loading="lazy"></div>
-      <div class="body">
-        <div class="top">
-          <span class="name">${perk.name}</span>
-          <span class="owner">${perk.owner === 'public' ? '공용' : perk.owner}</span>
-          <span class="score">${badge}</span>
-        </div>
-        ${reasonHtml}
-        <div class="desc">${desc}</div>
-      </div>
-    </div>`;
+    return cardHtml(perk, { badge, reason, desc });
   }).join("");
 }
+
+// 즐겨찾기 보기: 현재 역할의 즐겨찾기 퍽을 이름순으로 (검색/모드 무관)
+function renderFavorites() {
+  const list = favPerksForRole().slice().sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  if (!list.length) {
+    countEl.textContent = "";
+    results.innerHTML = `<div class="empty">아직 즐겨찾기한 ${ROLE_WORD[role]} 퍽이 없어요.<br>카드 오른쪽의 ☆ 를 눌러 추가하세요.</div>`;
+    return;
+  }
+  countEl.textContent = `⭐ 즐겨찾기 ${list.length}개 (${ROLE_WORD[role]})`;
+  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+}
+
+// 별표 클릭(이벤트 위임) — 카드는 매번 새로 그려지므로 컨테이너에 한 번만 바인딩
+results.addEventListener("click", (e) => {
+  const btn = e.target.closest(".star");
+  if (!btn) return;
+  const id = btn.dataset.favId;
+  const on = !favorites.has(id);
+  if (on) favorites.add(id); else favorites.delete(id);
+  btn.classList.toggle("on", on);
+  btn.textContent = on ? "★" : "☆";
+  btn.setAttribute("aria-pressed", String(on));
+  updateFavCount();
+  persistFavorite(id, on);
+  if (favView && !on) renderFavorites();   // 즐겨찾기 보기 중 해제하면 목록에서 사라지게
+});
 
 async function runSearch() {
   const q = $("#q").value;
   if (mode === "keyword") {
-    render(rankKeyword(q, PERKS, SYN), q);
+    render(rankKeyword(q, perksForRole(), SYN), q);
   } else if (mode === "semantic") {
     if (!q.trim()) { render([], q); return; }
     if (!semantic || !semantic.ready) { await ensureSemantic(); }
@@ -241,18 +706,26 @@ async function runSearch() {
 // ---- AI 정밀 검색 (로컬 프록시 /ask) ----
 async function runLLM(q) {
   const model = $("#model").value;
-  statusEl.textContent = "AI가 전체 퍽과 대조 중…";
+  statusEl.textContent = `AI가 ${ROLE_WORD[role]} 퍽 전체와 대조 중…`;
   results.innerHTML = `<div class="empty">분석 중…</div>`;
   try {
     const res = await fetch("/ask", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ query: q, model }),
+      body: JSON.stringify({ query: q, model, role }),
     });
     const data = await res.json();
     if (!res.ok) {
+      if (data.code === "no_key") {
+        statusEl.textContent = "";
+        results.innerHTML = `<div class="empty">${esc(data.error || "API 키가 없습니다.")}` +
+          `<br><button class="btn primary" id="openSettingsFromErr" style="margin-top:12px">⚙️ 설정 열기</button></div>`;
+        const b = $("#openSettingsFromErr");
+        if (b) b.onclick = openSettings;
+        return;
+      }
       statusEl.textContent = data.error || "오류가 발생했습니다.";
-      results.innerHTML = `<div class="empty">${data.error || "오류"}</div>`;
+      results.innerHTML = `<div class="empty">${esc(data.error || "오류")}</div>`;
       return;
     }
     const list = data.results.map((r) => ({ perk: r.perk, confidence: r.confidence, reason: r.reason }));
@@ -280,9 +753,10 @@ async function ensureSemantic() {
   if (semantic && semantic.ready) return;
   if (semantic && semantic.loadingPromise) return semantic.loadingPromise;
   semantic = { ready: false };
-  statusEl.textContent = "AI 모델 불러오는 중… (로컬 파일, 처음 한 번만)";
+  statusEl.textContent = "AI 모델 준비 중…";
   semantic.loadingPromise = (async () => {
     try {
+      await ensureModelDownloaded();   // 모델/라이브러리 없으면 서버가 1회 자동 다운로드
       const { pipeline, env } = await import(LIB);
       // 전부 로컬에서 — HuggingFace/CDN 으로 나가지 않음
       env.allowRemoteModels = false;
@@ -313,7 +787,11 @@ async function ensureSemantic() {
       semantic.matrix = matrix;
       semantic.rank = async (q) => {
         const [qv] = await embed([`query: ${q}`]);
-        const scored = PERKS.map((perk, i) => ({ perk, score: cosine(qv, matrix[i]) }));
+        // 코퍼스는 전체(306개)를 임베딩해 두고, 순위 산출 시 현재 역할만 추린다
+        const scored = [];
+        PERKS.forEach((perk, i) => {
+          if (perk.role === role) scored.push({ perk, score: cosine(qv, matrix[i]) });
+        });
         scored.sort((a, b) => b.score - a.score);
         const top = scored.slice(0, 30);
         // e5 유사도는 좁은 구간(~0.8대)에 몰리므로, 결과 내 상대 신뢰도로 재조정해 순위 차이를 보이게 한다
@@ -326,11 +804,34 @@ async function ensureSemantic() {
       setTimeout(() => { if (mode === "semantic") statusEl.textContent = ""; }, 2500);
     } catch (e) {
       console.error(e);
-      statusEl.textContent = "AI 모델 로드 실패 — run.bat 으로 실행해야 합니다. 모델이 없으면 'python download_model.py' 를 먼저 실행하세요.";
+      statusEl.textContent = (e && e.message === "no-server")
+        ? "로컬 서버가 필요합니다. run.bat 으로 실행하세요. (file:// 로 열면 의미기반 모드는 동작하지 않습니다)"
+        : "AI 모델 준비 실패: " + (e && e.message ? e.message : e);
       semantic = null;
     }
   })();
   return semantic.loadingPromise;
+}
+
+// 모델/라이브러리가 없으면 로컬 서버에 1회 다운로드를 요청하고 진행률을 보여준다.
+async function ensureModelDownloaded() {
+  let st;
+  try {
+    st = await (await fetch("/model_status")).json();
+  } catch {
+    throw new Error("no-server");   // file:// 이거나 서버 미실행
+  }
+  if (st.ready) return;
+  statusEl.textContent = "AI 모델 다운로드 중… (처음 1회만, ~155MB)";
+  await fetch("/ensure_model", { method: "POST" });
+  while (true) {
+    await new Promise((r) => setTimeout(r, 800));
+    st = await (await fetch("/model_status")).json();
+    if (st.error) throw new Error(st.error);
+    if (st.ready) return;
+    const prog = st.count ? `(${st.index}/${st.count}) ${st.file || ""} ${st.pct}%` : "준비 중…";
+    statusEl.textContent = `AI 모델 다운로드 중… ${prog}  (처음 1회만)`;
+  }
 }
 
 // IndexedDB 임베딩 캐시 (재방문 시 즉시 로드)
@@ -357,7 +858,126 @@ async function saveCache(n, matrix) {
   } catch {}
 }
 
+// ---- ⚙️ API 키 설정 (로컬 서버 /config) ----
+const PROVIDER_META = {
+  anthropic: { name: "Anthropic", model: "Claude", url: "https://console.anthropic.com/", hint: "sk-ant-… 붙여넣기" },
+  openai:    { name: "OpenAI",    model: "GPT",    url: "https://platform.openai.com/api-keys", hint: "sk-… / sk-proj-… 붙여넣기" },
+};
+let configCache = null;   // {provider: {set, source, masked, dpapi}} 또는 null(서버 없음)
+
+async function loadConfig() {
+  try {
+    const res = await fetch("/config");
+    if (!res.ok) { configCache = null; return null; }
+    configCache = (await res.json()).providers || null;
+  } catch { configCache = null; }   // file:// 이거나 서버 미실행
+  return configCache;
+}
+
+function renderKeyRows() {
+  const wrap = $("#keyRows");
+  if (!configCache) {
+    wrap.innerHTML = `<div class="empty">로컬 서버가 필요합니다.<br>exe(또는 run.bat)로 실행했는지 확인하세요.</div>`;
+    return;
+  }
+  wrap.innerHTML = Object.entries(PROVIDER_META).map(([prov, m]) => {
+    const st = configCache[prov] || {};
+    let stat, kin;
+    if (st.source === "config") {
+      // UI 에 저장한 키 — 환경변수보다 우선. 마스킹 표시 + 변경/삭제.
+      stat = `<span class="kstat set">✓ 저장됨${st.env_present ? " · 환경변수 대신 사용" : ""}</span>`;
+      kin = `<input type="text" value="${esc(st.masked)}" readonly />` +
+            `<button class="btn" data-act="change">변경</button>` +
+            `<button class="btn" data-act="clear" title="${st.env_present ? "저장한 키를 지우고 환경변수 값으로 되돌립니다" : "저장한 키 삭제"}">${st.env_present ? "환경변수로 ↺" : "삭제"}</button>`;
+    } else if (st.source === "env") {
+      // 환경변수 키 — 마스킹 표시. [변경] 으로 다른 키를 저장하면 환경변수 대신 적용됨.
+      stat = `<span class="kstat env">환경변수 사용 중</span>`;
+      kin = `<input type="text" value="${esc(st.masked)}" readonly />` +
+            `<button class="btn" data-act="change" title="다른 키를 입력해 환경변수 대신 사용">변경</button>`;
+    } else {
+      stat = `<span class="kstat unset">미설정</span>`;
+      kin = `<input type="password" placeholder="${m.hint}" autocomplete="off" spellcheck="false" />` +
+            `<button class="btn primary" data-act="save">저장</button>`;
+    }
+    return `<div class="key-row" data-prov="${prov}">
+      <div class="kh">
+        <span class="kname">${m.name} <small>(${m.model})</small></span>
+        ${stat}
+        <a class="kget" href="${m.url}" target="_blank" rel="noopener">키 발급 ↗</a>
+      </div>
+      <div class="kin">${kin}</div>
+    </div>`;
+  }).join("");
+}
+
+function openSettings() {
+  $("#settingsModal").classList.add("open");
+  renderKeyRows();                        // 우선 직전 캐시로 즉시 표시
+  loadConfig().then(renderKeyRows);       // 최신 상태로 갱신
+}
+function closeSettings() { $("#settingsModal").classList.remove("open"); }
+
+$("#settingsBtn").onclick = openSettings;
+$("#settingsClose").onclick = closeSettings;
+$("#settingsModal").addEventListener("click", (e) => { if (e.target.id === "settingsModal") closeSettings(); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && $("#settingsModal").classList.contains("open")) closeSettings();
+});
+
+// 저장/삭제 (이벤트 위임)
+$("#keyRows").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const row = btn.closest(".key-row");
+  const prov = row.dataset.prov;
+  const act = btn.dataset.act;
+
+  // 변경: 마스킹 표시를 비우고 새 키를 입력할 수 있는 상태로 전환
+  if (act === "change") {
+    const m = PROVIDER_META[prov];
+    row.querySelector(".kin").innerHTML =
+      `<input type="password" placeholder="${m.hint}" autocomplete="off" spellcheck="false" />` +
+      `<button class="btn primary" data-act="save">저장</button>` +
+      `<button class="btn ghost" data-act="cancel">취소</button>`;
+    row.querySelector("input").focus();
+    return;
+  }
+  if (act === "cancel") { renderKeyRows(); return; }
+
+  const input = row.querySelector("input");
+  let body;
+  if (act === "clear") body = { provider: prov, clear: true };
+  else {
+    const key = input.value.trim();
+    if (!key) { input.focus(); return; }
+    body = { provider: prov, key };
+  }
+  btn.disabled = true;
+  try {
+    const res = await fetch("/config", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) { configCache = (await res.json()).providers || configCache; renderKeyRows(); }
+    else { btn.disabled = false; }
+  } catch { btn.disabled = false; }
+});
+
+// Enter 로도 저장
+$("#keyRows").addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  const input = e.target.closest("input");
+  if (!input) return;
+  const save = input.closest(".key-row").querySelector('button[data-act="save"]');
+  if (save) save.click();
+});
+
 render([], "");
+// 즐겨찾기·태그·키설정 로드(비동기) 후 화면 갱신 (결과가 있으면 태그 칩이 보이도록 다시 그림)
+Promise.all([loadFavorites(), loadTags(), loadConfig()]).then(() => {
+  updateFavCount();
+  refresh();
+});
 </script>
 </body>
 </html>

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-dbd-db.com 에서 살인마(killer) 퍽 데이터를 추출하고,
+dbd-db.com 에서 살인마(killer)·생존자(survivor) 퍽 데이터를 추출하고,
 한글 설명문을 /api/localization/resolve API로 채운 뒤 perks.json 으로 저장.
-아이콘도 icons/ 폴더에 내려받는다.
+각 퍽엔 role("killer"/"survivor") 필드가 붙고, 아이콘은 진영별
+icons/killer/, icons/survivor/ 폴더에 내려받는다.
 
 usage: python build_data.py
 """
@@ -102,36 +103,91 @@ def norm_icon_path(path):
     return path.replace("/IconPerks_", "/iconPerks_")
 
 
+def _lower_first_after_prefix(base):
+    """파일명에서 'iconPerks_' 뒤 첫 글자를 소문자로 (BlastMine -> blastMine)."""
+    m = re.search(r"(?i)(iconperks_)(.)", base)
+    if m and m.group(2).isupper():
+        i = m.start(2)
+        return base[:i] + base[i].lower() + base[i + 1:]
+    return base
+
+
+def _icon_candidates(path):
+    """CDN 경로 후보들. 일부 퍽은 'Perks/' 아래 하위 폴더가 없거나
+    파일명 첫 글자가 소문자라 원본 경로로는 404 가 난다 (예: Blast Mine)."""
+    fname = path.split("/")[-1]
+    cands = [path]
+    # 'Perks/' 아래 하위 폴더 제거(평면화): .../Perks/Eclipse/x.webp -> .../Perks/x.webp
+    if "/Perks/" in path:
+        cands.append(path.split("/Perks/")[0] + "/Perks/" + fname)
+    # 위 후보들의 파일명 첫 글자를 소문자로 한 변형도 추가
+    out = []
+    for c in cands:
+        if c not in out:
+            out.append(c)
+        head, sep, base = c.rpartition("/")
+        lc = _lower_first_after_prefix(base)
+        alt = (head + sep + lc) if sep else lc
+        if alt not in out:
+            out.append(alt)
+    return out
+
+
 def download_icons(perks):
+    # 아이콘은 진영별 하위 폴더에 저장: icons/killer/, icons/survivor/
     os.makedirs(ICON_DIR, exist_ok=True)
     for p in perks:
         p["icon_path"] = norm_icon_path(p["icon_path"])
-        fname = p["icon_path"].split("/")[-1]
-        dest = os.path.join(ICON_DIR, fname)
-        p["icon_file"] = "icons/" + fname
-        if os.path.exists(dest) and os.path.getsize(dest) > 0:
+        candidates = _icon_candidates(p["icon_path"])
+        role_dir = os.path.join(ICON_DIR, p["role"])
+        os.makedirs(role_dir, exist_ok=True)
+        rel = f"icons/{p['role']}/"
+
+        def local(c):
+            return os.path.join(role_dir, c.split("/")[-1])
+
+        # 이미 받아둔 파일이 있으면(어떤 후보 이름으로든) 그대로 사용
+        have = next((c for c in candidates
+                     if os.path.exists(local(c)) and os.path.getsize(local(c)) > 0), None)
+        if have:
+            p["icon_file"] = rel + have.split("/")[-1]
             continue
-        try:
-            data = fetch(CDN + p["icon_path"])
-            with open(dest, "wb") as f:
-                f.write(data)
-            sys.stderr.write(f"  icon {fname}\n")
-        except Exception as e:  # noqa
-            sys.stderr.write(f"  ICON FAIL {fname}: {e}\n")
+
+        saved = None
+        for c in candidates:
+            try:
+                data = fetch(CDN + c)
+                fname = c.split("/")[-1]
+                with open(local(c), "wb") as f:
+                    f.write(data)
+                sys.stderr.write(f"  icon {p['role']}/{fname}\n")
+                saved = fname
+                break
+            except Exception:  # noqa  (다음 후보 시도)
+                continue
+        # 받은 파일명으로 icon_file 기록 (못 받으면 원본 파일명 그대로 — 앱은 동작)
+        p["icon_file"] = rel + (saved or p["icon_path"].split("/")[-1])
+        if not saved:
+            sys.stderr.write(f"  ICON FAIL {p['icon_path'].split('/')[-1]}\n")
 
 
 def main():
     sys.stderr.write("Fetching perks page...\n")
     html = fetch(BASE + "/ko/perks").decode("utf-8", errors="replace")
     perks = parse_perks(html)
-    killers = [p for p in perks if p["role"] == "killer"]
-    sys.stderr.write(f"Parsed {len(perks)} total, {len(killers)} killer perks\n")
+    # 살인마(killer) + 생존자(survivor) 퍽 모두 수집
+    kept = [p for p in perks if p["role"] in ("killer", "survivor")]
+    n_killer = sum(1 for p in kept if p["role"] == "killer")
+    n_surv = sum(1 for p in kept if p["role"] == "survivor")
+    sys.stderr.write(
+        f"Parsed {len(perks)} total, keeping {len(kept)} "
+        f"({n_killer} killer, {n_surv} survivor)\n")
 
     sys.stderr.write("Resolving Korean descriptions...\n")
-    desc_keys = sorted({p["desc_key"] for p in killers})
+    desc_keys = sorted({p["desc_key"] for p in kept})
     desc_map = resolve_keys(desc_keys, "ko")
 
-    for p in killers:
+    for p in kept:
         raw = desc_map.get(p["desc_key"], "")
         filled = fill_tunables(raw, p["tunables"])
         p["desc_html"] = filled
@@ -141,24 +197,26 @@ def main():
         p["search_blob"] = f"{p['name']} {p['owner']} {p['desc_text']}"
 
     sys.stderr.write("Downloading icons...\n")
-    download_icons(killers)
+    download_icons(kept)
 
     # 출력 정리 (앱에서 필요한 필드만)
     clean = [{
         "id": p["perk_id"],
+        "role": p["role"],
         "name": p["name"],
         "owner": p["owner"],
         "icon_file": p["icon_file"],
         "desc_html": p["desc_html"],
         "desc_text": p["desc_text"],
         "search_blob": p["search_blob"],
-    } for p in killers]
-    clean.sort(key=lambda x: x["name"])
+    } for p in kept]
+    # 살인마("killer")가 생존자("survivor")보다 앞, 그 안에서 이름순
+    clean.sort(key=lambda x: (x["role"], x["name"]))
 
     out_path = os.path.join(HERE, "perks.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(clean, f, ensure_ascii=False, indent=1)
-    sys.stderr.write(f"Wrote {out_path} ({len(clean)} killer perks)\n")
+    sys.stderr.write(f"Wrote {out_path} ({len(clean)} perks)\n")
 
     # file:// 더블클릭으로도 열 수 있게 JS 모듈로도 내보낸다 (fetch CORS 회피)
     js_path = os.path.join(HERE, "perks_data.js")

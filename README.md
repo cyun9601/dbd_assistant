@@ -1,44 +1,58 @@
-# 🔪 DBD 살인마 퍽 검색기
+# 🔪 DBD 퍽 검색기 (살인마 + 생존자)
 
-게임하면서 퍽 효과를 **한국어로 설명**하면, 가장 비슷한 **살인마 퍽**을
+게임하면서 퍽 효과를 **한국어로 설명**하면, 가장 비슷한 퍽을
 아이콘과 함께 가능성 높은 순으로 찾아줍니다.
+상단 **살인마 / 생존자 토글**로 검색할 진영을 고릅니다.
 
-> 예) `"살인마 속도가 빨라졌어"` → 이동 속도 관련 퍽들
-> 예) `"발전기 수리가 막혔어"` → 교착 상태, 주술: 파멸 …
+> (살인마) `"살인마 속도가 빨라졌어"` → 이동 속도 관련 퍽들
+> (살인마) `"발전기 수리가 막혔어"` → 교착 상태, 주술: 파멸 …
+> (생존자) `"다친 동료 위치가 보여"` → 유대, 공감 …
+> (생존자) `"발전기 다 고치면 빨라지는 거"` → 아드레날린 …
 
-데이터 출처: [dbd-db.com](https://dbd-db.com/ko/perks) · 살인마 퍽 **139개** 전부
+데이터 출처: [dbd-db.com](https://dbd-db.com/ko/perks) · 살인마 **139개** + 생존자 **167개** = **306개** 전부
 
 ---
 
 ## 데모
 
-<video src="assets/demo.mp4" controls muted width="720">
-  영상을 재생할 수 없으면 <a href="assets/demo.mp4">assets/demo.mp4</a> 를 직접 열어보세요.
-</video>
+![DBD 퍽 검색기 데모](assets/demo.gif)
 
-> VS Code 미리보기/대부분의 브라우저에서 바로 재생됩니다. 안 보이면 [assets/demo.mp4](assets/demo.mp4) 를 클릭해 여세요.
+> GIF 미리보기입니다. 소리·고화질 원본은 [assets/demo.mp4](assets/demo.mp4) 에서 볼 수 있어요.
+> (GitHub README는 상대경로 `<video>` 재생을 지원하지 않아 GIF로 표시합니다.)
 
 ---
 
 ## 실행 방법
 
-### 1) 가장 쉬운 방법 — `run.bat` 더블클릭 (권장)
-로컬 서버를 띄우고 브라우저를 엽니다. **세 가지 검색 모드 모두 안정적으로 동작**합니다.
-(파이썬 필요. 끝낼 땐 콘솔 창을 닫으면 됩니다.)
+### 1) 가장 쉬운 방법 — exe 더블클릭 (배포본, 파이썬 불필요) ⭐
+배포된 `DBD-Perk-Finder` 폴더 안의 **`DBD-Perk-Finder.exe`** 를 더블클릭하면 앱 창이 뜹니다.
+- **파이썬 설치 불필요** — 인터프리터와 라이브러리가 exe 안에 포함돼 있습니다.
+- **API 키는 환경변수 설정 없이** 창 우측 상단 **⚙️ 설정**에서 붙여넣으면 됩니다 (아래 [AI 정밀 검색 설정](#ai-정밀-검색-모드-설정-api-키) 참고).
+- **종료**: 창을 닫으면 끝납니다 (백그라운드에 남지 않음).
+- 세 가지 검색 모드 모두 동작합니다.
+
+> 처음 실행 시 Windows SmartScreen 경고가 뜨면 **추가 정보 → 실행**을 누르세요(서명 안 된 자체 빌드라 그렇습니다).
 
 ### 2) 그냥 `index.html` 더블클릭
 **키워드 검색 모드**는 인터넷 없이 바로 동작합니다.
-단, **의미 기반 AI**와 **AI 정밀 검색** 모드는 `run.bat`(로컬 서버) 방식이 필요합니다.
+단, **의미 기반 AI**와 **AI 정밀 검색** 모드는 로컬 서버(exe / `run.bat` / `app.py`)가 필요합니다.
+
+### 3) 개발자용 — `run.bat`(콘솔+브라우저) 또는 `python app.py`(네이티브 창)
+소스에서 바로 실행. **파이썬 필요.** `run.bat` 은 콘솔에 서버를 띄우고 브라우저를 엽니다.
+`python app.py` 는 exe 와 동일한 네이티브 창으로 띄웁니다 (`pip install pywebview` 필요).
 
 ---
 
-## 검색 모드 세 가지 (상단 버튼으로 전환)
+## 진영 토글 & 검색 모드
+
+상단의 **🔪 살인마 / 🩹 생존자** 버튼으로 검색 대상을 전환합니다. 선택한 진영의 퍽 안에서만 결과가 나옵니다.
+아래 세 가지 검색 모드는 양쪽 진영에서 모두 동작합니다.
 
 | 모드 | 설명 | 특징 |
 |------|------|------|
 | **키워드 + 유의어** | "속도=이동속도=질주=무빙" 같은 게임 용어 사전으로 매칭 | 즉시 · 완전 오프라인 · 비용 0 |
 | **의미 기반 AI** | 로컬 다국어 임베딩 모델로 문장 의미를 비교 | 모호한 표현에 강함 · **완전 오프라인**(모델 1회 다운로드 후) · 비용 0 |
-| **AI 정밀 검색** | 살인마 퍽 **전체를 LLM에 보내** 가장 가능성 높은 퍽을 근거와 함께 반환 | 가장 정확 · API 키 필요 · 질문당 소액 과금 · Enter로 실행 |
+| **AI 정밀 검색** | 선택한 진영의 퍽 **전체를 LLM에 보내** 가장 가능성 높은 퍽을 근거와 함께 반환 | 가장 정확 · API 키 필요 · 질문당 소액 과금 · Enter로 실행 |
 
 - **키워드 모드**는 `발전기`, `갈고리`, `오라`, `판자` 처럼 구체적 단어가 들어간 질문에 특히 정확합니다.
 - **의미 기반 AI**는 `"맞으면 한 방에 쓰러져"` 처럼 돌려 말해도 의미로 찾아줍니다. 모델·라이브러리를 **로컬에 받아두고**(`python download_model.py`, 1회) 브라우저 안에서 돌리므로, 그 뒤로는 **인터넷 없이** 동작하고 매번 다시 받지 않습니다.
@@ -46,36 +60,24 @@
   ```bash
   python download_model.py   # 1회: 모델(ONNX)+라이브러리를 models/, vendor/ 에 저장 (~155MB)
   ```
-- **AI 정밀 검색**은 가장 똑똑합니다. 퍽 139개를 통째로 LLM에 넣고(프롬프트 캐싱으로 저렴), `confidence %`와 **매칭 근거**까지 보여줍니다.
+- **AI 정밀 검색**은 가장 똑똑합니다. 선택한 진영의 퍽(살인마 139 / 생존자 167)을 통째로 LLM에 넣고(진영별로 프롬프트 캐싱되어 저렴), `confidence %`와 **매칭 근거**까지 보여줍니다.
 
 ### AI 정밀 검색 모드 설정 (API 키)
 
 이 모드는 **Anthropic 또는 OpenAI** 중 하나의 API 키가 필요합니다. 드롭다운에서 모델을 고르면 해당 공급자 키를 사용합니다.
 
-| 공급자 | 드롭다운 모델 | 필요한 환경변수 | 키 발급 |
-|--------|--------------|----------------|---------|
-| **Anthropic** | Opus 4.8 (정확) · Haiku 4.5 (빠름) | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/) |
-| **OpenAI** | GPT-4.1 · GPT-4.1 mini · GPT-4o · GPT-4o mini | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com/api-keys) |
+| 공급자 | 드롭다운 모델 | 키 발급 |
+|--------|--------------|---------|
+| **Anthropic** | Opus 4.8 (정확) · Haiku 4.5 (빠름) | [console.anthropic.com](https://console.anthropic.com/) |
+| **OpenAI** | GPT-4.1 · GPT-4.1 mini · GPT-4o · GPT-4o mini | [platform.openai.com](https://platform.openai.com/api-keys) |
 
-PC 환경변수로 한 번만 설정하면 됩니다 (쓰려는 공급자 키만 있으면 됨).
-아래에서 `여기에_본인_키_붙여넣기` 부분을 **본인의 실제 API 키로 바꿔서** 실행하세요:
+**입력 방법 (권장):** 창 우측 상단 **⚙️ 설정**을 열고, 쓰려는 공급자 칸에 키(`sk-ant-...` 또는 `sk-...`)를 붙여넣고 **저장**. 환경변수 설정이 필요 없습니다.
 
-```bat
-setx ANTHROPIC_API_KEY "여기에_본인_키_붙여넣기"
-REM 또는
-setx OPENAI_API_KEY "여기에_본인_키_붙여넣기"
-```
+- 키는 **이 PC에만** 저장됩니다 — `%APPDATA%\dbd-assistant\config.json` 에 **Windows DPAPI 로 사용자 계정에 묶어 암호화**해 보관합니다. 다른 PC/계정으로 파일을 복사해도 복호화되지 않습니다.
+- 키는 **로컬 서버에서만** 읽고 외부로 전송되지 않으며, 브라우저로도 평문이 노출되지 않습니다(설정 화면엔 마스킹값 `sk-ant…1234` 만 표시).
+- 키가 없어도 **키워드/의미기반 모드는 정상 동작**합니다. AI 정밀 검색에서 키가 없으면 “⚙️ 설정 열기” 버튼이 안내됩니다.
 
-> ⚠️ 위 명령을 **그대로(자리표시자 채로) 실행하지 마세요.** 따옴표 안 문자열이 그대로 환경변수 값이 되어 기존 키를 덮어씁니다. 반드시 실제 키(`sk-ant-...` / `sk-proj-...`)로 바꿔 넣으세요.
-
-설정 후 **새 콘솔 창**에서 `run.bat`을 다시 실행하세요. 키는 로컬 서버(`server.py`)에서만 읽으며, **브라우저로 노출되지 않습니다.** `run.bat` 자체는 환경변수를 변경하지 않습니다.
-(키가 없어도 키워드/의미기반 모드는 정상 동작합니다.)
-
-키를 잘못 덮어썼다면 같은 `setx`로 실제 키를 다시 넣거나, 아예 지우려면:
-```bat
-reg delete "HKCU\Environment" /v OPENAI_API_KEY /f
-```
-실행 후 새 콘솔 창을 열면 적용됩니다.
+**환경변수도 지원:** `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` 가 설정돼 있으면, ⚙️에 **저장한 키가 없을 때** 자동으로 그 값을 가져와 씁니다(“환경변수 사용 중”으로 표시). ⚙️에서 키를 저장하면 그 키가 **환경변수보다 우선** 적용되며(“환경변수 대신 사용”), 저장한 키를 삭제하면 다시 환경변수 값으로 되돌아갑니다. 즉 환경변수 유무와 상관없이 UI 에서 키를 설정·수정할 수 있습니다.
 
 > 모델 목록을 바꾸려면 `index.html`의 `<select id="model">`과 `server.py`의 `ALLOWED_MODELS`를 함께 수정하세요. `claude-`로 시작하면 Anthropic, 그 외는 OpenAI로 라우팅됩니다.
 
@@ -99,8 +101,30 @@ reg delete "HKCU\Environment" /v OPENAI_API_KEY /f
 python build_data.py
 ```
 
-dbd-db.com 에서 살인마 퍽 목록·한글 설명문을 다시 받아
+dbd-db.com 에서 살인마·생존자 퍽 목록·한글 설명문을 다시 받아
 `perks.json`, `perks_data.js` 를 갱신하고 `icons/` 에 아이콘을 내려받습니다.
+각 퍽엔 `role`(`killer`/`survivor`) 필드가 붙어, 앱의 진영 토글과 서버 코퍼스 분리에 쓰입니다.
+
+---
+
+## exe 빌드 (배포용)
+
+배포본(파이썬 없이 도는 exe)을 만들려면 **`build.bat`** 더블클릭 (또는):
+
+```bat
+python -m PyInstaller --noconfirm --clean dbd.spec
+```
+
+- 처음 한 번은 빌드 도구를 설치합니다: `pip install pyinstaller pywebview`
+- 결과: **`dist\DBD-Perk-Finder\`** (one-folder). 이 폴더 **전체**를 zip 으로 묶어 배포합니다.
+  진입점은 `app.py`(서버 스레드 + pywebview 네이티브 창)입니다.
+- 번들에는 읽기 전용 자산(`index.html`, `perks.json`, `icons/`, `tags.json` …)과 `anthropic`/`openai` SDK 가 포함됩니다.
+  의미기반 모델(~155MB)은 용량 때문에 번들하지 않고 **첫 사용 시 `%APPDATA%\dbd-assistant\` 로 1회 다운로드**합니다.
+- 사용자가 만드는 데이터(API 키·즐겨찾기·사용자 태그·다운로드 모델)는 모두 `%APPDATA%\dbd-assistant\` 에 저장되므로,
+  exe 폴더가 `Program Files` 처럼 쓰기 불가여도 정상 동작합니다.
+
+> 자체 빌드라 코드 서명이 없어 SmartScreen 경고가 날 수 있습니다(추가 정보 → 실행).
+> 정식 배포 시엔 코드 서명 인증서를 적용하면 경고가 사라집니다.
 
 ---
 
@@ -108,15 +132,18 @@ dbd-db.com 에서 살인마 퍽 목록·한글 설명문을 다시 받아
 
 | 파일 | 역할 |
 |------|------|
-| `index.html` | 검색 앱 (UI + 세 가지 검색 모드) |
+| `index.html` | 검색 앱 (UI + 세 가지 검색 모드 + ⚙️ API 키 설정) |
 | `search.js` | 키워드 + 유의어 검색·랭킹 로직 |
 | `synonyms.js` | DBD 한글 게임 용어 유의어 사전 (편집 가능) |
-| `server.py` | 로컬 서버 — 정적 파일 제공 + `/ask`(LLM 정밀 검색, Anthropic/OpenAI 라우팅, 프롬프트 캐싱) |
-| `perks_data.js` | 퍽 데이터 (앱이 직접 읽음, 자동 생성) |
-| `perks.json` | 퍽 데이터 원본 (서버·빌드가 사용, 자동 생성) |
-| `icons/` | 살인마 퍽 아이콘 139개 (오프라인용) |
+| `server.py` | 로컬 서버 — 정적 파일 + `/ask`(LLM 정밀 검색) + `/config`(키 입력/저장) |
+| `app.py` | exe/네이티브 창 진입점 — 서버 스레드 + pywebview (없으면 브라우저 폴백) |
+| `paths.py` | 실행 경로 해석 — 번들 자산(읽기) vs 사용자 데이터(`%APPDATA%`, 쓰기) 분리 |
+| `secrets_store.py` | API 키 저장소 — Windows DPAPI 암호화 (ctypes, 의존성 없음) |
+| `perks_data.js` | 퍽 데이터 (앱이 직접 읽음, 자동 생성 · `role` 포함) |
+| `perks.json` | 퍽 데이터 원본 (서버·빌드가 사용, 자동 생성 · `role` 포함) |
+| `icons/` | 퍽 아이콘 306개 — `icons/killer/` 139 + `icons/survivor/` 167 (진영별 폴더, 오프라인용) |
 | `build_data.py` | 데이터 수집·갱신 스크립트 |
-| `download_model.py` | 의미기반 AI용 모델·라이브러리 1회 다운로드 (→ `models/`, `vendor/`) |
-| `models/`, `vendor/` | 로컬 임베딩 모델(ONNX) + transformers.js·wasm (자동 생성, 오프라인용) |
-| `assets/demo.mp4` | 실행 데모 영상 |
-| `run.bat` | 실행기 (SDK 자동 설치 + 서버 기동 + 브라우저 열기) |
+| `download_model.py` | 의미기반 AI용 모델·라이브러리 1회 다운로드 (→ `%APPDATA%\dbd-assistant\`) |
+| `dbd.spec` · `build.bat` | PyInstaller 빌드 스펙 + 빌드 스크립트 (exe 배포본 생성) |
+| `run.bat` | 개발용 실행기 (SDK 자동 설치 + 서버 기동 + 브라우저 열기) |
+| `%APPDATA%\dbd-assistant\` | 사용자 데이터 — `config.json`(키, 암호화)·`favorites.json`·`tags_user.json`·`models/`·`vendor/` |
