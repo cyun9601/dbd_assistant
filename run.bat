@@ -22,7 +22,7 @@ REM To pre-download now instead, run:  python download_model.py
 if "%ANTHROPIC_API_KEY%"=="" if "%OPENAI_API_KEY%"=="" (
   echo [info] No API key in environment. That's fine — enter your key in the web UI's
   echo        gear icon settings. ANTHROPIC_API_KEY / OPENAI_API_KEY are used as a
-  echo        fallback when no key is saved in the UI (a UI-saved key overrides env).
+  echo        fallback when no key is saved in the UI ^(a UI-saved key overrides env^).
   echo        Only "precise AI" mode needs a key. This .bat NEVER changes env variables.
 )
 
