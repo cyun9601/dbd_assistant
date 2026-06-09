@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-DBD 퍽 검색기 로컬 서버.
+DBD 어시스턴트 로컬 서버.
 - 정적 파일(index.html, perks_data.js, icons/ ...)을 제공
 - POST /ask    : 역할(살인마/생존자)별 퍽 전체를 LLM 컨텍스트에 넣고(프롬프트 캐싱) 질문과 매칭
 - GET/POST /config : API 키를 웹 UI 에서 입력·저장 (DPAPI 암호화, 브라우저로 평문 노출 안 됨)
@@ -15,11 +15,13 @@ import posixpath
 import socket
 import sys
 import threading
+import urllib.request
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 import download_model as dm
 import paths
 import secrets_store
+from version import __version__ as APP_VERSION
 
 # 읽기 전용 번들 자산(index.html, perks.json, icons/ …)과 쓰기 가능한 사용자 데이터
 # (즐겨찾기·사용자 태그·다운로드 모델)를 분리. 개발 모드에선 둘 다 레포 폴더.
@@ -361,6 +363,89 @@ def start_download():
         threading.Thread(target=_run_download, daemon=True).start()
 
 
+# ---- 업데이트 확인 (GitHub Releases) ----
+# 앱 시작 시 1회 GitHub 에 최신 릴리스 태그를 물어보고 현재 버전과 비교한다.
+# 결과는 캐시해 두고 프론트는 /update_check 로 즉시 읽어 배너를 띄운다.
+# 네트워크 호출은 백그라운드 스레드 1회뿐 — 오프라인/레이트리밋은 조용히 무시한다.
+GITHUB_REPO = "cyun9601/dbd_assistant"
+RELEASES_API = f"https://api.github.com/repos/{GITHUB_REPO}/releases?per_page=20"
+RELEASES_PAGE = f"https://github.com/{GITHUB_REPO}/releases"
+
+_update = {
+    "checked": False,            # GitHub 응답을 받아봤는지 (성공/실패 무관)
+    "current": APP_VERSION,
+    "latest": None,              # 최신 릴리스 태그 (예: "0.1.2")
+    "update_available": False,
+    "html_url": RELEASES_PAGE,   # "업데이트" 버튼이 열 페이지
+    "error": None,
+}
+_update_lock = threading.Lock()
+
+
+def _parse_version(tag):
+    """'v0.1.1' / '0.1.1-beta' → (0, 1, 1). 숫자 버전이 아니면 None."""
+    if not tag:
+        return None
+    core = tag.lstrip("vV").strip().split("-", 1)[0].split("+", 1)[0]
+    try:
+        nums = tuple(int(p) for p in core.split("."))
+    except ValueError:
+        return None
+    return nums or None
+
+
+def _is_newer(latest, current):
+    """latest 가 current 보다 높은 버전이면 True (자리수 차이는 0 패딩)."""
+    a, b = _parse_version(latest), _parse_version(current)
+    if a is None or b is None:
+        return False
+    n = max(len(a), len(b))
+    a += (0,) * (n - len(a))
+    b += (0,) * (n - len(b))
+    return a > b
+
+
+def _fetch_latest_release():
+    """드래프트를 제외한(프리릴리스 포함) 릴리스 중 가장 높은 버전의 (태그, 페이지URL)."""
+    req = urllib.request.Request(RELEASES_API, headers={
+        "User-Agent": f"dbd-assistant/{APP_VERSION}",   # GitHub 은 UA 없으면 403
+        "Accept": "application/vnd.github+json",
+    })
+    with urllib.request.urlopen(req, timeout=4) as resp:
+        releases = json.loads(resp.read().decode("utf-8"))
+
+    best_ver = best_tag = best_url = None
+    for rel in releases:
+        if rel.get("draft"):
+            continue
+        ver = _parse_version(rel.get("tag_name"))
+        if ver is None:
+            continue
+        if best_ver is None or ver > best_ver:
+            best_ver, best_tag = ver, rel.get("tag_name")
+            best_url = rel.get("html_url") or RELEASES_PAGE
+    return best_tag, best_url
+
+
+def _run_update_check():
+    try:
+        latest, url = _fetch_latest_release()
+        with _update_lock:
+            _update["latest"] = latest
+            _update["html_url"] = url or RELEASES_PAGE
+            _update["update_available"] = _is_newer(latest, APP_VERSION)
+            _update["checked"] = True
+    except Exception as e:  # noqa — 오프라인/레이트리밋/타임아웃 등은 무시
+        with _update_lock:
+            _update["error"] = str(e)
+            _update["checked"] = True
+
+
+def start_update_check():
+    """업데이트 확인을 백그라운드로 시작 (서버를 점유한 프로세스에서 1회)."""
+    threading.Thread(target=_run_update_check, daemon=True).start()
+
+
 class Handler(SimpleHTTPRequestHandler):
     # 로컬 모델/라이브러리 제공에 필요한 MIME 타입 보강
     extensions_map = {
@@ -405,6 +490,10 @@ class Handler(SimpleHTTPRequestHandler):
                 "error": _dl["error"],
             })
             return
+        if path == "/update_check":
+            with _update_lock:
+                self._send_json(200, dict(_update))
+            return
         if path == "/favorites":
             self._send_json(200, {"favorites": load_favorites()})
             return
@@ -429,6 +518,18 @@ class Handler(SimpleHTTPRequestHandler):
             if not dm.all_present():
                 start_download()
             self._send_json(200, {"ready": dm.all_present(), "status": _dl["status"]})
+            return
+        if path == "/open_release":
+            # 캐시된 릴리스 페이지를 시스템 기본 브라우저로 연다(프론트 입력 URL 안 받음 → 안전).
+            # 네이티브 창(pywebview)에서도 외부 브라우저로 확실히 열기 위해 서버 측에서 처리.
+            import webbrowser
+            with _update_lock:
+                url = _update.get("html_url") or RELEASES_PAGE
+            try:
+                opened = webbrowser.open(url)
+            except Exception:  # noqa
+                opened = False
+            self._send_json(200, {"opened": opened, "url": url})
             return
         if path == "/config":
             # API 키 저장/삭제: {"provider": "anthropic"|"openai", "key": "..."}
@@ -567,6 +668,7 @@ def create_server():
 
 def serve(server):
     """서버를 블로킹으로 구동 (Ctrl+C / 종료 시 빠져나옴)."""
+    start_update_check()   # 시작 시 1회 GitHub 최신 릴리스 확인 (백그라운드)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -585,7 +687,7 @@ def main():
     st = secrets_store.status()
     fmt = lambda p: ("설정됨 ✓ (" + ("환경변수" if p["source"] == "env" else "저장됨") + ")") \
         if p["set"] else "미설정"  # noqa: E731
-    sys.stderr.write(f"DBD 퍽 검색기: {URL}\n")
+    sys.stderr.write(f"DBD 어시스턴트 v{APP_VERSION}: {URL}\n")
     sys.stderr.write(f"  Anthropic: {fmt(st['anthropic'])}   OpenAI: {fmt(st['openai'])}\n")
     sys.stderr.write("  (AI 정밀 검색 모드는 선택한 모델의 공급자 키만 필요 · 웹 ⚙️ 설정에서 입력)\n")
     sys.stderr.write("  종료: Ctrl+C\n")

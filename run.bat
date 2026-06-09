@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-REM DBD Killer Perk Finder launcher
+REM DBD Assistant launcher
 REM Starts the local server and opens the browser (keyword / semantic / precise-AI modes).
 cd /d "%~dp0"
 
@@ -26,6 +26,6 @@ if "%ANTHROPIC_API_KEY%"=="" if "%OPENAI_API_KEY%"=="" (
   echo        Only "precise AI" mode needs a key. This .bat NEVER changes env variables.
 )
 
-echo Opening DBD Perk Finder at http://localhost:8777 ...
+echo Opening DBD Assistant at http://localhost:8777 ...
 start "" http://localhost:8777/index.html
 python server.py

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>DBD 퍽 검색기</title>
+<title>DBD 어시스턴트</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🔪</text></svg>" />
 <style>
   :root {
@@ -23,6 +23,25 @@
     background: rgba(12,12,15,.92); backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line); padding: 14px 16px;
   }
+  /* 업데이트 알림 배너 (새 버전 감지 시에만 표시) */
+  .update-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    color: #fff; padding: 9px 16px; font-size: 13px;
+  }
+  .update-bar .update-msg { line-height: 1.4; }
+  .update-bar .update-btn {
+    background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.55);
+    color: #fff; border-radius: 999px; padding: 4px 13px; cursor: pointer;
+    font-size: 12.5px; font-weight: 700; white-space: nowrap;
+  }
+  .update-bar .update-btn:hover { background: rgba(255,255,255,.32); }
+  .update-bar .update-btn:disabled { opacity: .6; cursor: default; }
+  .update-bar .update-x {
+    margin-left: auto; background: none; border: none; color: #fff;
+    font-size: 16px; cursor: pointer; opacity: .8; line-height: 1; padding: 0 2px;
+  }
+  .update-bar .update-x:hover { opacity: 1; }
   .wrap { max-width: 920px; margin: 0 auto; }
   h1 { font-size: 18px; margin: 0 0 10px; letter-spacing: .5px; }
   h1 small { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
@@ -192,9 +211,14 @@
 </style>
 </head>
 <body>
+<div class="update-bar" id="updateBar" style="display:none">
+  <span class="update-msg" id="updateMsg"></span>
+  <button class="update-btn" id="updateBtn">⬇ 업데이트</button>
+  <button class="update-x" id="updateLater" title="이 버전 알림 끄기">✕</button>
+</div>
 <header>
   <div class="wrap">
-    <h1>🔪 DBD 퍽 검색기 <small id="perkcount"></small></h1>
+    <h1>🔪 DBD 어시스턴트 <small id="perkcount"></small></h1>
     <div class="roles" id="roles">
       <button class="role-btn active" data-role="killer">🔪 살인마</button>
       <button class="role-btn" data-role="survivor">🩹 생존자</button>
@@ -247,7 +271,7 @@
   </div>
 </div>
 <footer>
-  데이터 출처: dbd-db.com · 살인마 + 생존자 퍽 · 로컬에서 동작
+  데이터 출처: dbd-db.com · 살인마 + 생존자 퍽 · 로컬에서 동작 <span id="appVersion"></span>
 </footer>
 
 <script src="perks_data.js"></script>
@@ -1005,6 +1029,44 @@ Promise.all([loadFavorites(), loadTags(), loadConfig()]).then(() => {
   updateFavCount();
   refresh();
 });
+
+// ---- 업데이트 확인 (GitHub Releases) ----
+// 서버가 시작 시 GitHub 최신 릴리스를 받아 두면, 여기서 읽어 새 버전이면 배너를 띄운다.
+async function checkForUpdate() {
+  let info;
+  try {
+    info = await (await fetch("/update_check")).json();
+  } catch { return; }                          // 서버 없음/오프라인 → 조용히 무시
+  if (!info) return;
+  if (info.current) {
+    $("#appVersion").textContent = "· v" + info.current;        // 푸터에 현재 버전 표시
+    document.title = "DBD 어시스턴트 v" + info.current;            // 브라우저 탭/창 제목에도 버전
+  }
+  if (!info.update_available || !info.latest) return;
+  // "✕" 로 이 버전 알림을 끈 적이 있으면 다시 띄우지 않음 (더 새 버전이 나오면 다시 표시)
+  if (localStorage.getItem("dbd_skip_version") === info.latest) return;
+
+  $("#updateMsg").innerHTML =
+    `🎉 새 버전 <b>${info.latest}</b> 이(가) 나왔어요! ` +
+    `<span style="opacity:.85">현재 v${info.current}</span>`;
+  $("#updateBar").style.display = "flex";
+
+  $("#updateBtn").onclick = async () => {
+    const btn = $("#updateBtn");
+    btn.disabled = true;
+    try {
+      const d = await (await fetch("/open_release", { method: "POST" })).json();
+      if (d && d.opened) return;               // 시스템 기본 브라우저로 열림
+    } catch {}
+    if (info.html_url) window.open(info.html_url, "_blank");  // 폴백: 새 탭
+    btn.disabled = false;
+  };
+  $("#updateLater").onclick = () => {
+    localStorage.setItem("dbd_skip_version", info.latest);
+    $("#updateBar").style.display = "none";
+  };
+}
+checkForUpdate();
 </script>
 </body>
 </html>
