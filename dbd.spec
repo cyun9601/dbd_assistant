@@ -58,6 +58,7 @@ datas += [
     ("synonyms.js", "."),
     ("tags.json", "."),
     ("icons", "icons"),
+    ("assets/icon.ico", "assets"),   # 창 아이콘(런타임에 webview 가 사용)
 ]
 
 a = Analysis(
@@ -90,6 +91,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon="assets/icon.ico",  # exe 아이콘 (작업표시줄·탐색기)
 )
 
 coll = COLLECT(

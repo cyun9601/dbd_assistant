@@ -13,7 +13,10 @@ import threading
 import time
 import urllib.request
 
+import os
+
 import server
+from paths import bundle_path
 from version import __version__ as APP_VERSION
 
 
@@ -58,7 +61,10 @@ def main():
             f"DBD 어시스턴트 v{APP_VERSION}", server.URL,
             width=1024, height=840, min_size=(440, 580),
         )
-        webview.start()   # 창이 닫힐 때까지 블로킹 → 닫으면 프로세스 종료
+        # 창 아이콘: 번들/레포의 assets/icon.ico (없으면 exe 아이콘으로 폴백).
+        icon_path = bundle_path("assets", "icon.ico")
+        start_kwargs = {"icon": icon_path} if os.path.isfile(icon_path) else {}
+        webview.start(**start_kwargs)   # 창이 닫힐 때까지 블로킹 → 닫으면 프로세스 종료
     except Exception as e:  # noqa — WebView2/pywebview 불가 시 브라우저 폴백
         import webbrowser
         _log(f"네이티브 창을 열 수 없어 브라우저로 엽니다: {e}")
