@@ -171,6 +171,41 @@ def download_icons(perks):
             sys.stderr.write(f"  ICON FAIL {p['icon_path'].split('/')[-1]}\n")
 
 
+def add_nightlight(clean):
+    """각 퍽에 nl_id(nightlight 숫자 id) 와 usage(기준 사용률 %) 필드를 채운다.
+    매핑 키는 dbd-db slug ↔ nightlight 이미지 slug. 실패해도 빌드는 계속(필드는 None)."""
+    for p in clean:                      # 기본값 — 실패하거나 매칭 안 되면 그대로
+        p.setdefault("nl_id", None)
+        p.setdefault("usage", None)
+    try:
+        import re as _re
+        import nightlight
+        sys.stderr.write("Fetching nightlight usage...\n")
+        perk_dict = nightlight.fetch_perk_dict()
+        by_slug, by_norm = nightlight.slug_index(perk_dict)
+        usage = nightlight.fetch_usage()
+
+        def _norm(s):
+            return _re.sub(r"[^a-z0-9]", "", (s or "").lower())
+
+        mapped = 0
+        for p in clean:
+            slug = p.get("slug") or ""
+            nid = by_slug.get(slug) or by_norm.get(_norm(slug))
+            if not nid:
+                continue
+            p["nl_id"] = int(nid)
+            row = usage.get(p["role"], {}).get("perks", {}).get(nid)
+            p["usage"] = row["pct"] if row else None
+            mapped += 1
+        win = usage.get("killer", {})
+        sys.stderr.write(
+            f"  nightlight mapped {mapped}/{len(clean)} perks "
+            f"(window {win.get('start', '?')[:10]}~{win.get('end', '?')[:10]})\n")
+    except Exception as e:  # noqa — 오프라인/사이트 구조 변경 등은 조용히 건너뜀
+        sys.stderr.write(f"  nightlight 사용률 수집 건너뜀: {e}\n")
+
+
 def main():
     sys.stderr.write("Fetching perks page...\n")
     html = fetch(BASE + "/ko/perks").decode("utf-8", errors="replace")
@@ -187,11 +222,30 @@ def main():
     desc_keys = sorted({p["desc_key"] for p in kept})
     desc_map = resolve_keys(desc_keys, "ko")
 
+    # 영어 원문도 함께 받는다 — 표시 언어 전환 + 한글 오역 대비.
+    # 이름·소유자(캐릭터)는 영어 페이지(/en/perks)에서 그대로 가져오고(정식 표기),
+    # 설명문은 페이지에 없으므로 로컬라이제이션 API 로 en 을 받는다.
+    sys.stderr.write("Fetching English perk page + descriptions...\n")
+    en_by_id = {}
+    try:
+        en_html = fetch(BASE + "/en/perks").decode("utf-8", errors="replace")
+        en_by_id = {p["perk_id"]: p for p in parse_perks(en_html)}
+    except Exception as e:  # noqa — 실패해도 설명문 en 은 API 로 받으므로 진행
+        sys.stderr.write(f"  /en/perks 가져오기 실패(이름/소유자 en 생략): {e}\n")
+    desc_map_en = resolve_keys(desc_keys, "en")
+
     for p in kept:
         raw = desc_map.get(p["desc_key"], "")
         filled = fill_tunables(raw, p["tunables"])
         p["desc_html"] = filled
         p["desc_text"] = strip_html(filled)
+        # 영어 원문(이름·소유자·설명). 플레이스홀더는 같은 tunables 로 채운다(언어 무관).
+        en = en_by_id.get(p["perk_id"], {})
+        p["name_en"] = en.get("name", "")
+        p["owner_en"] = en.get("owner", "")
+        filled_en = fill_tunables(desc_map_en.get(p["desc_key"], ""), p["tunables"])
+        p["desc_html_en"] = filled_en
+        p["desc_text_en"] = strip_html(filled_en)
         p["icon_path"] = norm_icon_path(p["icon_path"])
         # 검색용 통합 텍스트
         p["search_blob"] = f"{p['name']} {p['owner']} {p['desc_text']}"
@@ -204,12 +258,23 @@ def main():
         "id": p["perk_id"],
         "role": p["role"],
         "name": p["name"],
+        "name_en": p["name_en"],      # 영어 원문 이름 (표시 언어 전환 · 번역 검증용)
         "owner": p["owner"],
+        "owner_en": p["owner_en"],    # 영어 소유자(캐릭터)
+        "slug": p["slug"],            # nightlight 사용률 매핑 키 (영문 kebab-case)
         "icon_file": p["icon_file"],
         "desc_html": p["desc_html"],
         "desc_text": p["desc_text"],
+        "desc_html_en": p["desc_html_en"],   # 영어 원문 설명 (HTML, 표시용)
+        "desc_text_en": p["desc_text_en"],   # 영어 원문 설명 (평문, 검색용)
         "search_blob": p["search_blob"],
     } for p in kept]
+
+    # nightlight.gg 사용률 매핑: slug → nightlight 숫자 id(nl_id, 배포 무관 고정) +
+    # 기준 사용률(usage). nl_id 를 구워 두면 런타임 서버는 안정 API 만으로 갱신할 수 있다.
+    # 수집 실패(오프라인/사이트 변경)해도 퍽 데이터 빌드는 계속되도록 감싼다.
+    add_nightlight(clean)
+
     # 살인마("killer")가 생존자("survivor")보다 앞, 그 안에서 이름순
     clean.sort(key=lambda x: (x["role"], x["name"]))
 
