@@ -1,4 +1,4 @@
-# 🔪 DBD 퍽 검색기 (살인마 + 생존자)
+# 🔪 DBD 어시스턴트 (살인마 + 생존자)
 
 게임하면서 퍽 효과를 **한국어로 설명**하면, 가장 비슷한 퍽을
 아이콘과 함께 가능성 높은 순으로 찾아줍니다.
@@ -15,7 +15,7 @@
 
 ## 데모
 
-![DBD 퍽 검색기 데모](assets/demo.gif)
+![DBD 어시스턴트 데모](assets/demo.gif)
 
 > GIF 미리보기입니다. 소리·고화질 원본은 [assets/demo.mp4](assets/demo.mp4) 에서 볼 수 있어요.
 > (GitHub README는 상대경로 `<video>` 재생을 지원하지 않아 GIF로 표시합니다.)
@@ -25,7 +25,7 @@
 ## 실행 방법
 
 ### 1) 가장 쉬운 방법 — exe 더블클릭 (배포본, 파이썬 불필요) ⭐
-배포된 `DBD-Perk-Finder` 폴더 안의 **`DBD-Perk-Finder.exe`** 를 더블클릭하면 앱 창이 뜹니다.
+배포된 `DBD-Assistant` 폴더 안의 **`DBD-Assistant.exe`** 를 더블클릭하면 앱 창이 뜹니다.
 - **파이썬 설치 불필요** — 인터프리터와 라이브러리가 exe 안에 포함돼 있습니다.
 - **API 키는 환경변수 설정 없이** 창 우측 상단 **⚙️ 설정**에서 붙여넣으면 됩니다 (아래 [AI 정밀 검색 설정](#ai-정밀-검색-모드-설정-api-키) 참고).
 - **종료**: 창을 닫으면 끝납니다 (백그라운드에 남지 않음).
@@ -116,7 +116,7 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 ```
 
 - 처음 한 번은 빌드 도구를 설치합니다: `pip install pyinstaller pywebview`
-- 결과: **`dist\DBD-Perk-Finder\`** (one-folder). 이 폴더 **전체**를 zip 으로 묶어 배포합니다.
+- 결과: **`dist\DBD-Assistant\`** (one-folder). 이 폴더 **전체**를 zip 으로 묶어 배포합니다.
   진입점은 `app.py`(서버 스레드 + pywebview 네이티브 창)입니다.
 - 번들에는 읽기 전용 자산(`index.html`, `perks.json`, `icons/`, `tags.json` …)과 `anthropic`/`openai` SDK 가 포함됩니다.
   의미기반 모델(~155MB)은 용량 때문에 번들하지 않고 **첫 사용 시 `%APPDATA%\dbd-assistant\` 로 1회 다운로드**합니다.

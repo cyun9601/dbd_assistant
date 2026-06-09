@@ -1,9 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""PyInstaller 빌드 스펙 — DBD 퍽 검색기 (one-folder, 네이티브 창).
+"""PyInstaller 빌드 스펙 — DBD 어시스턴트 (one-folder, 네이티브 창).
 
 빌드:  python -m PyInstaller --noconfirm --clean dbd.spec   (또는 build.bat)
-결과:  dist/DBD-Perk-Finder/DBD-Perk-Finder.exe  (+ _internal/ 폴더)
-배포:  dist/DBD-Perk-Finder 폴더 전체를 zip 으로 묶어 전달.
+결과:  dist/DBD-Assistant/DBD-Assistant.exe  (+ _internal/ 폴더)
+배포:  dist/DBD-Assistant 폴더 전체를 zip 으로 묶어 전달.
 
 - 진입점은 app.py (서버 스레드 + pywebview 창).
 - 읽기 전용 자산(index.html, perks.json, icons/ …)만 번들. 의미기반 모델(~155MB)은
@@ -58,6 +58,7 @@ datas += [
     ("synonyms.js", "."),
     ("tags.json", "."),
     ("icons", "icons"),
+    ("assets/icon.ico", "assets"),   # 창 아이콘(런타임에 webview 가 사용)
 ]
 
 a = Analysis(
@@ -79,7 +80,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="DBD-Perk-Finder",
+    name="DBD-Assistant",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -90,6 +91,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon="assets/icon.ico",  # exe 아이콘 (작업표시줄·탐색기)
 )
 
 coll = COLLECT(
@@ -99,5 +101,5 @@ coll = COLLECT(
     strip=False,
     upx=False,
     upx_exclude=[],
-    name="DBD-Perk-Finder",
+    name="DBD-Assistant",
 )
