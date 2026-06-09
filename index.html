@@ -111,6 +111,21 @@
   .card .star.on { color: #f1c40f; }
   .card .score { font-size: 11px; color: var(--good);
     border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+  /* 사용률(nightlight) 뱃지 — 등급별 색 */
+  .card .usage { font-size: 11px; font-weight: 700; border-radius: 6px;
+    padding: 2px 7px; white-space: nowrap; border: 1px solid transparent; }
+  .usage.u-vh  { color: #ff7a59; border-color: #ff7a5944; background: #ff7a591a; }  /* 매우 높음 */
+  .usage.u-hi  { color: #ffb454; border-color: #ffb45444; background: #ffb4541a; }  /* 높음 */
+  .usage.u-avg { color: #5dade2; border-color: #5dade244; background: #5dade21a; }  /* 보통 */
+  .usage.u-low { color: #8a8a98; border-color: var(--line); background: transparent; } /* 낮음 */
+  /* 전체 보기 정렬 토글 바 */
+  .sortbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    color: var(--muted); font-size: 12.5px; }
+  .sortbtn { background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 4px 12px; font-size: 12.5px; cursor: pointer;
+    font-family: inherit; }
+  .sortbtn:hover { color: var(--text); border-color: var(--accent2); }
+  .sortbtn.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
   /* 태그 */
   .card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; align-items: center; }
   .tag {
@@ -154,6 +169,20 @@
   .desc b { color: #fff; }
   .desc .ReminderText { color: var(--muted); font-style: italic; font-size: 12.5px; }
   .hl { background: #5a3a00; color: #ffd866; border-radius: 3px; padding: 0 1px; }
+  /* 영어 원문 토글 + 블록 */
+  .en-toggle { margin-top: 8px; background: none; border: 1px dashed var(--line);
+    color: var(--muted); border-radius: 999px; padding: 2px 10px; font-size: 11.5px;
+    cursor: pointer; font-family: inherit; }
+  .en-toggle:hover, .en-toggle.open { border-color: var(--accent2); color: var(--text); }
+  .desc-en { margin-top: 8px; padding: 9px 11px; font-size: 13px; line-height: 1.55;
+    color: #cfcfda; background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 8px; }
+  .desc-en .en-name { display: block; font-weight: 700; color: #fff; margin-bottom: 5px; }
+  .desc-en .Highlight1 { color: #f1c40f; font-weight: 700; }
+  .desc-en .Highlight2 { color: #5dade2; font-weight: 700; }
+  .desc-en .Highlight3 { color: #e67e22; font-weight: 700; }
+  .desc-en b { color: #fff; }
+  .desc-en .ReminderText { color: var(--muted); font-style: italic; font-size: 12px; }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; }
   /* ⚙️ 설정 (API 키) */
   .gear-btn {
@@ -174,6 +203,18 @@
   .modal h2 { margin: 0 0 8px; font-size: 17px; }
   .modal .sub { color: var(--muted); font-size: 12.5px; line-height: 1.65; margin-bottom: 16px; }
   .modal .sub b { color: var(--text); }
+  /* 설정 섹션 + 세그먼트(택1) 버튼 */
+  .set-section { margin-bottom: 18px; }
+  .set-label { font-weight: 700; font-size: 14px; margin-bottom: 9px; }
+  .set-label small { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 4px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
+    overflow: hidden; background: var(--panel2); }
+  .seg button { background: none; border: none; color: var(--muted); cursor: pointer;
+    font-family: inherit; font-size: 13px; padding: 7px 16px; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button:hover { color: var(--text); }
+  .seg button.active { background: var(--accent2); color: #fff; }
+  .set-hint { color: var(--muted); font-size: 12px; line-height: 1.6; margin-top: 8px; }
   .key-row {
     border: 1px solid var(--line); border-radius: 10px; padding: 13px;
     margin-bottom: 12px; background: var(--panel2);
@@ -225,7 +266,7 @@
       <button class="fav-toggle" id="allBtn" title="이 역할의 전체 퍽 보기">📖 전체</button>
       <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
       <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
-      <button class="gear-btn" id="settingsBtn" title="API 키 설정 (AI 정밀 검색용)">⚙️</button>
+      <button class="gear-btn" id="settingsBtn" title="설정 (표시 언어 · 검색 범위 · API 키)">⚙️</button>
     </div>
     <div class="searchrow">
       <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
@@ -260,13 +301,35 @@
   <div id="results"></div>
 </main>
 <div class="modal-backdrop" id="settingsModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="API 키 설정">
-    <h2>⚙️ API 키 설정</h2>
-    <div class="sub">
-      <b>AI 정밀 검색</b> 모드에만 필요합니다. 쓰려는 공급자 한 곳(<b>Anthropic</b> 또는 <b>OpenAI</b>)의 키만 있으면 됩니다.<br>
-      키는 <b>이 PC에만</b> 저장되고(Windows DPAPI 로 계정에 묶어 암호화), 외부로 전송되지 않습니다.
+  <div class="modal" role="dialog" aria-modal="true" aria-label="설정">
+    <h2>⚙️ 설정</h2>
+
+    <div class="set-section">
+      <div class="set-label">🌐 표시 언어 <small>퍽 이름·설명을 어떤 언어로 보여줄지 (검색 방식과는 무관)</small></div>
+      <div class="seg" id="langSeg">
+        <button data-lang="ko">한국어</button>
+        <button data-lang="en">English</button>
+      </div>
     </div>
-    <div id="keyRows"></div>
+
+    <div class="set-section">
+      <div class="set-label">🔎 검색 범위 <small>검색 시 어떤 언어로 매칭할지</small></div>
+      <div class="seg" id="scopeSeg">
+        <button data-scope="same">동일 언어 검색</button>
+        <button data-scope="multi">다국어 검색</button>
+      </div>
+      <div class="set-hint" id="scopeHint"></div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-label">🔑 API 키 <small>AI 정밀 검색 모드에만 필요</small></div>
+      <div class="sub">
+        쓰려는 공급자 한 곳(<b>Anthropic</b> 또는 <b>OpenAI</b>)의 키만 있으면 됩니다.
+        키는 <b>이 PC에만</b> 저장되고(Windows DPAPI 로 계정에 묶어 암호화), 외부로 전송되지 않습니다.
+      </div>
+      <div id="keyRows"></div>
+    </div>
+
     <div class="modal-foot"><button class="btn ghost" id="settingsClose">닫기</button></div>
   </div>
 </div>
@@ -298,9 +361,94 @@ let OVERRIDDEN = new Set();   // 사용자가 기본값에서 수정한 퍽 id
 let tagFilter = new Set();    // 활성 태그 필터 (모두 만족하는 퍽만, AND)
 let tagListView = false;      // 전체 태그 목록 보기 on/off
 let allView = false;          // 전체 퍽 보기 on/off
+let allSort = "usage";        // 전체 보기 정렬: "usage"(사용률순) | "name"(가나다순)
+let USAGE = {};               // 서버 실시간 사용률 {퍽id: pct} (없으면 구운 값으로 폴백)
+let usageMeta = null;         // 사용률 메타(집계 기간·출처)
+
+// 표시 언어(보여주기 전용) · 검색 범위(매칭에 넣을 언어). 둘은 독립적이다.
+let dispLang = (localStorage.getItem("dbd-lang") === "en") ? "en" : "ko";       // "ko" | "en"
+let searchScope = (localStorage.getItem("dbd-scope") === "multi") ? "multi" : "same"; // "same" | "multi"
 
 const ROLE_WORD = { killer: "살인마", survivor: "생존자" };
 const perksForRole = () => PERKS.filter((p) => p.role === role);
+
+// ---- 표시 언어 헬퍼 (카드에 보여줄 텍스트) ----
+const dispName = (p) => (dispLang === "en" && p.name_en) ? p.name_en : p.name;
+const dispDesc = (p) => (dispLang === "en" && p.desc_html_en) ? p.desc_html_en : p.desc_html;
+function ownerLabel(p) {
+  const o = (dispLang === "en") ? (p.owner_en || p.owner) : p.owner;
+  if (o === "public" || o === "공용") return dispLang === "en" ? "Public" : "공용";
+  return o;
+}
+// 반대 언어 원문 블록 (한글 표시 중이면 영어를, 영어 표시 중이면 한글을 펼쳐 보여줌)
+function altBlockHtml(perk) {
+  const toEn = dispLang === "ko";
+  const altName = toEn ? perk.name_en : perk.name;
+  const altDesc = toEn ? perk.desc_html_en : perk.desc_html;
+  if (!altDesc) return "";
+  const label = toEn ? "🇬🇧 영어 원문" : "🇰🇷 한국어";
+  const nameHtml = altName ? `<span class="en-name">${esc(altName)}</span>` : "";
+  return `<button class="en-toggle" type="button" data-open-label="${label} 닫기" data-shut-label="${label}">${label}</button>` +
+    `<div class="desc-en" hidden>${nameHtml}${altDesc}</div>`;
+}
+
+// 검색 매칭에 쓸 텍스트 (검색 범위 + 표시 언어). 키워드 검색용 필드 선택자.
+function searchFields(p) {
+  const ko = { name: p.name, owner: p.owner || "", desc: p.desc_text || "" };
+  const en = { name: p.name_en || "", owner: p.owner_en || "", desc: p.desc_text_en || "" };
+  if (searchScope === "multi")
+    return { name: ko.name + " " + en.name, owner: ko.owner + " " + en.owner, desc: ko.desc + " " + en.desc };
+  return dispLang === "en" ? en : ko;
+}
+// 의미검색 임베딩 캐시/패시지를 가르는 프로파일 키
+const searchProfile = () => (searchScope === "multi") ? "multi" : `same-${dispLang}`;
+function semanticPassage(p) {
+  const ko = `${p.name}. ${p.desc_text}`;
+  const en = `${p.name_en || ""}. ${p.desc_text_en || ""}`;
+  if (searchScope === "multi") return `passage: ${ko} ${en}`;
+  return `passage: ${dispLang === "en" ? en : ko}`;
+}
+
+// ---- 퍽 사용률 (nightlight.gg) ----
+// 서버 /usage(실시간) 가 있으면 그 값을, 없으면 build 때 구운 perk.usage 를 쓴다.
+const usageOf = (perk) => {
+  const live = USAGE[perk.id];
+  if (live != null) return live;
+  return perk.usage != null ? perk.usage : null;
+};
+// 사용률(%) → 등급 (뱃지 색). 임계값은 DBD 분포에 맞춰 잡음(상위 퍽 15%+, 중앙값 ~1.4%).
+function usageTier(pct) {
+  if (pct == null) return null;
+  if (pct >= 15) return "vh";
+  if (pct >= 7) return "hi";
+  if (pct >= 2) return "avg";
+  return "low";
+}
+function usageBadgeHtml(perk) {
+  const pct = usageOf(perk);
+  if (pct == null) return "";
+  const tier = usageTier(pct);
+  const txt = pct >= 10 ? Math.round(pct) : pct.toFixed(1);
+  const period = usageMeta && usageMeta.window && usageMeta.window.start
+    ? ` (${usageMeta.window.start.slice(0, 10)}~${(usageMeta.window.end || "").slice(0, 10)})` : "";
+  return `<span class="usage u-${tier}" title="nightlight.gg 사용률${period}">🔥 ${txt}%</span>`;
+}
+// 사용률 내림차순 비교 (데이터 없는 퍽은 뒤로)
+const byUsageDesc = (a, b) =>
+  ((usageOf(b) == null ? -1 : usageOf(b)) - (usageOf(a) == null ? -1 : usageOf(a)));
+
+// 시작 시 서버에서 실시간 사용률을 받아 화면 갱신. 서버 없으면(file://) 구운 값 사용.
+async function loadUsage() {
+  try {
+    const res = await fetch("/usage");
+    if (res.ok) {
+      const d = await res.json();
+      USAGE = d.usage || {};
+      usageMeta = d;
+    }
+  } catch { /* 서버 없음 — perk.usage(구운 값)로 폴백 */ }
+  refresh();   // 뱃지/정렬에 반영
+}
 
 // ---- 즐겨찾기 ----
 const FAV_LS_KEY = "dbd-favorites";   // 서버 미사용(file://) 시 폴백 저장소
@@ -454,7 +602,7 @@ function renderTagFilter() {
     return;
   }
   countEl.textContent = `🏷️ ${label} — ${list.length}개 (${ROLE_WORD[role]})`;
-  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+  results.innerHTML = list.map((perk) => cardHtml(perk)).join("");
 }
 
 // 태그 추가 입력창 열기 (＋ 자리에 인라인 input)
@@ -510,12 +658,25 @@ function exitAllView() {
   $("#allBtn").classList.remove("active");
 }
 
-// 전체 보기: 현재 역할의 모든 퍽을 이름순으로 (검색/모드 무관)
+// 전체 보기: 현재 역할의 모든 퍽 (사용률순 기본, 가나다순 토글)
 function renderAllPerks() {
-  const list = perksForRole().slice().sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  const byName = (a, b) => a.name.localeCompare(b.name, "ko");
+  const list = perksForRole().slice().sort(
+    allSort === "usage" ? (a, b) => byUsageDesc(a, b) || byName(a, b) : byName);
   countEl.textContent = `📖 전체 ${list.length}개 (${ROLE_WORD[role]})`;
-  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+  const bar = `<div class="sortbar">정렬
+    <button class="sortbtn${allSort === "usage" ? " active" : ""}" data-sort="usage">🔥 사용률순</button>
+    <button class="sortbtn${allSort === "name" ? " active" : ""}" data-sort="name">가나다순</button></div>`;
+  results.innerHTML = bar + list.map((perk) => cardHtml(perk)).join("");
 }
+
+// 전체 보기 정렬 토글 (이벤트 위임)
+results.addEventListener("click", (e) => {
+  const b = e.target.closest(".sortbtn");
+  if (!b) return;
+  allSort = b.dataset.sort;
+  renderAllPerks();
+});
 
 $("#allBtn").onclick = () => {
   allView = !allView;
@@ -567,33 +728,59 @@ function refresh() {
 }
 
 const EXAMPLES = {
-  killer: [
-    "살인마 속도가 빨라졌어",
-    "발전기 수리가 막혔어",
-    "내 오라가 보이는 것 같아",
-    "비명 지르면 위치 들킴",
-    "몸부림이 느려지는 퍽",
-    "판자에 맞고 경직이 길어졌어",
-  ],
-  survivor: [
-    "다친 동료 위치가 보여",
-    "달리기 시작할 때 확 빨라져",
-    "치료 속도 빨라지는 퍽",
-    "혼자서 일어나는 퍽",
-    "갈고리에서 풀려나는 퍽",
-    "빈사 상태에서 기어가는 속도",
-  ],
+  ko: {
+    killer: [
+      "살인마 속도가 빨라졌어",
+      "발전기 수리가 막혔어",
+      "내 오라가 보이는 것 같아",
+      "비명 지르면 위치 들킴",
+      "몸부림이 느려지는 퍽",
+      "판자에 맞고 경직이 길어졌어",
+    ],
+    survivor: [
+      "다친 동료 위치가 보여",
+      "달리기 시작할 때 확 빨라져",
+      "치료 속도 빨라지는 퍽",
+      "혼자서 일어나는 퍽",
+      "갈고리에서 풀려나는 퍽",
+      "빈사 상태에서 기어가는 속도",
+    ],
+  },
+  en: {
+    killer: [
+      "the killer moves faster",
+      "blocks generator repair",
+      "I think my aura is visible",
+      "screaming reveals location",
+      "slows down wiggling",
+      "longer stun after a pallet hit",
+    ],
+    survivor: [
+      "see injured teammates",
+      "burst of speed when I start running",
+      "heal faster",
+      "recover by myself",
+      "unhook myself",
+      "crawl speed while dying",
+    ],
+  },
 };
 const PLACEHOLDER = {
-  killer: "퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어",
-  survivor: "퍽 효과를 적어보세요. 예) 다친 동료 위치가 보여",
+  ko: {
+    killer: "퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어",
+    survivor: "퍽 효과를 적어보세요. 예) 다친 동료 위치가 보여",
+  },
+  en: {
+    killer: "Describe a perk effect. e.g. the killer moves faster",
+    survivor: "Describe a perk effect. e.g. see injured teammates",
+  },
 };
 
-// 예시 칩 (역할에 맞춰 다시 그림)
+// 예시 칩 (역할·표시 언어에 맞춰 다시 그림)
 const exWrap = $("#examples");
 function renderExamples() {
   exWrap.innerHTML = "";
-  EXAMPLES[role].forEach((t) => {
+  (EXAMPLES[dispLang][role] || EXAMPLES.ko[role]).forEach((t) => {
     const c = document.createElement("button");
     c.className = "chip"; c.textContent = t;
     c.onclick = () => { $("#q").value = t; runSearch(); };
@@ -604,7 +791,7 @@ function renderExamples() {
 // 역할 적용: 퍽 개수 · 예시 · 플레이스홀더 갱신
 function applyRole() {
   $("#perkcount").textContent = `(${ROLE_WORD[role]} ${perksForRole().length}개)`;
-  $("#q").placeholder = PLACEHOLDER[role];
+  $("#q").placeholder = (PLACEHOLDER[dispLang] || PLACEHOLDER.ko)[role];
   updateFavCount();
   renderExamples();
 }
@@ -672,13 +859,15 @@ function cardHtml(perk, { badge = "", reason = "", desc } = {}) {
     <div class="ic"><img src="${perk.icon_file}" alt="" loading="lazy"></div>
     <div class="body">
       <div class="top">
-        <span class="name">${perk.name}</span>
-        <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${perk.owner === 'public' ? '공용' : perk.owner}</span>
+        <span class="name">${esc(dispName(perk))}</span>
+        <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${esc(ownerLabel(perk))}</span>
+        ${usageBadgeHtml(perk)}
         <button class="star${fav ? ' on' : ''}" data-fav-id="${perk.id}" title="즐겨찾기" aria-pressed="${fav}">${fav ? '★' : '☆'}</button>
         ${badgeHtml}
       </div>
       ${reasonHtml}
-      <div class="desc">${desc != null ? desc : perk.desc_html}</div>
+      <div class="desc">${desc != null ? desc : dispDesc(perk)}</div>
+      ${altBlockHtml(perk)}
       <div class="tags" data-perk="${perk.id}">${tagRowInner(perk.id)}</div>
     </div>
   </div>`;
@@ -703,7 +892,7 @@ function render(list, q) {
   const terms = mode === "keyword" ? expandedQueryTerms(q, SYN) : [];
   countEl.textContent = `${list.length}개 결과 (가능성 높은 순)`;
   results.innerHTML = list.map(({ perk, score, pct, confidence, reason }) => {
-    const desc = mode === "keyword" ? highlightMatches(perk.desc_html, terms) : perk.desc_html;
+    const desc = mode === "keyword" ? highlightMatches(dispDesc(perk), terms) : dispDesc(perk);
     let badge = "";
     if (mode === "semantic") badge = `${Math.round(pct)}%`;
     else if (mode === "llm") badge = `${confidence}%`;
@@ -721,7 +910,7 @@ function renderFavorites() {
     return;
   }
   countEl.textContent = `⭐ 즐겨찾기 ${list.length}개 (${ROLE_WORD[role]})`;
-  results.innerHTML = list.map((perk) => cardHtml(perk, { desc: perk.desc_html })).join("");
+  results.innerHTML = list.map((perk) => cardHtml(perk)).join("");
 }
 
 // 별표 클릭(이벤트 위임) — 카드는 매번 새로 그려지므로 컨테이너에 한 번만 바인딩
@@ -739,15 +928,37 @@ results.addEventListener("click", (e) => {
   if (favView && !on) renderFavorites();   // 즐겨찾기 보기 중 해제하면 목록에서 사라지게
 });
 
+// 원문(반대 언어) 펼치기/접기 (이벤트 위임)
+results.addEventListener("click", (e) => {
+  const btn = e.target.closest(".en-toggle");
+  if (!btn) return;
+  const box = btn.nextElementSibling;
+  if (!box || !box.classList.contains("desc-en")) return;
+  const open = box.hasAttribute("hidden");
+  box.toggleAttribute("hidden", !open);
+  btn.classList.toggle("open", open);
+  btn.textContent = open ? btn.dataset.openLabel : btn.dataset.shutLabel;
+});
+
+// 1차 점수가 같을 때만 사용률 높은 퍽을 앞으로 (관련도 순서는 그대로 유지)
+function tiebreakByUsage(list, scoreOf) {
+  return list
+    .map((x, i) => [x, i])   // 안정 정렬: 점수·사용률 모두 같으면 원래 순서 유지
+    .sort((A, B) => (scoreOf(B[0]) - scoreOf(A[0]))
+      || byUsageDesc(A[0].perk, B[0].perk) || (A[1] - B[1]))
+    .map(([x]) => x);
+}
+
 async function runSearch() {
   const q = $("#q").value;
   if (mode === "keyword") {
-    render(rankKeyword(q, perksForRole(), SYN), q);
+    render(tiebreakByUsage(rankKeyword(q, perksForRole(), SYN, searchFields), (x) => x.score), q);
   } else if (mode === "semantic") {
     if (!q.trim()) { render([], q); return; }
-    if (!semantic || !semantic.ready) { await ensureSemantic(); }
+    await ensureSemantic();            // 프로파일(범위/언어)이 바뀌었으면 내부에서 재임베딩
+    if (!semantic || !semantic.ready) return;   // 준비 실패 시 상태줄에 안내됨
     const ranked = await semantic.rank(q);
-    render(ranked, q);
+    render(tiebreakByUsage(ranked, (x) => x.score), q);
   } else if (mode === "llm") {
     if (!q.trim()) { render([], q); return; }
     await runLLM(q);
@@ -763,7 +974,7 @@ async function runLLM(q) {
     const res = await fetch("/ask", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ query: q, model, role }),
+      body: JSON.stringify({ query: q, model, role, lang: dispLang, scope: searchScope }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -779,7 +990,9 @@ async function runLLM(q) {
       results.innerHTML = `<div class="empty">${esc(data.error || "오류")}</div>`;
       return;
     }
-    const list = data.results.map((r) => ({ perk: r.perk, confidence: r.confidence, reason: r.reason }));
+    const list = tiebreakByUsage(
+      data.results.map((r) => ({ perk: r.perk, confidence: r.confidence, reason: r.reason })),
+      (x) => x.confidence);
     const u = data.usage || {};
     const cached = u.cache_read ? ` · 캐시 ${u.cache_read}토큰` : "";
     statusEl.textContent = `${ALLOWED_MODEL_NAMES[data.model] || data.model} 응답 완료 (입력 ${(u.input||0)+(u.cache_read||0)+(u.cache_write||0)}토큰${cached}, 출력 ${u.output||0}토큰)`;
@@ -800,42 +1013,49 @@ const LIB = "/vendor/transformers/transformers.min.js";  // 로컬 라이브러�
 
 function cosine(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
 
+// 모델 임베딩 함수 — 1회 로드해 프로파일이 바뀌어도 재사용(매트릭스만 다시 만든다).
+let _embed = null;
+async function getEmbed() {
+  if (_embed) return _embed;
+  await ensureModelDownloaded();   // 모델/라이브러리 없으면 서버가 1회 자동 다운로드
+  const { pipeline, env } = await import(LIB);
+  // 전부 로컬에서 — HuggingFace/CDN 으로 나가지 않음
+  env.allowRemoteModels = false;
+  env.allowLocalModels = true;
+  env.localModelPath = "/models/";
+  env.backends.onnx.wasm.wasmPaths = "/vendor/transformers/";
+  env.backends.onnx.wasm.numThreads = 1;
+  const extractor = await pipeline("feature-extraction", MODEL, { dtype: "q8" });
+  _embed = async (texts) => (await extractor(texts, { pooling: "mean", normalize: true })).tolist();
+  return _embed;
+}
+
+// 현재 검색 프로파일(범위/표시 언어)에 맞는 의미검색 준비. 프로파일이 바뀌면 매트릭스만 다시 임베딩.
 async function ensureSemantic() {
-  if (semantic && semantic.ready) return;
-  if (semantic && semantic.loadingPromise) return semantic.loadingPromise;
-  semantic = { ready: false };
+  const profile = searchProfile();
+  if (semantic && semantic.ready && semantic.profile === profile) return;
+  if (semantic && semantic.loadingPromise && semantic.loadingProfile === profile) return semantic.loadingPromise;
+  semantic = { ready: false, loadingProfile: profile };
   statusEl.textContent = "AI 모델 준비 중…";
   semantic.loadingPromise = (async () => {
     try {
-      await ensureModelDownloaded();   // 모델/라이브러리 없으면 서버가 1회 자동 다운로드
-      const { pipeline, env } = await import(LIB);
-      // 전부 로컬에서 — HuggingFace/CDN 으로 나가지 않음
-      env.allowRemoteModels = false;
-      env.allowLocalModels = true;
-      env.localModelPath = "/models/";
-      env.backends.onnx.wasm.wasmPaths = "/vendor/transformers/";
-      env.backends.onnx.wasm.numThreads = 1;
-      const extractor = await pipeline("feature-extraction", MODEL, {
-        dtype: "q8",  // models/.../onnx/model_quantized.onnx 사용
-      });
-      const embed = async (texts) => {
-        const out = await extractor(texts, { pooling: "mean", normalize: true });
-        return out.tolist();
-      };
-      // 코퍼스 임베딩 (캐시)
+      const embed = await getEmbed();
+      // 코퍼스 임베딩 (검색 범위/표시 언어 프로파일별로 캐시)
       statusEl.textContent = "퍽 설명 분석 중…";
-      let matrix = await loadCache(PERKS.length);
+      const cacheKey = `${PERKS.length}-${profile}`;
+      let matrix = await loadCache(cacheKey);
       if (!matrix) {
-        const passages = PERKS.map((p) => `passage: ${p.name}. ${p.desc_text}`);
+        const passages = PERKS.map((p) => semanticPassage(p));
         matrix = [];
         const B = 16;
         for (let i = 0; i < passages.length; i += B) {
           matrix.push(...await embed(passages.slice(i, i + B)));
           statusEl.textContent = `퍽 설명 분석 중… ${Math.min(i + B, passages.length)}/${passages.length}`;
         }
-        saveCache(PERKS.length, matrix);
+        saveCache(cacheKey, matrix);
       }
       semantic.matrix = matrix;
+      semantic.profile = profile;
       semantic.rank = async (q) => {
         const [qv] = await embed([`query: ${q}`]);
         // 코퍼스는 전체(306개)를 임베딩해 두고, 순위 산출 시 현재 역할만 추린다
@@ -963,10 +1183,44 @@ function renderKeyRows() {
 
 function openSettings() {
   $("#settingsModal").classList.add("open");
+  syncSettingsUI();                       // 언어·검색범위 토글 상태 반영
   renderKeyRows();                        // 우선 직전 캐시로 즉시 표시
   loadConfig().then(renderKeyRows);       // 최신 상태로 갱신
 }
 function closeSettings() { $("#settingsModal").classList.remove("open"); }
+
+// ---- 표시 언어 / 검색 범위 설정 ----
+const SCOPE_HINT = {
+  same: "표시 언어와 같은 언어로만 검색합니다. (현재: 한국어/영어 중 표시 언어)",
+  multi: "한국어·영어 모두로 검색합니다. 어느 언어로 입력해도 매칭됩니다.",
+};
+function syncSettingsUI() {
+  document.querySelectorAll("#langSeg button").forEach((b) =>
+    b.classList.toggle("active", b.dataset.lang === dispLang));
+  document.querySelectorAll("#scopeSeg button").forEach((b) =>
+    b.classList.toggle("active", b.dataset.scope === searchScope));
+  $("#scopeHint").textContent = SCOPE_HINT[searchScope];
+}
+// 표시 언어 전환 — 화면만 다시 그린다(검색 매칭과 무관). 의미검색은 표시 언어가
+// 동일언어 검색의 대상이므로 프로파일이 바뀔 수 있어 다음 검색 때 자동 재임베딩된다.
+$("#langSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-lang]");
+  if (!b || b.dataset.lang === dispLang) return;
+  dispLang = b.dataset.lang;
+  localStorage.setItem("dbd-lang", dispLang);
+  syncSettingsUI();
+  applyRole();      // 예시 칩·플레이스홀더 언어 갱신
+  refresh();        // 카드 다시 그림
+});
+// 검색 범위 전환 — 키워드/AI 는 다음 검색부터, 의미검색은 프로파일이 바뀌므로 재임베딩.
+$("#scopeSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-scope]");
+  if (!b || b.dataset.scope === searchScope) return;
+  searchScope = b.dataset.scope;
+  localStorage.setItem("dbd-scope", searchScope);
+  syncSettingsUI();
+  refresh();        // 현재 검색을 새 범위로 다시 실행
+});
 
 $("#settingsBtn").onclick = openSettings;
 $("#settingsClose").onclick = closeSettings;
@@ -1029,6 +1283,8 @@ Promise.all([loadFavorites(), loadTags(), loadConfig()]).then(() => {
   updateFavCount();
   refresh();
 });
+// 퍽 사용률(nightlight) 로드 — 도착하면 뱃지/정렬에 반영 (서버 없으면 구운 값 사용)
+loadUsage();
 
 // ---- 업데이트 확인 (GitHub Releases) ----
 // 서버가 시작 시 GitHub 최신 릴리스를 받아 두면, 여기서 읽어 새 버전이면 배너를 띄운다.

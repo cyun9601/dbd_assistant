@@ -23,18 +23,22 @@
     return [...terms].filter((t) => t.length >= 2);
   }
 
-  function rankKeyword(q, perks, syn) {
+  // pick(perk) -> {name, owner, desc}: 매칭에 쓸 텍스트(표시 언어/검색 범위에 따라 달라짐).
+  // 생략하면 한국어 필드를 쓴다(기존 동작과 동일).
+  function rankKeyword(q, perks, syn, pick) {
     const cq = cleanQuery(q);
     if (!cq) return [];
     const words = cq.split(" ").filter((w) => w.length >= 2 && !STOP.includes(w));
     const terms = expandedQueryTerms(q, syn);
     const userWords = new Set([...words, cq]); // 유저가 직접 친 단어
+    const fields = pick || ((p) => ({ name: p.name, owner: p.owner || "", desc: p.desc_text || "" }));
 
     const scored = [];
     for (const perk of perks) {
-      const name = perk.name.toLowerCase();
-      const owner = (perk.owner || "").toLowerCase();
-      const desc = perk.desc_text.toLowerCase();
+      const f = fields(perk);
+      const name = (f.name || "").toLowerCase();
+      const owner = (f.owner || "").toLowerCase();
+      const desc = (f.desc || "").toLowerCase();
       let score = 0;
       const matched = new Set();
 

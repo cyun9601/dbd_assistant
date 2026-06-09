@@ -9,7 +9,12 @@
 > (생존자) `"다친 동료 위치가 보여"` → 유대, 공감 …
 > (생존자) `"발전기 다 고치면 빨라지는 거"` → 아드레날린 …
 
-데이터 출처: [dbd-db.com](https://dbd-db.com/ko/perks) · 살인마 **139개** + 생존자 **167개** = **306개** 전부
+각 퍽이 실제로 **얼마나 많이 쓰이는지**(🔥 사용률)도 카드에 함께 보여줍니다 — [nightlight.gg](https://nightlight.gg/perks) 의 커뮤니티 통계 기반. 전체 보기는 **사용률 높은 순**이 기본입니다.
+한글 번역이 의심스러우면 카드의 **🇬🇧 영어 원문** 버튼으로 영어 퍽 이름·설명 원문을 펼쳐 볼 수 있습니다.
+
+**⚙️ 언어 설정** — 설정에서 ① **표시 언어**(한국어/English, 카드에 보여줄 언어 · 검색과 무관)와 ② **검색 범위**(동일 언어 검색 / 다국어 검색)를 고를 수 있습니다. *다국어 검색*은 한국어·영어 어느 쪽으로 입력해도 매칭되며, 세 검색 모드 모두에 적용됩니다.
+
+데이터 출처: 퍽 정보 [dbd-db.com](https://dbd-db.com/ko/perks) · 사용률 [nightlight.gg](https://nightlight.gg/perks) · 살인마 **139개** + 생존자 **167개** = **306개** 전부
 
 ---
 
@@ -101,9 +106,13 @@
 python build_data.py
 ```
 
-dbd-db.com 에서 살인마·생존자 퍽 목록·한글 설명문을 다시 받아
+dbd-db.com 에서 살인마·생존자 퍽 목록·한글/영어 설명문을 다시 받아
 `perks.json`, `perks_data.js` 를 갱신하고 `icons/` 에 아이콘을 내려받습니다.
+(영어 원문은 한글 오역 대비용으로 카드의 🇬🇧 버튼에서 보여 줍니다.)
 각 퍽엔 `role`(`killer`/`survivor`) 필드가 붙어, 앱의 진영 토글과 서버 코퍼스 분리에 쓰입니다.
+또한 nightlight.gg 와 매핑해 `nl_id`(사용률 API용 고정 id)와 기준 사용률(`usage`)을 함께 구워 둡니다
+— 서버 없이(`file://`) 열어도 사용률이 보이고, 서버 실행 시엔 `/usage` 로 매일 갱신된 값을 씁니다.
+(nightlight 수집이 실패해도 퍽 데이터 빌드는 그대로 진행됩니다.)
 
 ---
 
@@ -135,7 +144,8 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `index.html` | 검색 앱 (UI + 세 가지 검색 모드 + ⚙️ API 키 설정) |
 | `search.js` | 키워드 + 유의어 검색·랭킹 로직 |
 | `synonyms.js` | DBD 한글 게임 용어 유의어 사전 (편집 가능) |
-| `server.py` | 로컬 서버 — 정적 파일 + `/ask`(LLM 정밀 검색) + `/config`(키 입력/저장) |
+| `server.py` | 로컬 서버 — 정적 파일 + `/ask`(LLM 정밀 검색) + `/config`(키 입력/저장) + `/usage`(실시간 사용률) |
+| `nightlight.py` | nightlight.gg 퍽 사용률 수집 (런타임 API + 빌드 시 slug↔id 매핑, 외부 의존성 없음) |
 | `app.py` | exe/네이티브 창 진입점 — 서버 스레드 + pywebview (없으면 브라우저 폴백) |
 | `paths.py` | 실행 경로 해석 — 번들 자산(읽기) vs 사용자 데이터(`%APPDATA%`, 쓰기) 분리 |
 | `secrets_store.py` | API 키 저장소 — Windows DPAPI 암호화 (ctypes, 의존성 없음) |

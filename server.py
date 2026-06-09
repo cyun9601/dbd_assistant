@@ -15,10 +15,12 @@ import posixpath
 import socket
 import sys
 import threading
+import time
 import urllib.request
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 import download_model as dm
+import nightlight
 import paths
 import secrets_store
 from version import __version__ as APP_VERSION
@@ -182,30 +184,53 @@ def build_instructions(role):
     )
 
 
-def build_corpus(role, tag_perks):
+# 검색 범위(scope): "same"=표시 언어만, "multi"=한국어+영어 모두 프롬프트에 포함.
+# 표시 언어(lang)와 함께 코퍼스에 어떤 언어 텍스트를 넣을지 결정한다(표시 방식과는 별개).
+def _pick(ko, en, lang, scope, joiner):
+    en = (en or "").strip()
+    if scope == "multi":
+        return f"{ko}{joiner}{en}" if (en and en != ko) else ko
+    return en if (lang == "en" and en) else ko
+
+
+def _owner_label(p, lang, scope):
+    ko = "공용" if p["owner"] == "public" else p["owner"]
+    en = "Public" if (p.get("owner_en") == "public") else (p.get("owner_en") or "")
+    return _pick(ko, en, lang, scope, " / ")
+
+
+def build_corpus(role, tag_perks, lang, scope):
     lines = []
     for p in PERKS_BY_ROLE[role]:
-        owner = "공용" if p["owner"] == "public" else p["owner"]
+        name = _pick(p["name"], p.get("name_en"), lang, scope, " / ")
+        owner = _owner_label(p, lang, scope)
+        desc = _pick(p["desc_text"], p.get("desc_text_en"), lang, scope, " / ")
         tags = tag_perks.get(p["id"]) or []
         tag_str = ", ".join(tags) if tags else "-"
-        lines.append(f"{p['id']} | {p['name']} | {owner} | {tag_str} | {p['desc_text']}")
+        lines.append(f"{p['id']} | {name} | {owner} | {tag_str} | {desc}")
     return build_instructions(role) + "\n".join(lines)
 
 
-# 역할별 코퍼스 (각각 프롬프트 캐싱 대상). 사용자 태그가 바뀌면 rebuild_corpus() 로 갱신.
+# 코퍼스 캐시 — 키 "role:lang:scope" (각각 프롬프트 캐싱 대상). 첫 사용 시 지연 생성.
+# 태그가 바뀌면 rebuild_corpus() 가 캐시를 비워 다음 /ask 에서 새로 만든다.
 CORPUS = {}
+_corpus_lock = threading.Lock()
+
+
+def get_corpus(role, lang, scope):
+    key = f"{role}:{lang}:{scope}"
+    with _corpus_lock:
+        if key not in CORPUS:
+            _, tag_perks, _ = effective_tags()
+            CORPUS[key] = build_corpus(role, tag_perks, lang, scope)
+        return CORPUS[key]
 
 
 def rebuild_corpus():
-    """현재 유효 태그(기본+사용자 오버라이드)를 반영해 역할별 코퍼스를 다시 만든다.
-    태그 편집(/tags) 후 호출 → 다음 /ask 부터 새 태그가 프롬프트에 반영된다.
-    (코퍼스 텍스트가 바뀌면 프롬프트 캐시는 1회 미스 후 재캐싱되므로 안전)"""
-    _, tag_perks, _ = effective_tags()
-    for role in ROLE_WORD:
-        CORPUS[role] = build_corpus(role, tag_perks)
-
-
-rebuild_corpus()  # 시작 시 1회 생성
+    """태그 편집(/tags) 후 호출 — 모든 언어/범위 변형 캐시를 비운다.
+    다음 /ask 에서 새 태그가 반영된 코퍼스를 다시 만든다(프롬프트 캐시는 1회 미스 후 재캐싱)."""
+    with _corpus_lock:
+        CORPUS.clear()
 
 OUTPUT_SCHEMA = {
     "type": "json_schema",
@@ -249,11 +274,12 @@ def _client(provider, key):
     return client
 
 
-def _ask_anthropic(query, model, role, key):
+def _ask_anthropic(query, model, role, key, lang, scope):
     client = _client("anthropic", key)
 
     # 역할별 퍽 코퍼스는 system 에 두고 캐싱 → 매 질문마다 캐시 읽기(원가 0.1배)
-    system = [{"type": "text", "text": CORPUS[role], "cache_control": {"type": "ephemeral"}}]
+    system = [{"type": "text", "text": get_corpus(role, lang, scope),
+               "cache_control": {"type": "ephemeral"}}]
     kwargs = dict(
         model=model,
         max_tokens=2048,
@@ -277,7 +303,7 @@ def _ask_anthropic(query, model, role, key):
     return json.loads(text), usage
 
 
-def _ask_openai(query, model, role, key):
+def _ask_openai(query, model, role, key, lang, scope):
     client = _client("openai", key)
 
     # OpenAI 는 1024토큰 이상 프롬프트를 자동 캐싱(별도 설정 불필요).
@@ -285,7 +311,7 @@ def _ask_openai(query, model, role, key):
         model=model,
         max_completion_tokens=2048,
         messages=[
-            {"role": "system", "content": CORPUS[role]},
+            {"role": "system", "content": get_corpus(role, lang, scope)},
             {"role": "user", "content": query},
         ],
         response_format={
@@ -312,12 +338,12 @@ def _ask_openai(query, model, role, key):
     return json.loads(text), usage
 
 
-def ask_llm(query, model, role, key):
+def ask_llm(query, model, role, key, lang, scope):
     """질문을 LLM에 보내고 매칭된 퍽 결과를 반환."""
     if provider_of(model) == "anthropic":
-        data, usage = _ask_anthropic(query, model, role, key)
+        data, usage = _ask_anthropic(query, model, role, key, lang, scope)
     else:
-        data, usage = _ask_openai(query, model, role, key)
+        data, usage = _ask_openai(query, model, role, key, lang, scope)
 
     # id → 퍽 정보 매핑. 모르는 id, 또는 요청한 역할이 아닌 퍽은 버림(방어)
     out = []
@@ -446,6 +472,56 @@ def start_update_check():
     threading.Thread(target=_run_update_check, daemon=True).start()
 
 
+# ---- 퍽 사용률 (nightlight.gg) ----
+# 빌드 때 구워 둔 nl_id(nightlight 숫자 id, 배포 무관 고정)로 안정 API 결과를 join 한다.
+# 결과는 TTL 동안 캐시 — nightlight 데이터 자체가 하루 1회(UTC 16시)만 갱신되므로 충분.
+# 프론트는 /usage 로 읽고, 서버가 없거나 오프라인이면 perks_data.js 에 구운 기준값으로 폴백.
+NLID_TO_PERKID = {str(p["nl_id"]): p["id"] for p in PERKS if p.get("nl_id")}
+USAGE_TTL = 6 * 3600          # 6시간
+_usage = {"ts": 0.0, "payload": None}
+_usage_lock = threading.Lock()
+
+
+def get_usage(force=False):
+    """{"usage": {perk_id: pct}, "window": {...}, "updated": iso, "source": ...} 반환.
+    캐시가 신선하면 그대로, 아니면 nightlight 에서 새로 받아 매핑한다.
+    실패 시 직전 캐시(stale) 또는 빈 결과(error)를 돌려준다 — 프론트는 구운 값으로 폴백."""
+    with _usage_lock:
+        fresh = _usage["payload"] and (time.time() - _usage["ts"] < USAGE_TTL)
+        if fresh and not force:
+            return _usage["payload"]
+        try:
+            raw = nightlight.fetch_usage()
+            usage, window = {}, {}
+            for role in ("killer", "survivor"):
+                rd = raw.get(role, {})
+                for nid, info in rd.get("perks", {}).items():
+                    pid = NLID_TO_PERKID.get(nid)
+                    if pid:
+                        usage[pid] = info["pct"]
+                window = {"start": rd.get("start"), "end": rd.get("end")}
+            payload = {
+                "usage": usage,
+                "window": window,
+                "updated": raw.get("killer", {}).get("latest"),
+                "source": "live",
+            }
+            _usage.update(ts=time.time(), payload=payload)
+            return payload
+        except Exception as e:  # noqa — 오프라인/타임아웃/사이트 변경
+            if _usage["payload"]:
+                stale = dict(_usage["payload"])
+                stale["source"] = "stale"
+                return stale
+            return {"usage": {}, "window": {}, "updated": None,
+                    "source": "error", "error": str(e)}
+
+
+def start_usage_prefetch():
+    """첫 요청이 기다리지 않도록 시작 시 백그라운드로 한 번 데워 둔다."""
+    threading.Thread(target=lambda: get_usage(), daemon=True).start()
+
+
 class Handler(SimpleHTTPRequestHandler):
     # 로컬 모델/라이브러리 제공에 필요한 MIME 타입 보강
     extensions_map = {
@@ -500,6 +576,9 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/tags":
             vocab, perks, overridden = effective_tags()
             self._send_json(200, {"tags": vocab, "perks": perks, "overridden": overridden})
+            return
+        if path == "/usage":
+            self._send_json(200, get_usage())
             return
         super().do_GET()
 
@@ -613,8 +692,11 @@ class Handler(SimpleHTTPRequestHandler):
         if model not in ALLOWED_MODELS:
             model = DEFAULT_MODEL
         role = payload.get("role") or DEFAULT_ROLE
-        if role not in CORPUS:
+        if role not in ROLE_WORD:
             role = DEFAULT_ROLE
+        # 표시 언어(lang)·검색 범위(scope) — 코퍼스에 넣을 언어 결정. 검증 후 기본값.
+        lang = payload.get("lang") if payload.get("lang") in ("ko", "en") else "ko"
+        scope = payload.get("scope") if payload.get("scope") in ("same", "multi") else "same"
         if not query:
             self._send_json(400, {"error": "질문이 비어 있습니다."})
             return
@@ -631,7 +713,7 @@ class Handler(SimpleHTTPRequestHandler):
             return
 
         try:
-            result = ask_llm(query, model, role, key)
+            result = ask_llm(query, model, role, key, lang, scope)
             self._send_json(200, result)
         except ModuleNotFoundError:
             pkg = PROVIDER_PKG[provider]
@@ -669,6 +751,7 @@ def create_server():
 def serve(server):
     """서버를 블로킹으로 구동 (Ctrl+C / 종료 시 빠져나옴)."""
     start_update_check()   # 시작 시 1회 GitHub 최신 릴리스 확인 (백그라운드)
+    start_usage_prefetch() # 퍽 사용률(nightlight)도 미리 데워 둔다 (백그라운드)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
