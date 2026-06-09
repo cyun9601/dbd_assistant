@@ -157,3 +157,16 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `dbd.spec` · `build.bat` | PyInstaller 빌드 스펙 + 빌드 스크립트 (exe 배포본 생성) |
 | `run.bat` | 개발용 실행기 (SDK 자동 설치 + 서버 기동 + 브라우저 열기) |
 | `%APPDATA%\dbd-assistant\` | 사용자 데이터 — `config.json`(키, 암호화)·`favorites.json`·`tags_user.json`·`models/`·`vendor/` |
+
+---
+
+## 라이선스
+
+이 프로젝트는 **[PolyForm Noncommercial License 1.0.0](LICENSE)** 으로 배포됩니다.
+
+- ✅ **허용** — 개인·학습·연구·취미, 그리고 비영리/교육/공공 기관에서의 사용·수정·재배포
+- ❌ **금지** — 상업적 이용(영리 목적 사용, 판매, 유료 서비스 제공 등)
+
+상업적 이용을 원하시면 별도 문의해 주세요. 전체 조건은 [LICENSE](LICENSE) 파일을 참고하세요.
+
+> ⚠️ 본 라이선스는 **이 저장소의 코드**에 적용됩니다. 퍽 데이터·아이콘·명칭 등 *Dead by Daylight* 관련 자산의 권리는 Behaviour Interactive 에 있으며, 이 라이선스가 해당 자산에 대한 권리를 부여하지 않습니다.
