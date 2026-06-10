@@ -42,6 +42,11 @@ ALLOWED_MODELS = {
 }
 DEFAULT_MODEL = "claude-opus-4-8"
 
+# LLM 출력 토큰 상한. adaptive thinking(Opus)은 이 예산을 사고 토큰과 함께 나눠 쓰므로,
+# 너무 낮으면 사고가 길어진 회차에 결과 JSON이 잘려 매칭이 몇 개씩 누락된다. 넉넉히 둔다.
+# (상한일 뿐 — 실제 생성한 토큰만 과금되므로 올려도 평소 비용은 그대로다.)
+MAX_OUTPUT_TOKENS = 8192
+
 
 def provider_of(model):
     return "anthropic" if model.startswith("claude") else "openai"
@@ -176,7 +181,9 @@ def build_instructions(role):
         "- 질문이 퍽 이름의 일부와 겹치면 그 퍽을 최우선 포함하세요.\n"
         "- 사용자가 돌려 말하거나 줄임말/구어체를 써도 의미를 추론해 매칭하세요.\n"
         "- '태그'는 사용자가 그 퍽에 직접 붙여 둔 키워드입니다. 질문이 태그와 맞으면 강하게 매칭하세요.\n"
-        "- 관련 있는 퍽만 포함하세요. 억지로 채우지 마세요.\n"
+        "- 조금이라도 관련될 가능성이 있으면 일단 포함하세요. 포함 여부가 애매하면 빼지 말고\n"
+        "  낮은 confidence(예: 40 미만)로 포함하세요. 명백히 무관한 퍽만 제외합니다.\n"
+        "  거르는 일은 사용자가 confidence로 합니다 — 누락보다 과포함이 낫습니다.\n"
         "- confidence는 0~100 사이 정수 (확신도).\n"
         "- reason은 왜 매칭되는지 한국어 한 줄로 간결하게.\n"
         "- id는 반드시 아래 목록의 id를 그대로 사용하세요.\n\n"
@@ -282,7 +289,7 @@ def _ask_anthropic(query, model, role, key, lang, scope):
                "cache_control": {"type": "ephemeral"}}]
     kwargs = dict(
         model=model,
-        max_tokens=2048,
+        max_tokens=MAX_OUTPUT_TOKENS,
         system=system,
         messages=[{"role": "user", "content": query}],
         output_config={"format": OUTPUT_SCHEMA},
@@ -292,6 +299,11 @@ def _ask_anthropic(query, model, role, key, lang, scope):
         kwargs["thinking"] = {"type": "adaptive"}
 
     resp = client.messages.create(**kwargs)
+    # 출력이 상한에서 잘리면 결과 JSON이 불완전해져 매칭이 누락된다. 진단용 경고.
+    if getattr(resp, "stop_reason", None) == "max_tokens":
+        sys.stderr.write(
+            f"[ask] 경고: 출력이 max_tokens({MAX_OUTPUT_TOKENS})에 도달해 잘렸습니다 "
+            "— 매칭 일부 누락 가능. MAX_OUTPUT_TOKENS 를 올리세요.\n")
     text = next((b.text for b in resp.content if b.type == "text"), "{}")
     u = resp.usage
     usage = {
@@ -309,7 +321,7 @@ def _ask_openai(query, model, role, key, lang, scope):
     # OpenAI 는 1024토큰 이상 프롬프트를 자동 캐싱(별도 설정 불필요).
     resp = client.chat.completions.create(
         model=model,
-        max_completion_tokens=2048,
+        max_completion_tokens=MAX_OUTPUT_TOKENS,
         messages=[
             {"role": "system", "content": get_corpus(role, lang, scope)},
             {"role": "user", "content": query},
@@ -323,6 +335,11 @@ def _ask_openai(query, model, role, key, lang, scope):
             },
         },
     )
+    # 출력이 상한에서 잘리면 결과 JSON이 불완전해져 매칭이 누락된다. 진단용 경고.
+    if resp.choices and resp.choices[0].finish_reason == "length":
+        sys.stderr.write(
+            f"[ask] 경고: 출력이 max_tokens({MAX_OUTPUT_TOKENS})에 도달해 잘렸습니다 "
+            "— 매칭 일부 누락 가능. MAX_OUTPUT_TOKENS 를 올리세요.\n")
     text = resp.choices[0].message.content or "{}"
     u = resp.usage
     cached = 0
