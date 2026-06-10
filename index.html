@@ -7,20 +7,49 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🔪</text></svg>" />
 <style>
   :root {
+    /* 다크 테마 (기본) */
     --bg: #0c0c0f; --panel: #16161c; --panel2: #1e1e26;
     --line: #2a2a35; --text: #e9e9ef; --muted: #9a9aa8;
     --accent: #c0392b; --accent2: #e67e22; --good: #2ecc71;
     --surv: #2980b9;
+    --header-bg: rgba(12,12,15,.92);
+    --desc: #cfcfda; --strong: #fff;
+    --owner-surv: #7fb8e0; --link: #7fb8e0;
+    --star-off: #555;
+    --reason: #8fd6a6; --reason-line: #2e7d4f;
+    --hl-bg: #5a3a00; --hl-fg: #ffd866;
+    --hi1: #f1c40f; --hi2: #5dade2; --hi3: #e67e22;
+    --fav-bg: #3a3000; --fav-fg: #f1c40f;
+    --footer: #55555f; --footer-link: #777;
+    --shadow: rgba(0,0,0,.5); --backdrop: rgba(0,0,0,.62);
+  }
+  /* 라이트 테마 — html[data-theme="light"] 일 때 팔레트만 갈아끼운다 */
+  [data-theme="light"] {
+    --bg: #f3f3f6; --panel: #ffffff; --panel2: #ebebef;
+    --line: #d9d9e1; --text: #1b1b22; --muted: #6c6c78;
+    --accent: #c0392b; --accent2: #cf6411; --good: #1e8e4f;
+    --surv: #2471a3;
+    --header-bg: rgba(248,248,251,.92);
+    --desc: #2b2b36; --strong: #000;
+    --owner-surv: #2471a3; --link: #1a6aa8;
+    --star-off: #c2c2cc;
+    --reason: #1e7a44; --reason-line: #43b074;
+    --hl-bg: #ffeaa0; --hl-fg: #6b5200;
+    --hi1: #a67c00; --hi2: #1f6fa5; --hi3: #b35900;
+    --fav-bg: #fff6d4; --fav-fg: #8a6d00;
+    --footer: #a0a0ac; --footer-link: #8a8a96;
+    --shadow: rgba(0,0,0,.15); --backdrop: rgba(20,20,28,.45);
   }
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--text);
     font-family: "Pretendard", "Malgun Gothic", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    transition: background .2s ease, color .2s ease;
   }
   header {
     position: sticky; top: 0; z-index: 10;
-    background: rgba(12,12,15,.92); backdrop-filter: blur(8px);
+    background: var(--header-bg); backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line); padding: 14px 16px;
   }
   /* 업데이트 알림 배너 (새 버전 감지 시에만 표시) */
@@ -74,13 +103,13 @@
     color: var(--muted); padding: 8px 16px; border-radius: 999px; cursor: pointer;
     font-size: 14px; font-weight: 600;
   }
-  .fav-toggle.active { background: #3a3000; border-color: #f1c40f; color: #f1c40f; }
+  .fav-toggle.active { background: var(--fav-bg); border-color: var(--fav-fg); color: var(--fav-fg); }
   .fav-toggle .fav-count { opacity: .85; font-size: 12px; margin-left: 2px; }
-  .card .owner.surv { color: #7fb8e0; }
+  .card .owner.surv { color: var(--owner-surv); }
   #model { background: var(--panel2); border: 1px solid var(--line); color: var(--text);
     border-radius: 999px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
-  .reason { margin-top: 6px; font-size: 12.5px; color: #8fd6a6;
-    border-left: 2px solid #2e7d4f; padding-left: 8px; }
+  .reason { margin-top: 6px; font-size: 12.5px; color: var(--reason);
+    border-left: 2px solid var(--reason-line); padding-left: 8px; }
   .hint { color: var(--muted); font-size: 12px; margin-left: auto; }
   #status { font-size: 12px; color: var(--accent2); margin-top: 8px; min-height: 16px; }
   main { max-width: 920px; margin: 0 auto; padding: 16px; }
@@ -97,14 +126,14 @@
   }
   .card .ic { width: 64px; height: 64px; flex: 0 0 64px; }
   .card .ic img { width: 100%; height: 100%; object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+    filter: drop-shadow(0 2px 4px var(--shadow)); }
   .card .body { flex: 1; min-width: 0; }
   .card .top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .card .name { font-size: 16px; font-weight: 700; }
   .card .owner { font-size: 12px; color: var(--muted); }
   .card .star {
     margin-left: auto; background: none; border: none; cursor: pointer;
-    font-size: 19px; line-height: 1; color: #555; padding: 0 2px;
+    font-size: 19px; line-height: 1; color: var(--star-off); padding: 0 2px;
     transition: color .12s, transform .12s;
   }
   .card .star:hover { transform: scale(1.15); color: #f1c40f; }
@@ -162,26 +191,26 @@
     border-radius: 999px; padding: 0 7px; font-size: 11px; }
   .taglist-item.empty { opacity: .38; cursor: default; }
   .taglist-item.empty:hover { border-color: var(--line); color: var(--muted); }
-  .card .desc { margin-top: 7px; font-size: 13.5px; line-height: 1.6; color: #cfcfda; }
-  .desc .Highlight1 { color: #f1c40f; font-weight: 700; }
-  .desc .Highlight2 { color: #5dade2; font-weight: 700; }
-  .desc .Highlight3 { color: #e67e22; font-weight: 700; }
-  .desc b { color: #fff; }
+  .card .desc { margin-top: 7px; font-size: 13.5px; line-height: 1.6; color: var(--desc); }
+  .desc .Highlight1 { color: var(--hi1); font-weight: 700; }
+  .desc .Highlight2 { color: var(--hi2); font-weight: 700; }
+  .desc .Highlight3 { color: var(--hi3); font-weight: 700; }
+  .desc b { color: var(--strong); }
   .desc .ReminderText { color: var(--muted); font-style: italic; font-size: 12.5px; }
-  .hl { background: #5a3a00; color: #ffd866; border-radius: 3px; padding: 0 1px; }
+  .hl { background: var(--hl-bg); color: var(--hl-fg); border-radius: 3px; padding: 0 1px; }
   /* 영어 원문 토글 + 블록 */
   .en-toggle { margin-top: 8px; background: none; border: 1px dashed var(--line);
     color: var(--muted); border-radius: 999px; padding: 2px 10px; font-size: 11.5px;
     cursor: pointer; font-family: inherit; }
   .en-toggle:hover, .en-toggle.open { border-color: var(--accent2); color: var(--text); }
   .desc-en { margin-top: 8px; padding: 9px 11px; font-size: 13px; line-height: 1.55;
-    color: #cfcfda; background: var(--panel2); border: 1px solid var(--line);
+    color: var(--desc); background: var(--panel2); border: 1px solid var(--line);
     border-radius: 8px; }
-  .desc-en .en-name { display: block; font-weight: 700; color: #fff; margin-bottom: 5px; }
-  .desc-en .Highlight1 { color: #f1c40f; font-weight: 700; }
-  .desc-en .Highlight2 { color: #5dade2; font-weight: 700; }
-  .desc-en .Highlight3 { color: #e67e22; font-weight: 700; }
-  .desc-en b { color: #fff; }
+  .desc-en .en-name { display: block; font-weight: 700; color: var(--strong); margin-bottom: 5px; }
+  .desc-en .Highlight1 { color: var(--hi1); font-weight: 700; }
+  .desc-en .Highlight2 { color: var(--hi2); font-weight: 700; }
+  .desc-en .Highlight3 { color: var(--hi3); font-weight: 700; }
+  .desc-en b { color: var(--strong); }
   .desc-en .ReminderText { color: var(--muted); font-style: italic; font-size: 12px; }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; }
   /* ⚙️ 설정 (API 키) */
@@ -192,7 +221,7 @@
   .gear-btn:hover { color: var(--text); border-color: var(--accent2); }
   .gear-btn.warn { border-color: var(--accent2); color: var(--accent2); }
   .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,.62); z-index: 100;
+    position: fixed; inset: 0; background: var(--backdrop); z-index: 100;
     display: none; align-items: center; justify-content: center; padding: 16px;
   }
   .modal-backdrop.open { display: flex; }
@@ -226,7 +255,7 @@
   .kstat.set { color: var(--good); }
   .kstat.unset { color: var(--muted); }
   .kstat.env { color: var(--accent2); }
-  .key-row .kget { margin-left: auto; font-size: 12px; color: #7fb8e0; text-decoration: none; }
+  .key-row .kget { margin-left: auto; font-size: 12px; color: var(--link); text-decoration: none; }
   .key-row .kget:hover { text-decoration: underline; }
   .key-row .kin { display: flex; gap: 6px; align-items: center; }
   .key-row input {
@@ -247,9 +276,22 @@
   .btn:hover:not(:disabled) { border-color: var(--accent2); }
   .btn:disabled { opacity: .5; cursor: default; }
   .modal-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
-  footer { color: #55555f; font-size: 11px; text-align: center; padding: 24px 0; }
-  footer a { color: #777; }
+  footer { color: var(--footer); font-size: 11px; text-align: center; padding: 24px 0; }
+  footer a { color: var(--footer-link); }
+  /* 테마 토글 버튼 (헤더) */
+  .theme-toggle { font-size: 15px; line-height: 1; }
 </style>
+<script>
+  // 첫 페인트 전에 테마를 정해 둔다 (저장값 > 시스템 설정 > 다크). 잘못된 색 깜빡임 방지.
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem("dbd-theme"); } catch (e) {}
+    if (t !== "light" && t !== "dark") {
+      t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
 </head>
 <body>
 <div class="update-bar" id="updateBar" style="display:none">
@@ -266,6 +308,7 @@
       <button class="fav-toggle" id="allBtn" title="이 역할의 전체 퍽 보기">📖 전체</button>
       <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
       <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
+      <button class="gear-btn theme-toggle" id="themeBtn" title="화면 테마 전환 (라이트 / 다크)" aria-pressed="false"></button>
       <button class="gear-btn" id="settingsBtn" title="설정 (표시 언어 · 검색 범위 · API 키)">⚙️</button>
     </div>
     <div class="searchrow">
@@ -828,6 +871,26 @@ document.querySelectorAll(".role-btn").forEach((b) => {
     refresh();
   };
 });
+
+// ---- 화면 테마 (라이트 / 다크) ----
+// 초기 테마는 <head> 인라인 스크립트가 이미 정해 둠(저장값>시스템>다크). 여기선 버튼만 동기화.
+const currentTheme = () =>
+  document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  const btn = $("#themeBtn");
+  const dark = t === "dark";
+  // 다크일 땐 '라이트로 전환'(☀️), 라이트일 땐 '다크로 전환'(🌙) 아이콘을 보여준다.
+  btn.textContent = dark ? "☀️" : "🌙";
+  btn.title = dark ? "라이트 모드로 전환" : "다크 모드로 전환";
+  btn.setAttribute("aria-pressed", String(!dark));
+}
+applyTheme(currentTheme());
+$("#themeBtn").onclick = () => {
+  const next = currentTheme() === "dark" ? "light" : "dark";
+  try { localStorage.setItem("dbd-theme", next); } catch {}
+  applyTheme(next);
+};
 
 // 즐겨찾기 보기 토글
 $("#favBtn").onclick = () => {
