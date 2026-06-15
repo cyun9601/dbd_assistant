@@ -88,6 +88,21 @@
 
 ---
 
+## 🎙️ 음성 검색 (단축키 + STT)
+
+게임이 풀스크린이라 창 전환이 번거로울 때, **전역 단축키 `Ctrl+Shift+Space`** 를 눌러 마이크로 퍽 효과를 말하면 음성을 받아써 검색창에 넣고 **현재 검색 모드로 자동 검색**합니다.
+
+- **토글 방식** — 한 번 누르면 녹음 시작, 다시 누르면 종료·인식. 깜빡해도 20초 뒤 자동 종료합니다.
+- **차임음 피드백** — 게임 화면 위에서도 상태를 귀로 알 수 있게 시작/종료/성공/오류를 서로 다른 부드러운 차임음으로 알립니다(사인파 합성 — 거슬리는 사각파 비프음이 아님).
+- **게임 위에서도 동작** — Win32 `RegisterHotKey` 로 등록한 전역 단축키라 게임이 포그라운드여도 잡힙니다(OS 가 가로채 게임엔 전달 안 됨). 창이 포커스됐을 땐 검색창 옆 **🎙️ 버튼**으로도 같은 동작을 씁니다.
+- **OpenAI 키 필요** — 음성 인식은 OpenAI 음성 인식 API(한국어)를 씁니다. AI 정밀 검색과 **같은 OpenAI 키**(⚙️ 설정 또는 `OPENAI_API_KEY`)면 됩니다. 키가 없으면 녹음 전에 안내합니다.
+- **입력 장치 선택** — ⚙️ 설정의 **🎙️ 음성 검색 입력 장치**에서 사용할 마이크를 고를 수 있습니다(비워두면 Windows 기본 장치). 기본 입력이 가상 마이크 등으로 잘못 잡혀 무음만 녹음될 때 실제 마이크로 지정하세요. 선택은 `voice.json` 에 저장되어 다음 실행에도 유지됩니다. 녹음했는데 결과가 비면 앱이 **측정한 입력 볼륨(%)과 현재 장치 이름**을 함께 알려줘 "마이크가 소리를 못 잡음"인지 "잡았는데 못 알아들음"인지 바로 구분됩니다.
+- **실행 조건** — 로컬 서버가 떠 있어야 합니다(`run.bat` · `python app.py` · exe). `run.bat` 은 마이크 녹음용 `sounddevice` 를 자동 설치합니다. `file://` 로 그냥 열면 음성 검색은 동작하지 않습니다.
+
+> 단축키를 바꾸려면 `voice.py` 의 `HOTKEY_MODS` / `HOTKEY_VK` / `HOTKEY_LABEL` 만 고치면 됩니다.
+
+---
+
 ## 유의어 사전 직접 늘리기
 
 게임 용어/줄임말이 부족하면 [synonyms.js](synonyms.js) 를 편집하세요.
@@ -144,7 +159,8 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `index.html` | 검색 앱 (UI + 세 가지 검색 모드 + ⚙️ API 키 설정) |
 | `search.js` | 키워드 + 유의어 검색·랭킹 로직 |
 | `synonyms.js` | DBD 한글 게임 용어 유의어 사전 (편집 가능) |
-| `server.py` | 로컬 서버 — 정적 파일 + `/ask`(LLM 정밀 검색) + `/config`(키 입력/저장) + `/usage`(실시간 사용률) |
+| `server.py` | 로컬 서버 — 정적 파일 + `/ask`(LLM 정밀 검색) + `/config`(키 입력/저장) + `/usage`(실시간 사용률) + `/events`(음성 검색 SSE) + `/voice/*` |
+| `voice.py` | 음성 검색 — 전역 단축키(Win32 `RegisterHotKey`, ctypes) + 마이크 녹음(`sounddevice`) + OpenAI 음성 인식 + SSE 브로드캐스트 |
 | `nightlight.py` | nightlight.gg 퍽 사용률 수집 (런타임 API + 빌드 시 slug↔id 매핑, 외부 의존성 없음) |
 | `app.py` | exe/네이티브 창 진입점 — 서버 스레드 + pywebview (없으면 브라우저 폴백) |
 | `paths.py` | 실행 경로 해석 — 번들 자산(읽기) vs 사용자 데이터(`%APPDATA%`, 쓰기) 분리 |
@@ -156,7 +172,7 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `download_model.py` | 의미기반 AI용 모델·라이브러리 1회 다운로드 (→ `%APPDATA%\dbd-assistant\`) |
 | `dbd.spec` · `build.bat` | PyInstaller 빌드 스펙 + 빌드 스크립트 (exe 배포본 생성) |
 | `run.bat` | 개발용 실행기 (SDK 자동 설치 + 서버 기동 + 브라우저 열기) |
-| `%APPDATA%\dbd-assistant\` | 사용자 데이터 — `config.json`(키, 암호화)·`favorites.json`·`tags_user.json`·`models/`·`vendor/` |
+| `%APPDATA%\dbd-assistant\` | 사용자 데이터 — `config.json`(키, 암호화)·`favorites.json`·`tags_user.json`·`voice.json`(음성 검색 입력 장치)·`models/`·`vendor/` |
 
 ---
 

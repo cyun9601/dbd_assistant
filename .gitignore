@@ -19,6 +19,9 @@ config.json
 # 태그 — 기본 태그는 tags.json(공유), 사용자가 수정한 분량만 따로 보관(공유 안 함)
 tags_user.json
 
+# 음성 검색 입력 장치 선택 — 사용자별 로컬 데이터 (서버가 자동 생성, 공유 안 함)
+voice.json
+
 # PyInstaller 빌드 산출물 (exe 배포용, 재생성 가능)
 build/
 dist/
