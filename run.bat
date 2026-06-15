@@ -16,6 +16,13 @@ if errorlevel 1 (
   python -m pip install --quiet openai
 )
 
+REM Microphone capture for voice search (global hotkey + STT). sounddevice bundles PortAudio.
+python -c "import sounddevice" 2>nul
+if errorlevel 1 (
+  echo [setup] Installing sounddevice ^(voice search^) ...
+  python -m pip install --quiet sounddevice
+)
+
 REM Semantic-AI model: downloaded automatically on first use of that mode (in the browser).
 REM To pre-download now instead, run:  python download_model.py
 

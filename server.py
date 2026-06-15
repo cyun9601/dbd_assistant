@@ -12,6 +12,7 @@ usage: python server.py (개발) · app.py (네이티브 창) · exe (배포)
 import json
 import os
 import posixpath
+import queue
 import socket
 import sys
 import threading
@@ -23,6 +24,7 @@ import download_model as dm
 import nightlight
 import paths
 import secrets_store
+import voice
 from version import __version__ as APP_VERSION
 
 # 읽기 전용 번들 자산(index.html, perks.json, icons/ …)과 쓰기 가능한 사용자 데이터
@@ -597,7 +599,43 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/usage":
             self._send_json(200, get_usage())
             return
+        if path == "/voice/devices":
+            self._send_json(200, voice.devices())
+            return
+        if path == "/events":
+            self._send_events()
+            return
         super().do_GET()
+
+    def _send_events(self):
+        """SSE 스트림 — 음성 검색 단축키의 상태/결과를 브라우저·창으로 흘려보낸다.
+        ThreadingHTTPServer 라 이 연결이 다른 요청을 막지 않는다."""
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.send_header("X-Accel-Buffering", "no")
+        self.end_headers()
+        q = voice.subscribe()
+        try:
+            self._sse_write({"type": "hello", **voice.info()})   # 연결 확인 + 단축키 안내
+            while True:
+                try:
+                    ev = q.get(timeout=15)
+                except queue.Empty:
+                    self.wfile.write(b": keepalive\n\n")   # 하트비트(연결 유지·끊김 감지)
+                    self.wfile.flush()
+                    continue
+                self._sse_write(ev)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            pass   # 클라이언트가 닫음 — 정상 종료
+        finally:
+            voice.unsubscribe(q)
+
+    def _sse_write(self, obj):
+        data = json.dumps(obj, ensure_ascii=False)
+        self.wfile.write(f"data: {data}\n\n".encode("utf-8"))
+        self.wfile.flush()
 
     def _send_json(self, code, obj):
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
@@ -614,6 +652,23 @@ class Handler(SimpleHTTPRequestHandler):
             if not dm.all_present():
                 start_download()
             self._send_json(200, {"ready": dm.all_present(), "status": _dl["status"]})
+            return
+        if path == "/voice/toggle":
+            # 음성 검색 토글(녹음 시작/종료). 전역 단축키와 동일한 동작 —
+            # 창이 포커스됐을 때 🎙️ 버튼으로도 쓸 수 있게 한다.
+            voice.toggle()
+            self._send_json(200, {"ok": True})
+            return
+        if path == "/voice/device":
+            # 음성 검색 입력 장치 선택: {"name": "<장치 이름>"|""}  ("" = 시스템 기본)
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(length) or b"{}")
+            except Exception as e:  # noqa
+                self._send_json(400, {"error": f"잘못된 요청: {e}"})
+                return
+            current = voice.set_device(payload.get("name", ""))
+            self._send_json(200, {"current": current})
             return
         if path == "/open_release":
             # 캐시된 릴리스 페이지를 시스템 기본 브라우저로 연다(프론트 입력 URL 안 받음 → 안전).
@@ -769,6 +824,7 @@ def serve(server):
     """서버를 블로킹으로 구동 (Ctrl+C / 종료 시 빠져나옴)."""
     start_update_check()   # 시작 시 1회 GitHub 최신 릴리스 확인 (백그라운드)
     start_usage_prefetch() # 퍽 사용률(nightlight)도 미리 데워 둔다 (백그라운드)
+    voice.start()          # 음성 검색 전역 단축키 리스너 (서버를 점유한 프로세스에서 1회)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

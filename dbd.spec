@@ -15,8 +15,9 @@ from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 datas, binaries, hiddenimports = [], [], []
 
-# GUI 백엔드(webview + pythonnet/clr_loader)는 동적 임포트·네이티브 DLL·데이터가 많아 일괄 수집.
-for pkg in ("webview", "clr_loader", "pythonnet"):
+# GUI 백엔드(webview + pythonnet/clr_loader)와 음성 검색용 sounddevice(번들 PortAudio
+# DLL · cffi 백엔드)는 동적 임포트·네이티브 DLL·데이터가 많아 일괄 수집한다.
+for pkg in ("webview", "clr_loader", "pythonnet", "sounddevice"):
     try:
         d, b, h = collect_all(pkg)
         datas += d
@@ -38,6 +39,7 @@ hiddenimports += [
     "webview.platforms.edgechromium",   # Windows 기본 백엔드 (WebView2)
     "webview.platforms.winforms",
     "clr",                              # pythonnet 진입 모듈
+    "_cffi_backend",                    # sounddevice → cffi 네이티브 백엔드
 ]
 
 # 앱이 쓰지 않는 무거운 과학/그래픽 패키지 — 환경에 깔려 있어도 번들에서 제외(용량 급감).
