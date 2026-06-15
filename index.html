@@ -428,7 +428,7 @@ let usageMeta = null;         // 사용률 메타(집계 기간·출처)
 
 // 표시 언어(보여주기 전용) · 검색 범위(매칭에 넣을 언어). 둘은 독립적이다.
 let dispLang = (localStorage.getItem("dbd-lang") === "en") ? "en" : "ko";       // "ko" | "en"
-let searchScope = (localStorage.getItem("dbd-scope") === "multi") ? "multi" : "same"; // "same" | "multi"
+let searchScope = (localStorage.getItem("dbd-scope") === "same") ? "same" : "multi"; // "same" | "multi" (기본값: 다국어)
 
 const ROLE_WORD = { killer: "살인마", survivor: "생존자" };
 const perksForRole = () => PERKS.filter((p) => p.role === role);
