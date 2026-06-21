@@ -212,6 +212,15 @@ def build_corpus(role, tag_perks, lang, scope):
     lines = []
     for p in PERKS_BY_ROLE[role]:
         name = _pick(p["name"], p.get("name_en"), lang, scope, " / ")
+        # 별칭(원깜 등)·예전 이름을 이름 옆에 붙여, 그 이름으로 물어도 LLM 이 매칭하게 한다.
+        extra = []
+        if p.get("aliases"):
+            extra.append("별칭 " + ", ".join(p["aliases"]))
+        former = (p.get("former_names") or []) + (p.get("former_names_en") or [])
+        if former:
+            extra.append("예전 이름 " + ", ".join(former))
+        if extra:
+            name = f"{name} ({'; '.join(extra)})"
         owner = _owner_label(p, lang, scope)
         desc = _pick(p["desc_text"], p.get("desc_text_en"), lang, scope, " / ")
         tags = tag_perks.get(p["id"]) or []

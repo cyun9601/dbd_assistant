@@ -455,10 +455,16 @@ function altBlockHtml(perk) {
     `<div class="desc-en" hidden>${nameHtml}${altDesc}</div>`;
 }
 
+// 별칭(원깜 등)은 닉네임이라 언어 무관 — 어느 검색 범위/표시 언어에서도 매칭.
+// 예전 이름은 한글(former_names)·영문(former_names_en) 으로 나눠 해당 언어 이름에만 붙인다.
+const aliasJoin = (p) => (p.aliases || []).join(" ");
+const koExtra = (p) => [aliasJoin(p), (p.former_names || []).join(" ")].filter(Boolean).join(" ");
+const enExtra = (p) => [aliasJoin(p), (p.former_names_en || []).join(" ")].filter(Boolean).join(" ");
 // 검색 매칭에 쓸 텍스트 (검색 범위 + 표시 언어). 키워드 검색용 필드 선택자.
 function searchFields(p) {
-  const ko = { name: p.name, owner: p.owner || "", desc: p.desc_text || "" };
-  const en = { name: p.name_en || "", owner: p.owner_en || "", desc: p.desc_text_en || "" };
+  const kx = koExtra(p), ex = enExtra(p);
+  const ko = { name: p.name + (kx ? " " + kx : ""), owner: p.owner || "", desc: p.desc_text || "" };
+  const en = { name: (p.name_en || "") + (ex ? " " + ex : ""), owner: p.owner_en || "", desc: p.desc_text_en || "" };
   if (searchScope === "multi")
     return { name: ko.name + " " + en.name, owner: ko.owner + " " + en.owner, desc: ko.desc + " " + en.desc };
   return dispLang === "en" ? en : ko;
@@ -466,8 +472,9 @@ function searchFields(p) {
 // 의미검색 임베딩 캐시/패시지를 가르는 프로파일 키
 const searchProfile = () => (searchScope === "multi") ? "multi" : `same-${dispLang}`;
 function semanticPassage(p) {
-  const ko = `${p.name}. ${p.desc_text}`;
-  const en = `${p.name_en || ""}. ${p.desc_text_en || ""}`;
+  const kx = koExtra(p), ex = enExtra(p);
+  const ko = `${p.name}. ${p.desc_text}${kx ? " " + kx : ""}`;
+  const en = `${p.name_en || ""}. ${p.desc_text_en || ""}${ex ? " " + ex : ""}`;
   if (searchScope === "multi") return `passage: ${ko} ${en}`;
   return `passage: ${dispLang === "en" ? en : ko}`;
 }
