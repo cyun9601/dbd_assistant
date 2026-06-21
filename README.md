@@ -14,7 +14,7 @@
 
 **⚙️ 언어 설정** — 설정에서 ① **표시 언어**(한국어/English, 카드에 보여줄 언어 · 검색과 무관)와 ② **검색 범위**(동일 언어 검색 / 다국어 검색)를 고를 수 있습니다. *다국어 검색*은 한국어·영어 어느 쪽으로 입력해도 매칭되며, 세 검색 모드 모두에 적용됩니다.
 
-데이터 출처: 퍽 정보 [dbd-db.com](https://dbd-db.com/ko/perks) · 사용률 [nightlight.gg](https://nightlight.gg/perks) · 살인마 **139개** + 생존자 **167개** = **306개** 전부
+데이터 출처: 영어 설명·아이콘 [deadbydaylight.wiki.gg](https://deadbydaylight.wiki.gg/wiki/Perks) · 한글 [dbd-db.com](https://dbd-db.com/ko/perks) · 사용률 [nightlight.gg](https://nightlight.gg/perks) · 살인마 **142개** + 생존자 **173개** = **315개** 전부
 
 ---
 
