@@ -270,6 +270,23 @@ def main():
         "search_blob": p["search_blob"],
     } for p in kept]
 
+    # 사용자가 손으로 채워 둔 필드(별칭·예전 이름·출시예정)는 전체 재빌드 시 유실되지
+    # 않게 기존 perks.json 에서 id 기준으로 이어받는다. 새 퍽은 빈 값으로 둔다.
+    out_path = os.path.join(HERE, "perks.json")
+    prev = {}
+    try:
+        with open(out_path, encoding="utf-8") as f:
+            prev = {p["id"]: p for p in json.load(f)}
+    except (FileNotFoundError, ValueError):
+        pass
+    for p in clean:
+        old = prev.get(p["id"], {})
+        p["aliases"] = old.get("aliases", [])                   # 별칭(예: 원깜)
+        p["former_names"] = old.get("former_names", [])         # 예전(개명 전) 한글 이름
+        p["former_names_en"] = old.get("former_names_en", [])   # 예전 영문 이름
+        if old.get("upcoming"):
+            p["upcoming"] = True                          # 출시 예정 표시
+
     # nightlight.gg 사용률 매핑: slug → nightlight 숫자 id(nl_id, 배포 무관 고정) +
     # 기준 사용률(usage). nl_id 를 구워 두면 런타임 서버는 안정 API 만으로 갱신할 수 있다.
     # 수집 실패(오프라인/사이트 변경)해도 퍽 데이터 빌드는 계속되도록 감싼다.
@@ -278,19 +295,9 @@ def main():
     # 살인마("killer")가 생존자("survivor")보다 앞, 그 안에서 이름순
     clean.sort(key=lambda x: (x["role"], x["name"]))
 
-    out_path = os.path.join(HERE, "perks.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(clean, f, ensure_ascii=False, indent=1)
     sys.stderr.write(f"Wrote {out_path} ({len(clean)} perks)\n")
-
-    # file:// 더블클릭으로도 열 수 있게 JS 모듈로도 내보낸다 (fetch CORS 회피)
-    js_path = os.path.join(HERE, "perks_data.js")
-    with open(js_path, "w", encoding="utf-8") as f:
-        f.write("// 자동 생성됨 - build_data.py\n")
-        f.write("window.PERKS = ")
-        json.dump(clean, f, ensure_ascii=False)
-        f.write(";\n")
-    sys.stderr.write(f"Wrote {js_path}\n")
 
 
 if __name__ == "__main__":
