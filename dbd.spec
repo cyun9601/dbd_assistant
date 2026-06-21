@@ -54,7 +54,6 @@ EXCLUDES = [
 # 읽기 전용 번들 자산 (모델/vendor 는 런타임 다운로드 → 제외)
 datas += [
     ("index.html", "."),
-    ("perks_data.js", "."),
     ("perks.json", "."),
     ("search.js", "."),
     ("synonyms.js", "."),

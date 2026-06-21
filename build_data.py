@@ -283,15 +283,6 @@ def main():
         json.dump(clean, f, ensure_ascii=False, indent=1)
     sys.stderr.write(f"Wrote {out_path} ({len(clean)} perks)\n")
 
-    # file:// 더블클릭으로도 열 수 있게 JS 모듈로도 내보낸다 (fetch CORS 회피)
-    js_path = os.path.join(HERE, "perks_data.js")
-    with open(js_path, "w", encoding="utf-8") as f:
-        f.write("// 자동 생성됨 - build_data.py\n")
-        f.write("window.PERKS = ")
-        json.dump(clean, f, ensure_ascii=False)
-        f.write(";\n")
-    sys.stderr.write(f"Wrote {js_path}\n")
-
 
 if __name__ == "__main__":
     main()

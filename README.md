@@ -122,11 +122,11 @@ python build_data.py
 ```
 
 dbd-db.com 에서 살인마·생존자 퍽 목록·한글/영어 설명문을 다시 받아
-`perks.json`, `perks_data.js` 를 갱신하고 `icons/` 에 아이콘을 내려받습니다.
+`perks.json` 을 갱신하고 `icons/` 에 아이콘을 내려받습니다.
 (영어 원문은 한글 오역 대비용으로 카드의 🇬🇧 버튼에서 보여 줍니다.)
 각 퍽엔 `role`(`killer`/`survivor`) 필드가 붙어, 앱의 진영 토글과 서버 코퍼스 분리에 쓰입니다.
 또한 nightlight.gg 와 매핑해 `nl_id`(사용률 API용 고정 id)와 기준 사용률(`usage`)을 함께 구워 둡니다
-— 서버 없이(`file://`) 열어도 사용률이 보이고, 서버 실행 시엔 `/usage` 로 매일 갱신된 값을 씁니다.
+— 서버가 `/usage` 로 매일 갱신된 값을 주고, nightlight 가 오프라인이면 구운 기준값(`usage`)으로 폴백합니다.
 (nightlight 수집이 실패해도 퍽 데이터 빌드는 그대로 진행됩니다.)
 
 ---
@@ -165,9 +165,8 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `app.py` | exe/네이티브 창 진입점 — 서버 스레드 + pywebview (없으면 브라우저 폴백) |
 | `paths.py` | 실행 경로 해석 — 번들 자산(읽기) vs 사용자 데이터(`%APPDATA%`, 쓰기) 분리 |
 | `secrets_store.py` | API 키 저장소 — Windows DPAPI 암호화 (ctypes, 의존성 없음) |
-| `perks_data.js` | 퍽 데이터 (앱이 직접 읽음, 자동 생성 · `role` 포함) |
-| `perks.json` | 퍽 데이터 원본 (서버·빌드가 사용, 자동 생성 · `role` 포함) |
-| `icons/` | 퍽 아이콘 306개 — `icons/killer/` 139 + `icons/survivor/` 167 (진영별 폴더, 오프라인용) |
+| `perks.json` | 퍽 데이터 (서버가 `GET /perks` 로 프런트에 제공 · 빌드가 사용, 자동 생성 · `role` 포함) |
+| `icons/` | 퍽 아이콘 315개 — `icons/killer/` 142 + `icons/survivor/` 173 (진영별 폴더, 오프라인용) |
 | `build_data.py` | 데이터 수집·갱신 스크립트 |
 | `download_model.py` | 의미기반 AI용 모델·라이브러리 1회 다운로드 (→ `%APPDATA%\dbd-assistant\`) |
 | `dbd.spec` · `build.bat` | PyInstaller 빌드 스펙 + 빌드 스크립트 (exe 배포본 생성) |

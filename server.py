@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 DBD 어시스턴트 로컬 서버.
-- 정적 파일(index.html, perks_data.js, icons/ ...)을 제공
+- 정적 파일(index.html, icons/ ...)과 퍽 데이터(GET /perks, perks.json 기반)를 제공
 - POST /ask    : 역할(살인마/생존자)별 퍽 전체를 LLM 컨텍스트에 넣고(프롬프트 캐싱) 질문과 매칭
 - GET/POST /config : API 키를 웹 UI 에서 입력·저장 (DPAPI 암호화, 브라우저로 평문 노출 안 됨)
 
@@ -494,7 +494,7 @@ def start_update_check():
 # ---- 퍽 사용률 (nightlight.gg) ----
 # 빌드 때 구워 둔 nl_id(nightlight 숫자 id, 배포 무관 고정)로 안정 API 결과를 join 한다.
 # 결과는 TTL 동안 캐시 — nightlight 데이터 자체가 하루 1회(UTC 16시)만 갱신되므로 충분.
-# 프론트는 /usage 로 읽고, 서버가 없거나 오프라인이면 perks_data.js 에 구운 기준값으로 폴백.
+# 프론트는 /usage 로 읽고, nightlight 가 오프라인이면 perks.json 에 구운 기준값으로 폴백.
 NLID_TO_PERKID = {str(p["nl_id"]): p["id"] for p in PERKS if p.get("nl_id")}
 USAGE_TTL = 6 * 3600          # 6시간
 _usage = {"ts": 0.0, "payload": None}
@@ -598,6 +598,9 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if path == "/usage":
             self._send_json(200, get_usage())
+            return
+        if path == "/perks":
+            self._send_json(200, PERKS)
             return
         if path == "/voice/devices":
             self._send_json(200, voice.devices())

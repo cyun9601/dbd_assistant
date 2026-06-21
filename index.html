@@ -144,6 +144,9 @@
   .card .star.on { color: #f1c40f; }
   .card .score { font-size: 11px; color: var(--good);
     border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+  /* 출시 예정(미출시) 퍽 배지 */
+  .card .upcoming { font-size: 11px; color: #e8a33d; font-weight: 600; white-space: nowrap;
+    border: 1px solid #e8a33d66; border-radius: 999px; padding: 1px 8px; }
   /* 사용률(nightlight) 뱃지 — 등급별 색 */
   .card .usage { font-size: 11px; font-weight: 700; border-radius: 6px;
     padding: 2px 7px; white-space: nowrap; border: 1px solid transparent; }
@@ -398,13 +401,12 @@
   데이터 출처: dbd-db.com · 살인마 + 생존자 퍽 · 로컬에서 동작 <span id="appVersion"></span>
 </footer>
 
-<script src="perks_data.js"></script>
 <script src="synonyms.js"></script>
 <script src="search.js"></script>
 <script>
 const { rankKeyword, highlightMatches, expandedQueryTerms } = window.DBDSearch;
 
-const PERKS = window.PERKS || [];
+let PERKS = [];   // 서버(GET /perks, perks.json 기반)에서 로드 — loadPerks() 참고
 const SYN = window.SYNONYMS || [];
 const $ = (s) => document.querySelector(s);
 const results = $("#results");
@@ -499,6 +501,15 @@ const byUsageDesc = (a, b) =>
   ((usageOf(b) == null ? -1 : usageOf(b)) - (usageOf(a) == null ? -1 : usageOf(a)));
 
 // 시작 시 서버에서 실시간 사용률을 받아 화면 갱신. 서버 없으면(file://) 구운 값 사용.
+// 퍽 데이터는 서버에서 로드 (GET /perks — 서버가 perks.json 을 읽어 제공).
+async function loadPerks() {
+  try {
+    PERKS = await (await fetch("/perks")).json();
+  } catch {
+    statusEl.textContent = "⚠️ 퍽 데이터를 불러오지 못했습니다. 로컬 서버를 실행하세요 (run.bat / app.py).";
+  }
+}
+
 async function loadUsage() {
   try {
     const res = await fetch("/usage");
@@ -942,6 +953,7 @@ function cardHtml(perk, { badge = "", reason = "", desc } = {}) {
       <div class="top">
         <span class="name">${esc(dispName(perk))}</span>
         <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${esc(ownerLabel(perk))}</span>
+        ${perk.upcoming ? '<span class="upcoming">🔜 출시 예정</span>' : ''}
         ${usageBadgeHtml(perk)}
         <button class="star${fav ? ' on' : ''}" data-fav-id="${perk.id}" title="즐겨찾기" aria-pressed="${fav}">${fav ? '★' : '☆'}</button>
         ${badgeHtml}
@@ -1422,13 +1434,16 @@ $("#keyRows").addEventListener("keydown", (e) => {
 });
 
 render([], "");
-// 즐겨찾기·태그·키설정 로드(비동기) 후 화면 갱신 (결과가 있으면 태그 칩이 보이도록 다시 그림)
-Promise.all([loadFavorites(), loadTags(), loadConfig()]).then(() => {
-  updateFavCount();
-  refresh();
+// 퍽 데이터를 서버에서 받은 뒤 화면을 그린다(이후 로직이 PERKS 에 의존).
+loadPerks().then(() => {
+  // 즐겨찾기·태그·키설정 로드(비동기) 후 화면 갱신 (결과가 있으면 태그 칩이 보이도록 다시 그림)
+  Promise.all([loadFavorites(), loadTags(), loadConfig()]).then(() => {
+    updateFavCount();
+    refresh();
+  });
+  // 퍽 사용률(nightlight) 로드 — 도착하면 뱃지/정렬에 반영 (nightlight 오프라인이면 구운 값 사용)
+  loadUsage();
 });
-// 퍽 사용률(nightlight) 로드 — 도착하면 뱃지/정렬에 반영 (서버 없으면 구운 값 사용)
-loadUsage();
 
 // ---- 업데이트 확인 (GitHub Releases) ----
 // 서버가 시작 시 GitHub 최신 릴리스를 받아 두면, 여기서 읽어 새 버전이면 배너를 띄운다.
