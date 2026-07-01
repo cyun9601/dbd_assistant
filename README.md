@@ -14,7 +14,7 @@
 
 **⚙️ 언어 설정** — 설정에서 ① **표시 언어**(한국어/English, 카드에 보여줄 언어 · 검색과 무관)와 ② **검색 범위**(동일 언어 검색 / 다국어 검색)를 고를 수 있습니다. *다국어 검색*은 한국어·영어 어느 쪽으로 입력해도 매칭되며, 세 검색 모드 모두에 적용됩니다.
 
-데이터 출처: 영어 설명·아이콘 [deadbydaylight.wiki.gg](https://deadbydaylight.wiki.gg/wiki/Perks) · 한글 [dbd-db.com](https://dbd-db.com/ko/perks) · 사용률 [nightlight.gg](https://nightlight.gg/perks) · 살인마 **142개** + 생존자 **173개** = **315개** 전부
+데이터 출처: 영어 설명·아이콘 [deadbydaylight.wiki.gg](https://deadbydaylight.wiki.gg/wiki/Perks) · 한글 설명은 위키 원문을 자체 번역 · 사용률 [nightlight.gg](https://nightlight.gg/perks) · 살인마 **142개** + 생존자 **173개** = **315개** 전부
 
 ---
 
@@ -118,16 +118,22 @@
 ## 데이터 갱신 (새 퍽 추가 시)
 
 ```bash
-python build_data.py
+python update_en_from_wiki.py
 ```
 
-dbd-db.com 에서 살인마·생존자 퍽 목록·한글/영어 설명문을 다시 받아
-`perks.json` 을 갱신하고 `icons/` 에 아이콘을 내려받습니다.
-(영어 원문은 한글 오역 대비용으로 카드의 🇬🇧 버튼에서 보여 줍니다.)
+deadbydaylight.wiki.gg(공식 위키)에서 살인마·생존자 퍽의 **영어 설명문·아이콘**을 다시 받아
+`perks.json` 의 `desc_html_en`/`desc_text_en` 과 `icons/` 를 갱신합니다(한글 필드는 건드리지 않음).
+아이콘은 위키 PNG 를 webp 로 변환해 기존 경로에 덮어씁니다.
+
+**한글 설명문은 위키 영어 원문을 직접 번역해 손으로 채웁니다**(`desc_html`/`desc_text`).
+카드의 🇬🇧 버튼은 한글 번역이 의심스러울 때 위키 영어 원문을 펼쳐 보여 줍니다.
 각 퍽엔 `role`(`killer`/`survivor`) 필드가 붙어, 앱의 진영 토글과 서버 코퍼스 분리에 쓰입니다.
-또한 nightlight.gg 와 매핑해 `nl_id`(사용률 API용 고정 id)와 기준 사용률(`usage`)을 함께 구워 둡니다
+
+사용률은 nightlight.gg 와 매핑해 `nl_id`(사용률 API용 고정 id)와 기준 사용률(`usage`)로 구워 둡니다
 — 서버가 `/usage` 로 매일 갱신된 값을 주고, nightlight 가 오프라인이면 구운 기준값(`usage`)으로 폴백합니다.
-(nightlight 수집이 실패해도 퍽 데이터 빌드는 그대로 진행됩니다.)
+
+> **참고**: 초기 `perks.json` 구조(퍽 목록·slug·role)는 예전에 `build_data.py`(dbd-db.com)로 만들었으나
+> 더 이상 쓰지 않습니다. 지금은 위 위키 도구 + 수동 한글 번역으로 유지합니다.
 
 ---
 
