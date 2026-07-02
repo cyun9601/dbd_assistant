@@ -94,6 +94,14 @@
     padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 13px;
   }
   .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  /* 섹션 탭 (🔍 퍽 검색 / 📕 살인마 도감) */
+  .sections { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+  .section-btn {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    padding: 8px 18px; border-radius: 999px; cursor: pointer; font-size: 14px; font-weight: 700;
+  }
+  .section-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .sections #themeBtn { margin-left: auto; }   /* 테마·설정 버튼을 오른쪽으로 */
   .roles { display: flex; gap: 8px; margin-top: 10px; }
   .role-btn {
     background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
@@ -220,6 +228,58 @@
   .desc-en b { color: var(--strong); }
   .desc-en .ReminderText { color: var(--muted); font-style: italic; font-size: 12px; }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+  /* ── 살인마 도감 ── */
+  /* 살인마 그리드 */
+  .killer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 12px; }
+  .killer-tile {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 10px; cursor: pointer; text-align: center; font-family: inherit; color: var(--text);
+    transition: border-color .12s, transform .12s;
+  }
+  .killer-tile:hover { border-color: var(--accent2); transform: translateY(-2px); }
+  .killer-tile img { width: 92px; height: 92px; object-fit: contain;
+    filter: drop-shadow(0 2px 5px var(--shadow)); }
+  .killer-tile .kname { font-weight: 700; font-size: 13.5px; margin-top: 8px; line-height: 1.3; }
+  .killer-tile .ksub { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+  /* 살인마 상세 */
+  .kd-back { margin-bottom: 14px; }
+  .kd-head { display: flex; gap: 16px; align-items: center; margin-bottom: 8px; }
+  .kd-head img { width: 112px; height: 112px; flex: 0 0 112px; object-fit: contain;
+    filter: drop-shadow(0 3px 6px var(--shadow)); }
+  .kd-title { font-size: 22px; font-weight: 800; letter-spacing: .3px; }
+  .kd-power-name { color: var(--accent2); font-size: 13.5px; font-weight: 600; margin-top: 6px; }
+  .kd-sec { font-size: 15px; font-weight: 700; margin: 22px 0 11px;
+    border-left: 3px solid var(--accent2); padding-left: 9px; }
+  .kd-sec .rc { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 4px; }
+  .kd-power { display: flex; gap: 13px; align-items: flex-start; }
+  .kd-power img { width: 56px; height: 56px; flex: 0 0 56px; object-fit: contain;
+    filter: drop-shadow(0 2px 4px var(--shadow)); }
+  .kd-desc { font-size: 13.5px; line-height: 1.65; color: var(--desc); }
+  .kd-desc .Highlight1, .ad .Highlight1 { color: var(--hi1); font-weight: 700; }
+  .kd-desc .Highlight2, .ad .Highlight2 { color: var(--hi2); font-weight: 700; }
+  .kd-desc .Highlight3, .ad .Highlight3 { color: var(--hi3); font-weight: 700; }
+  .kd-desc .FlavorText, .ad .FlavorText { color: var(--muted); font-style: italic; }
+  .kd-desc b, .ad b { color: var(--strong); }
+  /* 애드온 등급 그룹 + 카드 */
+  .rarity-group { margin-bottom: 16px; }
+  .rarity-head { font-size: 13px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .rarity-head .rc { color: var(--muted); font-weight: 400; font-size: 12px; }
+  .rarity-head::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: currentColor; }
+  .addon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+  .addon-card {
+    display: flex; gap: 11px; background: var(--panel); border: 1px solid var(--line);
+    border-left: 3px solid var(--line); border-radius: 10px; padding: 11px;
+  }
+  .addon-card img { width: 46px; height: 46px; flex: 0 0 46px; object-fit: contain;
+    filter: drop-shadow(0 2px 4px var(--shadow)); }
+  .addon-card .an { font-weight: 700; font-size: 13px; }
+  .addon-card .ad { font-size: 12px; line-height: 1.55; color: var(--desc); margin-top: 4px; }
+  /* 등급 색: 일반(갈)·특이(초록)·희귀(파랑)·아주 희귀한(보라)·내장(분홍) */
+  .r-common   { color: #b39b6e; } .addon-card.r-common   { border-left-color: #b39b6e; }
+  .r-uncommon { color: #4aa85e; } .addon-card.r-uncommon { border-left-color: #4aa85e; }
+  .r-rare     { color: #4488c8; } .addon-card.r-rare     { border-left-color: #4488c8; }
+  .r-very_rare{ color: #9b5fd0; } .addon-card.r-very_rare{ border-left-color: #9b5fd0; }
+  .r-ultra_rare{ color: #d7679e; } .addon-card.r-ultra_rare{ border-left-color: #d7679e; }
   /* ⚙️ 설정 (API 키) */
   .gear-btn {
     background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
@@ -311,40 +371,46 @@
 <header>
   <div class="wrap">
     <h1>🔪 DBD 어시스턴트 <small id="perkcount"></small></h1>
-    <div class="roles" id="roles">
-      <button class="role-btn active" data-role="killer">🔪 살인마</button>
-      <button class="role-btn" data-role="survivor">🩹 생존자</button>
-      <button class="fav-toggle" id="allBtn" title="이 역할의 전체 퍽 보기">📖 전체</button>
-      <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
-      <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
+    <div class="sections" id="sections">
+      <button class="section-btn active" data-section="perks">🔍 퍽 검색</button>
+      <button class="section-btn" data-section="killers">📕 살인마 도감</button>
       <button class="gear-btn theme-toggle" id="themeBtn" title="화면 테마 전환 (라이트 / 다크)" aria-pressed="false"></button>
       <button class="gear-btn" id="settingsBtn" title="설정 (표시 언어 · 검색 범위 · API 키)">⚙️</button>
     </div>
-    <div class="searchrow">
-      <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
-      <button id="mic" title="음성으로 검색 (Ctrl+Shift+Space)">🎙️</button>
-      <button id="clear" title="지우기">✕</button>
+    <div id="perkControls">
+      <div class="roles" id="roles">
+        <button class="role-btn active" data-role="killer">🔪 살인마</button>
+        <button class="role-btn" data-role="survivor">🩹 생존자</button>
+        <button class="fav-toggle" id="allBtn" title="이 역할의 전체 퍽 보기">📖 전체</button>
+        <button class="fav-toggle" id="favBtn" title="즐겨찾기한 퍽만 보기">⭐ 즐겨찾기 <span class="fav-count" id="favCount">0</span></button>
+        <button class="fav-toggle" id="tagListBtn" title="전체 태그 목록 보기">🏷️ 태그</button>
+      </div>
+      <div class="searchrow">
+        <input id="q" type="text" placeholder="퍽 효과를 적어보세요. 예) 살인마 속도가 빨라졌어" autocomplete="off" autofocus />
+        <button id="mic" title="음성으로 검색 (Ctrl+Shift+Space)">🎙️</button>
+        <button id="clear" title="지우기">✕</button>
+      </div>
+      <div class="modes">
+        <button class="mode-btn active" data-mode="keyword">키워드 + 유의어</button>
+        <button class="mode-btn" data-mode="semantic">의미 기반 AI</button>
+        <button class="mode-btn" data-mode="llm">AI 정밀 검색</button>
+        <select id="model" title="모델 선택" style="display:none">
+          <optgroup label="Anthropic — Claude">
+            <option value="claude-opus-4-8">Opus 4.8 (정확)</option>
+            <option value="claude-haiku-4-5">Haiku 4.5 (빠름)</option>
+          </optgroup>
+          <optgroup label="OpenAI — GPT">
+            <option value="gpt-4.1">GPT-4.1 (정확)</option>
+            <option value="gpt-4.1-mini">GPT-4.1 mini (빠름)</option>
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4o-mini">GPT-4o mini</option>
+          </optgroup>
+        </select>
+        <span class="hint" id="modehint">즉시 · 오프라인</span>
+      </div>
+      <div id="status"></div>
+      <div class="tagbar" id="tagbar"></div>
     </div>
-    <div class="modes">
-      <button class="mode-btn active" data-mode="keyword">키워드 + 유의어</button>
-      <button class="mode-btn" data-mode="semantic">의미 기반 AI</button>
-      <button class="mode-btn" data-mode="llm">AI 정밀 검색</button>
-      <select id="model" title="모델 선택" style="display:none">
-        <optgroup label="Anthropic — Claude">
-          <option value="claude-opus-4-8">Opus 4.8 (정확)</option>
-          <option value="claude-haiku-4-5">Haiku 4.5 (빠름)</option>
-        </optgroup>
-        <optgroup label="OpenAI — GPT">
-          <option value="gpt-4.1">GPT-4.1 (정확)</option>
-          <option value="gpt-4.1-mini">GPT-4.1 mini (빠름)</option>
-          <option value="gpt-4o">GPT-4o</option>
-          <option value="gpt-4o-mini">GPT-4o mini</option>
-        </optgroup>
-      </select>
-      <span class="hint" id="modehint">즉시 · 오프라인</span>
-    </div>
-    <div id="status"></div>
-    <div class="tagbar" id="tagbar"></div>
   </div>
 </header>
 <datalist id="tagvocab"></datalist>
@@ -427,6 +493,13 @@ let allView = false;          // 전체 퍽 보기 on/off
 let allSort = "usage";        // 전체 보기 정렬: "usage"(사용률순) | "name"(가나다순)
 let USAGE = {};               // 서버 실시간 사용률 {퍽id: pct} (없으면 구운 값으로 폴백)
 let usageMeta = null;         // 사용률 메타(집계 기간·출처)
+
+// ---- 살인마 도감 ----
+let section = "perks";        // "perks"(퍽 검색) | "killers"(살인마 도감)
+let KILLERS = [];             // /killers 로 로드 (killers.json)
+let ADDON_BY_ID = {};         // /addons 로 로드 후 id→애드온 인덱스
+let killersLoaded = false;    // 최초 진입 시 1회 로드
+let killerView = null;        // null=목록, 또는 살인마 id(상세)
 
 // 표시 언어(보여주기 전용) · 검색 범위(매칭에 넣을 언어). 둘은 독립적이다.
 let dispLang = (localStorage.getItem("dbd-lang") === "en") ? "en" : "ko";       // "ko" | "en"
@@ -1311,7 +1384,8 @@ $("#langSeg").addEventListener("click", (e) => {
   localStorage.setItem("dbd-lang", dispLang);
   syncSettingsUI();
   applyRole();      // 예시 칩·플레이스홀더 언어 갱신
-  refresh();        // 카드 다시 그림
+  if (section === "killers") renderKillers();   // 살인마 도감도 표시 언어 반영
+  else refresh();   // 카드 다시 그림
 });
 // 검색 범위 전환 — 키워드/AI 는 다음 검색부터, 의미검색은 프로파일이 바뀌므로 재임베딩.
 $("#scopeSeg").addEventListener("click", (e) => {
@@ -1440,6 +1514,115 @@ $("#keyRows").addEventListener("keydown", (e) => {
   if (save) save.click();
 });
 
+// ==== 살인마 도감 (섹션 전환 · 그리드 · 상세) ====
+const RARITY_ORDER = ["common", "uncommon", "rare", "very_rare", "ultra_rare"];
+const RARITY_LABEL = {
+  ko: { common: "일반", uncommon: "특이", rare: "희귀", very_rare: "아주 희귀한", ultra_rare: "내장" },
+  en: { common: "Common", uncommon: "Uncommon", rare: "Rare", very_rare: "Very Rare", ultra_rare: "Ultra Rare" },
+};
+// 표시 언어에 맞춰 텍스트 고르기. 한글이 비어 있으면(아직 미번역) 영어로 폴백.
+const pick = (ko, en) => (dispLang === "en" ? (en || ko) : (ko || en)) || "";
+
+async function loadKillers() {
+  try {
+    const [ks, as] = await Promise.all([
+      fetch("/killers").then((r) => r.json()),
+      fetch("/addons").then((r) => r.json()),
+    ]);
+    KILLERS = Array.isArray(ks) ? ks : [];
+    ADDON_BY_ID = {};
+    (Array.isArray(as) ? as : []).forEach((a) => { ADDON_BY_ID[a.id] = a; });
+  } catch { /* 서버 없음(file://) — 빈 목록으로 안내 */ }
+  killersLoaded = true;
+}
+
+function renderKillers() {
+  if (killerView) renderKillerDetail(killerView);
+  else renderKillerGrid();
+}
+
+function renderKillerGrid() {
+  if (!KILLERS.length) {
+    countEl.textContent = "";
+    results.innerHTML = `<div class="empty">살인마 데이터를 불러오지 못했어요.<br>로컬 서버(run.bat / app.py)로 실행했는지 확인하세요.</div>`;
+    return;
+  }
+  countEl.textContent = `📕 살인마 ${KILLERS.length}명 · 카드를 누르면 능력·애드온을 봅니다`;
+  results.innerHTML = `<div class="killer-grid">` + KILLERS.map((k) =>
+    `<button class="killer-tile" data-killer="${esc(k.id)}">
+      <img src="${esc(k.portrait_file)}" alt="" loading="lazy">
+      <div class="kname">${esc(pick(k.name, k.name_en))}</div>
+      <div class="ksub">${esc(pick(k.power_name, k.power_name_en))}</div>
+    </button>`).join("") + `</div>`;
+}
+
+function addonCardHtml(a) {
+  return `<div class="addon-card r-${esc(a.rarity || "")}">
+    ${a.icon_file ? `<img src="${esc(a.icon_file)}" alt="" loading="lazy">` : ""}
+    <div>
+      <div class="an">${esc(pick(a.name, a.name_en))}</div>
+      <div class="ad">${pick(a.desc_html, a.desc_html_en)}</div>
+    </div>
+  </div>`;
+}
+
+function renderKillerDetail(id) {
+  const k = KILLERS.find((x) => x.id === id);
+  if (!k) { killerView = null; renderKillerGrid(); return; }
+  countEl.textContent = "";
+  const addons = (k.addon_ids || []).map((aid) => ADDON_BY_ID[aid]).filter(Boolean);
+  const groups = RARITY_ORDER.map((r) => [r, addons.filter((a) => a.rarity === r)]).filter(([, l]) => l.length);
+  const leftover = addons.filter((a) => !RARITY_ORDER.includes(a.rarity));
+  if (leftover.length) groups.push(["", leftover]);   // 등급 미상은 맨 뒤
+  const overview = pick(k.overview_html, k.overview_html_en);
+  const power = pick(k.power_html, k.power_html_en);
+  const pName = pick(k.power_name, k.power_name_en);
+  const addonHtml = groups.map(([r, list]) => {
+    const lbl = (RARITY_LABEL[dispLang] || RARITY_LABEL.ko)[r] || (dispLang === "en" ? "Other" : "기타");
+    return `<div class="rarity-group">
+      <div class="rarity-head r-${esc(r)}">${esc(lbl)}<span class="rc">${list.length}</span></div>
+      <div class="addon-grid">${list.map(addonCardHtml).join("")}</div>
+    </div>`;
+  }).join("");
+  results.innerHTML =
+    `<button class="btn ghost kd-back" id="kdBack">← 목록으로</button>
+    <div class="kd-head">
+      <img src="${esc(k.portrait_file)}" alt="">
+      <div>
+        <div class="kd-title">${esc(pick(k.name, k.name_en))}</div>
+        ${pName ? `<div class="kd-power-name">⚡ ${esc(pName)}</div>` : ""}
+      </div>
+    </div>` +
+    (overview ? `<div class="kd-sec">${dispLang === "en" ? "Overview" : "개요"}</div><div class="kd-desc">${overview}</div>` : "") +
+    (power ? `<div class="kd-sec">${dispLang === "en" ? "Power" : "능력"}${pName ? " · " + esc(pName) : ""}</div>
+      <div class="kd-power">${k.power_icon ? `<img src="${esc(k.power_icon)}" alt="">` : ""}<div class="kd-desc">${power}</div></div>` : "") +
+    (addons.length ? `<div class="kd-sec">${dispLang === "en" ? "Add-ons" : "애드온"} <span class="rc">${addons.length}</span></div>${addonHtml}` : "");
+}
+
+// 섹션 전환 (퍽 검색 ↔ 살인마 도감)
+async function setSection(s) {
+  if (section === s) return;
+  section = s;
+  document.querySelectorAll(".section-btn").forEach((b) => b.classList.toggle("active", b.dataset.section === s));
+  const perkMode = s === "perks";
+  $("#perkControls").style.display = perkMode ? "" : "none";
+  $("#examples").style.display = perkMode ? "" : "none";
+  $("#perkcount").style.display = perkMode ? "" : "none";
+  if (perkMode) { refresh(); return; }
+  killerView = null;
+  if (!killersLoaded) { results.innerHTML = `<div class="empty">불러오는 중…</div>`; await loadKillers(); }
+  renderKillers();
+}
+
+document.querySelectorAll(".section-btn").forEach((b) => { b.onclick = () => setSection(b.dataset.section); });
+
+// 살인마 도감 클릭 (타일 → 상세 / ← 목록으로)
+results.addEventListener("click", (e) => {
+  const tile = e.target.closest(".killer-tile");
+  if (tile) { killerView = tile.dataset.killer; renderKillers(); window.scrollTo({ top: 0 }); return; }
+  if (e.target.closest("#kdBack")) { killerView = null; renderKillers(); window.scrollTo({ top: 0 }); return; }
+});
+
 render([], "");
 // 퍽 데이터를 서버에서 받은 뒤 화면을 그린다(이후 로직이 PERKS 에 의존).
 loadPerks().then(() => {
@@ -1451,6 +1634,8 @@ loadPerks().then(() => {
   // 퍽 사용률(nightlight) 로드 — 도착하면 뱃지/정렬에 반영 (nightlight 오프라인이면 구운 값 사용)
   loadUsage();
 });
+// 살인마 도감 데이터도 백그라운드로 미리 받아 둔다 (섹션 전환 시 즉시 표시)
+loadKillers();
 
 // ---- 업데이트 확인 (GitHub Releases) ----
 // 서버가 시작 시 GitHub 최신 릴리스를 받아 두면, 여기서 읽어 새 버전이면 배너를 띄운다.

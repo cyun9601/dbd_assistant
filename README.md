@@ -135,6 +135,26 @@ deadbydaylight.wiki.gg(공식 위키)에서 살인마·생존자 퍽의 **영어
 > **참고**: 초기 `perks.json` 구조(퍽 목록·slug·role)는 예전에 `build_data.py`(dbd-db.com)로 만들었으나
 > 더 이상 쓰지 않습니다. 지금은 위 위키 도구 + 수동 한글 번역으로 유지합니다.
 
+### 살인마 · 애드온 갱신
+
+```bash
+python update_killers_from_wiki.py                 # 전체 살인마 수집
+python update_killers_from_wiki.py "The_Trapper"    # 특정 살인마만 (개발/검증용)
+```
+
+같은 위키에서 살인마별 **개요·파워·애드온**의 영어 원문·아이콘을 받아 `killers.json`(43명) ·
+`addons.json`(860개)과 `icons/killer_portrait/`·`icons/power/`·`icons/addon/` 를 갱신합니다.
+퍽과 동일하게 **영어(`*_en`)와 아이콘만** 위키에서 받고, 한글 필드는 손으로 번역해 채우며
+재실행 시 id 로 보존됩니다. 설계 근거는 [`docs/killers_addons_design.md`](docs/killers_addons_design.md) 참고.
+
+앱 상단의 **📕 살인마 도감** 탭에서 살인마 그리드 → 상세(개요·파워·등급별 애드온)를 볼 수 있습니다.
+서버는 `GET /killers`·`/addons` 로 데이터를 제공하며, 표시 언어 토글(한/영)도 함께 적용됩니다.
+
+**한글 번역**(개요·파워·애드온 이름/설명)은 `ko_merge.py` 로 채웁니다 — 영어 원문을 청크로 나눠
+번역한 뒤 병합하며, HTML 색강조(Highlight)·불릿을 보존하고 `_text`·`search_blob`(한/영 통합,
+추후 도감 검색용)을 다시 굽습니다. 아직 번역이 없는 필드는 앱에서 영어로 자동 폴백됩니다.
+(OpenAI/Anthropic API 로 자동 번역하려면 `translate_killers.py --model ...` 도 사용 가능.)
+
 ---
 
 ## exe 빌드 (배포용)
@@ -162,10 +182,10 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 
 | 파일 | 역할 |
 |------|------|
-| `index.html` | 검색 앱 (UI + 세 가지 검색 모드 + ⚙️ API 키 설정) |
+| `index.html` | 검색 앱 (UI + 세 가지 검색 모드 + 📕 살인마 도감 + ⚙️ API 키 설정) |
 | `search.js` | 키워드 + 유의어 검색·랭킹 로직 |
 | `synonyms.js` | DBD 한글 게임 용어 유의어 사전 (편집 가능) |
-| `server.py` | 로컬 서버 — 정적 파일 + `/ask`(LLM 정밀 검색) + `/config`(키 입력/저장) + `/usage`(실시간 사용률) + `/events`(음성 검색 SSE) + `/voice/*` |
+| `server.py` | 로컬 서버 — 정적 파일 + `/ask`(LLM 정밀 검색) + `/killers`·`/addons`(살인마 도감) + `/config`(키 입력/저장) + `/usage`(실시간 사용률) + `/events`(음성 검색 SSE) + `/voice/*` |
 | `voice.py` | 음성 검색 — 전역 단축키(Win32 `RegisterHotKey`, ctypes) + 마이크 녹음(`sounddevice`) + OpenAI 음성 인식 + SSE 브로드캐스트 |
 | `nightlight.py` | nightlight.gg 퍽 사용률 수집 (런타임 API + 빌드 시 slug↔id 매핑, 외부 의존성 없음) |
 | `app.py` | exe/네이티브 창 진입점 — 서버 스레드 + pywebview (없으면 브라우저 폴백) |
@@ -173,7 +193,12 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `secrets_store.py` | API 키 저장소 — Windows DPAPI 암호화 (ctypes, 의존성 없음) |
 | `perks.json` | 퍽 데이터 (서버가 `GET /perks` 로 프런트에 제공 · 빌드가 사용, 자동 생성 · `role` 포함) |
 | `icons/` | 퍽 아이콘 315개 — `icons/killer/` 142 + `icons/survivor/` 173 (진영별 폴더, 오프라인용) |
-| `build_data.py` | 데이터 수집·갱신 스크립트 |
+| `killers.json` / `addons.json` | 살인마(43) · 애드온(860) 데이터 — `update_killers_from_wiki.py` 로 생성 · 서버가 `/killers`·`/addons` 로 제공 |
+| `update_en_from_wiki.py` | 퍽 영어 설명·아이콘 갱신 (deadbydaylight.wiki.gg) |
+| `update_killers_from_wiki.py` | 살인마 개요·파워·애드온 갱신 (deadbydaylight.wiki.gg) → `killers.json`/`addons.json`/아이콘 |
+| `ko_merge.py` | 살인마/애드온 한글 번역 청크 분할(split)·병합(apply) — 영어 원문을 나눠 번역 후 합침 |
+| `translate_killers.py` | (선택) 살인마/애드온 영어 → 한글 자동 번역 (OpenAI/Anthropic API) |
+| `build_data.py` | (레거시) 초기 퍽 부트스트랩 스크립트 |
 | `download_model.py` | 의미기반 AI용 모델·라이브러리 1회 다운로드 (→ `%APPDATA%\dbd-assistant\`) |
 | `dbd.spec` · `build.bat` | PyInstaller 빌드 스펙 + 빌드 스크립트 (exe 배포본 생성) |
 | `run.bat` | 개발용 실행기 (SDK 자동 설치 + 서버 기동 + 브라우저 열기) |
