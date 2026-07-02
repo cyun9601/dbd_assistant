@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 """
+[LEGACY — 더 이상 사용하지 않음]
+초기 perks.json 구조(퍽 목록·slug·role·아이콘)를 dbd-db.com 에서 부트스트랩할 때
+쓰던 스크립트다. 참고/재부트스트랩용으로만 남겨 둔다.
+
+⚠️ 현재 데이터 파이프라인은 dbd-db.com 을 쓰지 않는다:
+  - 영어 설명·아이콘: update_en_from_wiki.py (deadbydaylight.wiki.gg 공식 위키)
+  - 한글 설명(desc_html/desc_text): 위키 영어 원문을 직접 번역해 손으로 채운다
+  - 사용률: nightlight.py (nightlight.gg)
+이 스크립트를 그대로 돌리면 위키 기반 영어와 수동 한글 번역을 dbd-db.com 값으로
+덮어써 되돌리므로 주의할 것.
+
 dbd-db.com 에서 살인마(killer)·생존자(survivor) 퍽 데이터를 추출하고,
 한글 설명문을 /api/localization/resolve API로 채운 뒤 perks.json 으로 저장.
 각 퍽엔 role("killer"/"survivor") 필드가 붙고, 아이콘은 진영별

@@ -55,10 +55,12 @@ EXCLUDES = [
 datas += [
     ("index.html", "."),
     ("perks.json", "."),
+    ("killers.json", "."),           # 살인마 도감 데이터
+    ("addons.json", "."),            # 애드온 데이터
     ("search.js", "."),
     ("synonyms.js", "."),
     ("tags.json", "."),
-    ("icons", "icons"),
+    ("icons", "icons"),              # 퍽 + 초상화/파워/애드온 아이콘 모두 포함(재귀)
     ("assets/icon.ico", "assets"),   # 창 아이콘(런타임에 webview 가 사용)
 ]
 

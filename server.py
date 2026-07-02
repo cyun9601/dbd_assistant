@@ -62,6 +62,20 @@ with open(os.path.join(BUNDLE, "perks.json"), encoding="utf-8") as f:
     PERKS = json.load(f)
 PERK_BY_ID = {p["id"]: p for p in PERKS}
 
+
+def _load_bundle_json(name):
+    """번들의 선택적 데이터 파일을 읽는다. 없거나 깨졌으면 빈 목록(기능만 비활성)."""
+    try:
+        with open(os.path.join(BUNDLE, name), encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, ValueError):
+        return []
+
+
+# 살인마 도감 데이터 (update_killers_from_wiki.py 로 생성). 프런트가 /killers · /addons 로 읽는다.
+KILLERS = _load_bundle_json("killers.json")
+ADDONS = _load_bundle_json("addons.json")
+
 ROLE_WORD = {"killer": "살인마", "survivor": "생존자"}
 DEFAULT_ROLE = "killer"
 PERKS_BY_ROLE = {
@@ -610,6 +624,12 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if path == "/perks":
             self._send_json(200, PERKS)
+            return
+        if path == "/killers":
+            self._send_json(200, KILLERS)
+            return
+        if path == "/addons":
+            self._send_json(200, ADDONS)
             return
         if path == "/voice/devices":
             self._send_json(200, voice.devices())
