@@ -9,6 +9,7 @@ DBD 어시스턴트 로컬 서버.
 키 우선순위: 환경변수 → 저장된 config(secrets_store). 어느 쪽도 브라우저로 노출되지 않는다.
 usage: python server.py (개발) · app.py (네이티브 창) · exe (배포)
 """
+import datetime
 import json
 import os
 import posixpath
@@ -75,6 +76,9 @@ def _load_bundle_json(name):
 # 살인마 도감 데이터 (update_killers_from_wiki.py 로 생성). 프런트가 /killers · /addons 로 읽는다.
 KILLERS = _load_bundle_json("killers.json")
 ADDONS = _load_bundle_json("addons.json")
+# 패치노트 (update_patchnotes_from_steam.py 로 생성). 프런트가 /patchnotes 로 읽는다.
+# 다른 데이터는 list 지만 이건 메타(출처·수집일)까지 담은 dict 라 없을 때 기본값도 dict.
+PATCHNOTES = _load_bundle_json("patchnotes.json") or {"patches": []}
 
 ROLE_WORD = {"killer": "살인마", "survivor": "생존자"}
 DEFAULT_ROLE = "killer"
@@ -222,9 +226,32 @@ def _owner_label(p, lang, scope):
     return _pick(ko, en, lang, scope, " / ")
 
 
+def _is_upcoming(p):
+    """아직 적용 전인가 — 출시일이 지나면 더는 '예정' 이 아니다.
+    (코퍼스는 캐시되므로 출시일 당일 반영은 앱 재시작 기준이다.)"""
+    if not p.get("upcoming"):
+        return False
+    d = p.get("upcoming_date")
+    return not (d and d <= datetime.date.today().isoformat())
+
+
+def _eff(p):
+    """지금 기준 설명 — 출시일이 지난 퍽은 예정본(pending)을 본문처럼 쓴다.
+    프런트(index.html 의 eff)와 같은 규칙이라 화면과 LLM 이 같은 설명을 본다."""
+    pend = p.get("pending")
+    if not pend or not p.get("upcoming") or _is_upcoming(p):
+        return p
+    q = dict(p)
+    for f in ("desc_html", "desc_text", "desc_html_en", "desc_text_en"):
+        if pend.get(f):
+            q[f] = pend[f]
+    return q
+
+
 def build_corpus(role, tag_perks, lang, scope):
     lines = []
-    for p in PERKS_BY_ROLE[role]:
+    for raw in PERKS_BY_ROLE[role]:
+        p = _eff(raw)
         name = _pick(p["name"], p.get("name_en"), lang, scope, " / ")
         # 별칭(원깜 등)·예전 이름을 이름 옆에 붙여, 그 이름으로 물어도 LLM 이 매칭하게 한다.
         extra = []
@@ -233,6 +260,13 @@ def build_corpus(role, tag_perks, lang, scope):
         former = (p.get("former_names") or []) + (p.get("former_names_en") or [])
         if former:
             extra.append("예전 이름 " + ", ".join(former))
+        if _is_upcoming(p):
+            # 아직 적용 전이라는 걸 LLM 도 알게 한다. 'update' 는 아래 설명이 라이브
+            # 기준이고(예정본은 pending 에 따로 있음), 'new' 는 퍽 자체가 미출시다.
+            ver = p.get("upcoming_patch") or "다음"
+            extra.append(f"{ver} 패치로 새로 나올 퍽(아직 게임에 없음)"
+                         if p.get("upcoming_kind") != "update" else
+                         f"설명은 현재 라이브 기준 · {ver} 패치에서 변경 예정")
         if extra:
             name = f"{name} ({'; '.join(extra)})"
         owner = _owner_label(p, lang, scope)
@@ -592,6 +626,15 @@ class Handler(SimpleHTTPRequestHandler):
                 return full
         return super().translate_path(path)
 
+    def end_headers(self):
+        # 화면/데이터 파일은 항상 서버에 물어보게 한다. 브라우저(특히 exe 의 WebView2)가
+        # index.html 을 캐시해 두면 앱을 새로 켜도 옛 화면이 그대로 떠서, 데이터는 갱신됐는데
+        # 반영이 안 된 것처럼 보인다. no-cache 는 "캐시하되 매번 재검증" 이라 304 로 가볍다.
+        # .bin 은 구워 둔 임베딩 행렬 — 메타(index.json)와 짝이 맞아야 하므로 같이 재검증한다.
+        if self.path.split("?")[0].endswith((".html", ".js", ".json", ".css", ".bin")):
+            self.send_header("Cache-Control", "no-cache")
+        super().end_headers()
+
     def do_GET(self):
         path = self.path.split("?")[0].rstrip("/")
         if path == "/config":
@@ -630,6 +673,9 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if path == "/addons":
             self._send_json(200, ADDONS)
+            return
+        if path == "/patchnotes":
+            self._send_json(200, PATCHNOTES)
             return
         if path == "/voice/devices":
             self._send_json(200, voice.devices())

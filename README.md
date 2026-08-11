@@ -14,7 +14,7 @@
 
 **⚙️ 언어 설정** — 설정에서 ① **표시 언어**(한국어/English, 카드에 보여줄 언어 · 검색과 무관)와 ② **검색 범위**(동일 언어 검색 / 다국어 검색)를 고를 수 있습니다. *다국어 검색*은 한국어·영어 어느 쪽으로 입력해도 매칭되며, 세 검색 모드 모두에 적용됩니다.
 
-데이터 출처: 영어 설명·아이콘 [deadbydaylight.wiki.gg](https://deadbydaylight.wiki.gg/wiki/Perks) · 한글 설명은 위키 원문을 자체 번역 · 사용률 [nightlight.gg](https://nightlight.gg/perks) · 살인마 **142개** + 생존자 **173개** = **315개** 전부
+데이터 출처: 영어 설명·아이콘 [deadbydaylight.wiki.gg](https://deadbydaylight.wiki.gg/wiki/Perks) · 한글 설명은 위키 원문을 자체 번역 · 사용률 [nightlight.gg](https://nightlight.gg/perks) · 살인마 **145개** + 생존자 **176개** = **321개** 전부
 
 ---
 
@@ -60,12 +60,12 @@
 | **AI 정밀 검색** | 선택한 진영의 퍽 **전체를 LLM에 보내** 가장 가능성 높은 퍽을 근거와 함께 반환 | 가장 정확 · API 키 필요 · 질문당 소액 과금 · Enter로 실행 |
 
 - **키워드 모드**는 `발전기`, `갈고리`, `오라`, `판자` 처럼 구체적 단어가 들어간 질문에 특히 정확합니다.
-- **의미 기반 AI**는 `"맞으면 한 방에 쓰러져"` 처럼 돌려 말해도 의미로 찾아줍니다. 모델·라이브러리를 **로컬에 받아두고**(`python download_model.py`, 1회) 브라우저 안에서 돌리므로, 그 뒤로는 **인터넷 없이** 동작하고 매번 다시 받지 않습니다.
+- **의미 기반 AI**는 `"맞으면 한 방에 쓰러져"` 처럼 돌려 말해도 의미로 찾아줍니다. 모델·라이브러리를 **로컬에 받아두고**(`python download_model.py`, 1회) 브라우저 안에서 돌리므로, 그 뒤로는 **인터넷 없이** 동작하고 매번 다시 받지 않습니다. 퍽 쪽 벡터는 [미리 구워 두어](#의미검색-벡터-다시-굽기-퍽-데이터를-바꿨다면) 모드에 들어갈 때 기다림이 없습니다.
 
   ```bash
   python download_model.py   # 1회: 모델(ONNX)+라이브러리를 models/, vendor/ 에 저장 (~155MB)
   ```
-- **AI 정밀 검색**은 가장 똑똑합니다. 선택한 진영의 퍽(살인마 139 / 생존자 167)을 통째로 LLM에 넣고(진영별로 프롬프트 캐싱되어 저렴), `confidence %`와 **매칭 근거**까지 보여줍니다.
+- **AI 정밀 검색**은 가장 똑똑합니다. 선택한 진영의 퍽(살인마 145 / 생존자 176)을 통째로 LLM에 넣고(진영별로 프롬프트 캐싱되어 저렴), `confidence %`와 **매칭 근거**까지 보여줍니다.
 
 ### AI 정밀 검색 모드 설정 (API 키)
 
@@ -125,6 +125,41 @@ deadbydaylight.wiki.gg(공식 위키)에서 살인마·생존자 퍽의 **영어
 `perks.json` 의 `desc_html_en`/`desc_text_en` 과 `icons/` 를 갱신합니다(한글 필드는 건드리지 않음).
 아이콘은 위키 PNG 를 webp 로 변환해 기존 경로에 덮어씁니다.
 
+아직 안 나온 패치의 퍽에는 예정 배지를 붙입니다(실행 끝에 `UP` 로 표시 · 영어만 자동이라
+**한글 설명은 같이 손봐야** 합니다). 두 종류를 구분합니다:
+
+| `upcoming_kind` | 배지 | 무엇 | 어떻게 찾나 |
+|---|---|---|---|
+| `new` | 🔜 **출시 예정**(주황) | 미출시 챕터의 **퍽 자체가 새로 나옴** | 스크립트의 `UPCOMING_OWNERS` (예: `The Judgment`·`Aurora Stardotter` → 10.1.0) |
+| `update` | 🔜 **업데이트 예정**(파랑) | 이미 있는 퍽의 **설명·수치만 바뀜** | `patchnotes.json` 의 *perk updates* 목록 + 위키의 미출시 패치 안내 문구 |
+
+`update` 퍽은 **라이브 설명과 예정 설명을 둘 다** 들고 있습니다 — 본문(`desc_html` 등)은 **지금 게임에 적용된 값**이고,
+바뀔 내용은 `pending`(`desc_html`/`desc_text`/`desc_html_en`/`desc_text_en`)에 담깁니다. 앱은 **출시일이 되면 그날부터
+`pending` 을 본문처럼** 씁니다(표시·검색·의미검색·AI 정밀 검색 모두 같은 기준) — 데이터를 다시 굽지 않아도 알아서 갈아탑니다.
+출시 전에는 카드에서 **`🔜 … 변경 예정 설명`** 버튼으로 바뀔 내용을 펼쳐 볼 수 있습니다.
+
+패치가 나간 뒤 스크립트를 다시 돌리면 `pending` 을 본문으로 **승격**하고(로그에 `PROMOTE`) 예정 관련 필드를 정리합니다.
+영어는 위키에서 자동으로 받지만 **`pending.desc_html`(한글 예정본)은 손번역**입니다 — 비어 있으면 실행 로그가
+`한글 예정본 없음` 으로 알려주고, 앱은 그동안 라이브 설명을 그대로 보여줍니다.
+
+위키는 미출시 챕터 퍽도 안내 문구 없이 일반 퍽처럼 실어서 배너로는 가려낼 수 없기 때문에,
+새 챕터 캐릭터는 `UPCOMING_OWNERS` 에 적어 둡니다(출시일이 지나면 다른 표시와 똑같이 자동 해제).
+바뀌는 퍽 쪽도 위키가 안내 문구를 빠뜨리는 경우가 있어(10.1.0 의 *구조*) **공식 패치노트의
+`perk_updates` 목록을 함께 대조**합니다 — `patchnotes.json` 이 있으면 자동으로 씁니다.
+배지는 위키 패치노트(`Patch Notes 10.1.X`)의 **Release Dates 표에서 읽은 라이브 출시일이 지나면 자동으로 사라집니다** —
+데이터에 `upcoming`·`upcoming_patch`·`upcoming_date` 로 저장되고, 앱이 실행 시점 날짜와 비교하므로
+데이터를 다시 굽지 않아도 그날부터 평범한 설명으로 표시됩니다.
+
+위키 표가 아직 `TBA` 인 패치는 `update_en_from_wiki.py` 위쪽 **`PATCH_DATES`** 에 날짜를 적어 두면 그 값을 씁니다
+(예: `"10.1.0": "2026-08-25"`). 표에 실제 날짜가 올라오면 **위키 값이 이를 덮으므로** 나중에 지우지 않아도 됩니다.
+패치가 밀려 날짜가 바뀌면 이 한 줄만 고치면 됩니다.
+
+아이콘까지 다시 받을 필요가 없으면 `--no-icons`.
+
+`perks.json` 에 아직 없는 위키 퍽은 `NEW` 로 **보고만** 합니다(한글 번역이 수동이라 자동 추가하지 않음).
+라이선스 만료로 생기는 **개명 일반퍽**(예: *Save the Best for Last* ↔ *Keep Them Waiting*)은
+소유 퍽의 `former_names`/`former_names_en` 에 적어 두면 `TWIN` 으로 분류되고, 두 이름 모두 검색에 잡힙니다.
+
 **한글 설명문은 위키 영어 원문을 직접 번역해 손으로 채웁니다**(`desc_html`/`desc_text`).
 카드의 🇬🇧 버튼은 한글 번역이 의심스러울 때 위키 영어 원문을 펼쳐 보여 줍니다.
 각 퍽엔 `role`(`killer`/`survivor`) 필드가 붙어, 앱의 진영 토글과 서버 코퍼스 분리에 쓰입니다.
@@ -135,6 +170,22 @@ deadbydaylight.wiki.gg(공식 위키)에서 살인마·생존자 퍽의 **영어
 > **참고**: 초기 `perks.json` 구조(퍽 목록·slug·role)는 예전에 `build_data.py`(dbd-db.com)로 만들었으나
 > 더 이상 쓰지 않습니다. 지금은 위 위키 도구 + 수동 한글 번역으로 유지합니다.
 
+### 패치노트 갱신
+
+```bash
+python update_patchnotes_from_steam.py            # 최근 공지 50개에서 패치노트만 추림
+python update_patchnotes_from_steam.py --count 100
+```
+
+Steam 공식 공지(스토어 뉴스와 같은 원문)에서 패치노트를 받아 `patchnotes.json` 을 굽습니다 —
+앱의 **📜 패치노트** 탭이 서버 `GET /patchnotes` 로 읽습니다. 본문 BBCode 는 앱이 그대로 그릴 수 있는
+최소 HTML(`<b>`/`<i>`/`<a>`)과 블록 목록(h2/h3/p/li + 중첩 깊이)으로 바꾸고, 오프라인에서 못 받는
+이미지는 버립니다. **본문은 공식 원문(영어)** 그대로입니다 — Steam 에 한국어판 공지가 없습니다.
+
+각 패치가 언급한 퍽은 `perk_ids` 로 뽑아 둡니다. 앱은 이를 **한글 퍽 이름 칩**으로 보여주고, 누르면
+그 자리에서 퍽 카드를 펼칩니다. 공식 노트는 라이선스 만료 이름(예: *Keep Them Waiting*)을 쓰므로
+`former_names_en` 까지 대조해 우리 퍽과 이어 붙입니다.
+
 ### 살인마 · 애드온 갱신
 
 ```bash
@@ -142,18 +193,44 @@ python update_killers_from_wiki.py                 # 전체 살인마 수집
 python update_killers_from_wiki.py "The_Trapper"    # 특정 살인마만 (개발/검증용)
 ```
 
-같은 위키에서 살인마별 **개요·파워·애드온**의 영어 원문·아이콘을 받아 `killers.json`(43명) ·
-`addons.json`(860개)과 `icons/killer_portrait/`·`icons/power/`·`icons/addon/` 를 갱신합니다.
+같은 위키에서 살인마별 **개요·파워·애드온**의 영어 원문·아이콘을 받아 `killers.json`(44명) ·
+`addons.json`(880개)과 `icons/killer_portrait/`·`icons/power/`·`icons/addon/` 를 갱신합니다.
 퍽과 동일하게 **영어(`*_en`)와 아이콘만** 위키에서 받고, 한글 필드는 손으로 번역해 채우며
 재실행 시 id 로 보존됩니다. 설계 근거는 [`docs/killers_addons_design.md`](docs/killers_addons_design.md) 참고.
 
-앱 상단의 **📕 살인마 도감** 탭에서 살인마 그리드 → 상세(개요·파워·등급별 애드온)를 볼 수 있습니다.
+퍽과 마찬가지로 **아직 안 나온 챕터의 살인마**는 `UPCOMING_KILLERS` 에 적어 두면 도감 타일·상세에
+주황 `🔜 출시 예정` 배지가 붙고, 위키 패치노트의 라이브 출시일이 지나면 자동으로 사라집니다.
+위키가 다음 패치 기준으로 미리 고쳐 둔 설명에 붙이는 안내 문구도 개요·파워·애드온에서 걷어냅니다.
+
+앱 상단의 **📕 살인마 도감** 탭에서 살인마 그리드 → 상세(개요·파워·등급별 애드온)를 볼 수 있고,
+**📜 패치노트** 탭에서는 패치별 공식 노트와 그 패치에서 바뀐 퍽을 바로 펼쳐 볼 수 있습니다.
 서버는 `GET /killers`·`/addons` 로 데이터를 제공하며, 표시 언어 토글(한/영)도 함께 적용됩니다.
 
 **한글 번역**(개요·파워·애드온 이름/설명)은 `ko_merge.py` 로 채웁니다 — 영어 원문을 청크로 나눠
 번역한 뒤 병합하며, HTML 색강조(Highlight)·불릿을 보존하고 `_text`·`search_blob`(한/영 통합,
 추후 도감 검색용)을 다시 굽습니다. 아직 번역이 없는 필드는 앱에서 영어로 자동 폴백됩니다.
 (OpenAI/Anthropic API 로 자동 번역하려면 `translate_killers.py --model ...` 도 사용 가능.)
+
+### 의미검색 벡터 다시 굽기 (퍽 데이터를 바꿨다면)
+
+```bash
+python build_embeddings.py            # 검색 프로파일 3종 전부
+python build_embeddings.py multi      # 특정 프로파일만
+```
+
+'의미 기반 AI' 모드가 쓰는 **코퍼스 벡터를 미리 구워** `embeddings/` 에 둡니다 —
+`index.json`(메타·퍽 id 순서·패시지 해시)과 프로파일별 `*.bin`(float32, 321×384, 약 482KB).
+퍽 데이터가 그대로면 임베딩 결과도 항상 같으므로, 앱은 이 파일을 읽기만 하고 브라우저에서
+321개를 다시 임베딩하지 않습니다. 모델(~113MB)은 **질의 한 줄을 임베딩할 때만** 필요해서
+모드 진입 시에는 기다리지 않고 배경에서 로드됩니다.
+
+프로파일은 검색 범위·표시 언어 조합 3종입니다 — `multi`(한+영, 기본) · `same-ko` · `same-en`.
+`perks.json` 을 고쳤으면 다시 구우세요. 안 구워도 앱은 **패시지 해시로 달라진 퍽만 골라내
+그 자리에서 다시 임베딩**하므로 틀린 결과가 나오지는 않습니다(출시일이 지나 `pending` 설명으로
+갈아타는 퍽도 이 경로로 처리됩니다). 파일이 아예 없으면 예전처럼 전부 브라우저에서 임베딩합니다.
+
+빌드 전용으로 `pip install onnxruntime tokenizers numpy` 가 필요하고, 모델은
+`download_model.py` 가 받아 둔 것을 그대로 씁니다(앱 실행에는 셋 다 불필요).
 
 ---
 
@@ -168,7 +245,7 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 - 처음 한 번은 빌드 도구를 설치합니다: `pip install pyinstaller pywebview`
 - 결과: **`dist\DBD-Assistant\`** (one-folder). 이 폴더 **전체**를 zip 으로 묶어 배포합니다.
   진입점은 `app.py`(서버 스레드 + pywebview 네이티브 창)입니다.
-- 번들에는 읽기 전용 자산(`index.html`, `perks.json`, `icons/`, `tags.json` …)과 `anthropic`/`openai` SDK 가 포함됩니다.
+- 번들에는 읽기 전용 자산(`index.html`, `perks.json`, `icons/`, `embeddings/`, `tags.json` …)과 `anthropic`/`openai` SDK 가 포함됩니다.
   의미기반 모델(~155MB)은 용량 때문에 번들하지 않고 **첫 사용 시 `%APPDATA%\dbd-assistant\` 로 1회 다운로드**합니다.
 - 사용자가 만드는 데이터(API 키·즐겨찾기·사용자 태그·다운로드 모델)는 모두 `%APPDATA%\dbd-assistant\` 에 저장되므로,
   exe 폴더가 `Program Files` 처럼 쓰기 불가여도 정상 동작합니다.
@@ -192,10 +269,12 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `paths.py` | 실행 경로 해석 — 번들 자산(읽기) vs 사용자 데이터(`%APPDATA%`, 쓰기) 분리 |
 | `secrets_store.py` | API 키 저장소 — Windows DPAPI 암호화 (ctypes, 의존성 없음) |
 | `perks.json` | 퍽 데이터 (서버가 `GET /perks` 로 프런트에 제공 · 빌드가 사용, 자동 생성 · `role` 포함) |
-| `icons/` | 퍽 아이콘 315개 — `icons/killer/` 142 + `icons/survivor/` 173 (진영별 폴더, 오프라인용) |
+| `icons/` | 퍽 아이콘 321개 — `icons/killer/` 145 + `icons/survivor/` 176 (진영별 폴더, 오프라인용) |
 | `killers.json` / `addons.json` | 살인마(43) · 애드온(860) 데이터 — `update_killers_from_wiki.py` 로 생성 · 서버가 `/killers`·`/addons` 로 제공 |
+| `patchnotes.json` | 패치노트(Steam 공식 공지 15개) — `update_patchnotes_from_steam.py` 로 생성 · 서버가 `/patchnotes` 로 제공 |
 | `update_en_from_wiki.py` | 퍽 영어 설명·아이콘 갱신 (deadbydaylight.wiki.gg) |
 | `update_killers_from_wiki.py` | 살인마 개요·파워·애드온 갱신 (deadbydaylight.wiki.gg) → `killers.json`/`addons.json`/아이콘 |
+| `update_patchnotes_from_steam.py` | 패치노트 수집 (Steam 공식 공지) → `patchnotes.json` |
 | `ko_merge.py` | 살인마/애드온 한글 번역 청크 분할(split)·병합(apply) — 영어 원문을 나눠 번역 후 합침 |
 | `translate_killers.py` | (선택) 살인마/애드온 영어 → 한글 자동 번역 (OpenAI/Anthropic API) |
 | `build_data.py` | (레거시) 초기 퍽 부트스트랩 스크립트 |

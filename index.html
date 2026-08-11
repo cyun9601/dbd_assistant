@@ -152,9 +152,14 @@
   .card .star.on { color: #f1c40f; }
   .card .score { font-size: 11px; color: var(--good);
     border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
-  /* 출시 예정(미출시) 퍽 배지 */
-  .card .upcoming { font-size: 11px; color: #e8a33d; font-weight: 600; white-space: nowrap;
+  /* 예정 배지 — 기본(주황)은 대상 자체가 새로 나오는 "출시 예정",
+     .upd(파랑)는 기존 퍽의 설명만 바뀌는 "업데이트 예정".
+     퍽 카드와 살인마 도감(타일·상세)이 같은 배지를 쓴다. */
+  .upcoming { font-size: 11px; color: #e8a33d; font-weight: 600; white-space: nowrap;
     border: 1px solid #e8a33d66; border-radius: 999px; padding: 1px 8px; }
+  .upcoming.upd { color: var(--hi2); border-color: color-mix(in srgb, var(--hi2) 40%, transparent); }
+  .killer-tile .upcoming { display: inline-block; margin-top: 6px; }
+  .kd-title .upcoming { vertical-align: middle; margin-left: 6px; }
   /* 사용률(nightlight) 뱃지 — 등급별 색 */
   .card .usage { font-size: 11px; font-weight: 700; border-radius: 6px;
     padding: 2px 7px; white-space: nowrap; border: 1px solid transparent; }
@@ -243,6 +248,40 @@
   .killer-tile .ksub { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
   /* 살인마 상세 */
   .kd-back { margin-bottom: 14px; }
+  /* ── 📜 패치노트 ── */
+  .pn-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+  .pn-pick { background: var(--panel2); border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 5px 12px; font-size: 12.5px; cursor: pointer;
+    font-family: inherit; white-space: nowrap; }
+  .pn-pick:hover { color: var(--text); border-color: var(--accent2); }
+  .pn-pick.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .pn-pick .pn-d { opacity: .7; margin-left: 5px; font-size: 11.5px; }
+  .pn-pick .pn-ptb { color: #e8a33d; font-weight: 700; margin-left: 5px; font-size: 11px; }
+  .pn-pick.active .pn-ptb { color: #ffe6bf; }
+  .pn-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .pn-title { font-size: 21px; font-weight: 800; letter-spacing: .3px; }
+  .pn-date { color: var(--muted); font-size: 13px; }
+  .pn-src { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; }
+  .pn-src a { color: var(--link); }
+  .pn-perks { display: flex; flex-wrap: wrap; gap: 7px; align-items: center;
+    padding: 11px 13px; margin-bottom: 18px;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; }
+  .pn-perks .pn-lbl { font-size: 12.5px; color: var(--muted); margin-right: 2px; }
+  .pn-perk { background: var(--panel); border: 1px solid var(--line); color: var(--text);
+    border-radius: 999px; padding: 4px 11px; font-size: 12.5px; cursor: pointer;
+    font-family: inherit; }
+  .pn-perk:hover { border-color: var(--accent2); }
+  .pn-perk.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .pn-h2 { font-size: 16px; font-weight: 800; margin: 26px 0 12px;
+    border-left: 3px solid var(--accent2); padding-left: 9px; }
+  .pn-h3 { font-size: 14px; font-weight: 700; margin: 19px 0 9px; color: var(--accent2); }
+  .pn-p { font-size: 13.5px; line-height: 1.65; color: var(--desc); margin: 8px 0; }
+  .pn-li { font-size: 13.5px; line-height: 1.65; color: var(--desc); margin: 4px 0;
+    padding-left: 14px; position: relative; }
+  .pn-li::before { content: "•"; position: absolute; left: 2px; color: var(--muted); }
+  .pn-li.lv1 { margin-left: 18px; }
+  .pn-li.lv2 { margin-left: 36px; }
+  .pn-li.lv3 { margin-left: 54px; }
   .kd-head { display: flex; gap: 16px; align-items: center; margin-bottom: 8px; }
   .kd-head img { width: 112px; height: 112px; flex: 0 0 112px; object-fit: contain;
     filter: drop-shadow(0 3px 6px var(--shadow)); }
@@ -374,6 +413,7 @@
     <div class="sections" id="sections">
       <button class="section-btn active" data-section="perks">🔍 퍽 검색</button>
       <button class="section-btn" data-section="killers">📕 살인마 도감</button>
+      <button class="section-btn" data-section="patch">📜 패치노트</button>
       <button class="gear-btn theme-toggle" id="themeBtn" title="화면 테마 전환 (라이트 / 다크)" aria-pressed="false"></button>
       <button class="gear-btn" id="settingsBtn" title="설정 (표시 언어 · 검색 범위 · API 키)">⚙️</button>
     </div>
@@ -495,11 +535,17 @@ let USAGE = {};               // 서버 실시간 사용률 {퍽id: pct} (없으
 let usageMeta = null;         // 사용률 메타(집계 기간·출처)
 
 // ---- 살인마 도감 ----
-let section = "perks";        // "perks"(퍽 검색) | "killers"(살인마 도감)
+let section = "perks";        // "perks"(퍽 검색) | "killers"(살인마 도감) | "patch"(패치노트)
 let KILLERS = [];             // /killers 로 로드 (killers.json)
 let ADDON_BY_ID = {};         // /addons 로 로드 후 id→애드온 인덱스
 let killersLoaded = false;    // 최초 진입 시 1회 로드
 let killerView = null;        // null=목록, 또는 살인마 id(상세)
+
+// ---- 패치노트 ----
+let PATCHNOTES = { patches: [] };  // /patchnotes 로 로드 (patchnotes.json)
+let patchLoaded = false;           // 최초 진입 시 1회 로드
+let patchView = null;              // 보고 있는 패치 id (null=최신)
+let patchPerk = null;              // 퍽 칩으로 펼쳐 둔 퍽 id
 
 // 표시 언어(보여주기 전용) · 검색 범위(매칭에 넣을 언어). 둘은 독립적이다.
 let dispLang = (localStorage.getItem("dbd-lang") === "en") ? "en" : "ko";       // "ko" | "en"
@@ -510,22 +556,77 @@ const perksForRole = () => PERKS.filter((p) => p.role === role);
 
 // ---- 표시 언어 헬퍼 (카드에 보여줄 텍스트) ----
 const dispName = (p) => (dispLang === "en" && p.name_en) ? p.name_en : p.name;
-const dispDesc = (p) => (dispLang === "en" && p.desc_html_en) ? p.desc_html_en : p.desc_html;
+const dispDesc = (perk) => {
+  const p = eff(perk);
+  return (dispLang === "en" && p.desc_html_en) ? p.desc_html_en : p.desc_html;
+};
 function ownerLabel(p) {
   const o = (dispLang === "en") ? (p.owner_en || p.owner) : p.owner;
   if (o === "public" || o === "공용") return dispLang === "en" ? "Public" : "공용";
   return o;
 }
+// ---- 출시 예정(미출시 패치 기준 설명) 표시 ----
+// 위키가 다음 패치 기준으로 미리 고쳐 둔 설명을 쓰는 퍽엔 upcoming 이 붙는다.
+// 출시일(upcoming_date, 위키 패치노트 기준)이 지나면 그날부터 배지를 떼 — 데이터를
+// 다시 굽지 않아도 앱이 알아서 현재 설명으로 취급한다. 출시일이 아직 TBA(null)면
+// 날짜가 공지되고 지날 때까지 계속 "출시 예정" 으로 둔다.
+const todayStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
+const isUpcoming = (p) => !!p.upcoming && !(p.upcoming_date && p.upcoming_date <= todayStr());
+// 기존 퍽이 바뀌는 경우엔 라이브 설명(본문)과 예정 설명(pending)을 둘 다 들고 있다.
+// 출시일이 되면 그날부터 pending 을 본문처럼 쓴다 — 데이터를 다시 굽지 않아도 앱이 갈아탄다.
+const pendingActive = (p) => !!(p.pending && p.upcoming) && !isUpcoming(p);
+// 지금 기준으로 보여줄(그리고 검색할) 설명. pending 이 비어 있는 필드는 라이브를 그대로 쓴다.
+function eff(p) {
+  if (!pendingActive(p)) return p;
+  const q = { ...p };
+  for (const f of ["desc_html", "desc_text", "desc_html_en", "desc_text_en"])
+    if (p.pending[f]) q[f] = p.pending[f];
+  return q;
+}
+// noun: 툴팁에 쓸 대상 이름 — 퍽 카드는 "퍽", 살인마 도감은 "살인마".
+function upcomingChipHtml(p, noun = "퍽") {
+  if (!isUpcoming(p)) return "";
+  const patch = p.upcoming_patch ? `${esc(p.upcoming_patch)} ` : "";
+  const d = p.upcoming_date;
+  // 대상 자체가 새로 나오는 것과, 기존 퍽의 설명만 바뀌는 것을 구분해 적는다.
+  const isNew = p.upcoming_kind !== "update";
+  const label = isNew ? "출시 예정" : "업데이트 예정";
+  const what = isNew ? `새로 나오는 ${noun}입니다` : "설명이 바뀔 예정입니다";
+  // 배지엔 짧게(8/25), 툴팁엔 전체 날짜를 적는다.
+  const short = d ? `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}` : "";
+  const tip = d ? `${d} 적용 예정` : "출시일 미정";
+  return `<span class="upcoming${isNew ? "" : " upd"}" title="${esc(patch)}패치에서 ${what} · ${esc(tip)}">` +
+    `🔜 ${patch}${label}${short ? ` (${esc(short)})` : ""}</span>`;
+}
+
 // 반대 언어 원문 블록 (한글 표시 중이면 영어를, 영어 표시 중이면 한글을 펼쳐 보여줌)
 function altBlockHtml(perk) {
+  const p = eff(perk);
   const toEn = dispLang === "ko";
-  const altName = toEn ? perk.name_en : perk.name;
-  const altDesc = toEn ? perk.desc_html_en : perk.desc_html;
-  if (!altDesc) return "";
+  const altName = toEn ? p.name_en : p.name;
+  const altDesc = toEn ? p.desc_html_en : p.desc_html;
   const label = toEn ? "🇬🇧 영어 원문" : "🇰🇷 한국어";
   const nameHtml = altName ? `<span class="en-name">${esc(altName)}</span>` : "";
-  return `<button class="en-toggle" type="button" data-open-label="${label} 닫기" data-shut-label="${label}">${label}</button>` +
-    `<div class="desc-en" hidden>${nameHtml}${altDesc}</div>`;
+  const alt = altDesc
+    ? `<button class="en-toggle" type="button" data-open-label="${label} 닫기" data-shut-label="${label}">${label}</button>` +
+      `<div class="desc-en" hidden>${nameHtml}${altDesc}</div>`
+    : "";
+  return alt + pendingBlockHtml(perk);
+}
+
+// 아직 적용 전인 퍽은 "이 패치에서 어떻게 바뀌는지" 를 접힌 채로 함께 붙인다.
+// (적용 후에는 그 설명이 본문이 되므로 이 블록은 사라진다)
+function pendingBlockHtml(perk) {
+  if (!perk.pending || !isUpcoming(perk)) return "";
+  const pd = (dispLang === "en" && perk.pending.desc_html_en)
+    ? perk.pending.desc_html_en : (perk.pending.desc_html || perk.pending.desc_html_en);
+  if (!pd) return "";
+  const label = `🔜 ${perk.upcoming_patch || ""} 변경 예정 설명`.replace("  ", " ");
+  return `<button class="en-toggle" type="button" data-open-label="${esc(label)} 닫기" data-shut-label="${esc(label)}">${esc(label)}</button>` +
+    `<div class="desc-en" hidden>${pd}</div>`;
 }
 
 // 별칭(원깜 등)은 닉네임이라 언어 무관 — 어느 검색 범위/표시 언어에서도 매칭.
@@ -534,7 +635,8 @@ const aliasJoin = (p) => (p.aliases || []).join(" ");
 const koExtra = (p) => [aliasJoin(p), (p.former_names || []).join(" ")].filter(Boolean).join(" ");
 const enExtra = (p) => [aliasJoin(p), (p.former_names_en || []).join(" ")].filter(Boolean).join(" ");
 // 검색 매칭에 쓸 텍스트 (검색 범위 + 표시 언어). 키워드 검색용 필드 선택자.
-function searchFields(p) {
+function searchFields(perk) {
+  const p = eff(perk);                 // 출시일이 지난 뒤엔 예정 설명으로 검색
   const kx = koExtra(p), ex = enExtra(p);
   const ko = { name: p.name + (kx ? " " + kx : ""), owner: p.owner || "", desc: p.desc_text || "" };
   const en = { name: (p.name_en || "") + (ex ? " " + ex : ""), owner: p.owner_en || "", desc: p.desc_text_en || "" };
@@ -544,7 +646,8 @@ function searchFields(p) {
 }
 // 의미검색 임베딩 캐시/패시지를 가르는 프로파일 키
 const searchProfile = () => (searchScope === "multi") ? "multi" : `same-${dispLang}`;
-function semanticPassage(p) {
+function semanticPassage(perk) {
+  const p = eff(perk);                 // 의미검색 패시지도 같은 기준
   const kx = koExtra(p), ex = enExtra(p);
   const ko = `${p.name}. ${p.desc_text}${kx ? " " + kx : ""}`;
   const en = `${p.name_en || ""}. ${p.desc_text_en || ""}${ex ? " " + ex : ""}`;
@@ -1033,7 +1136,7 @@ function cardHtml(perk, { badge = "", reason = "", desc } = {}) {
       <div class="top">
         <span class="name">${esc(dispName(perk))}</span>
         <span class="owner${perk.role === 'survivor' ? ' surv' : ''}">${esc(ownerLabel(perk))}</span>
-        ${perk.upcoming ? '<span class="upcoming">🔜 출시 예정</span>' : ''}
+        ${upcomingChipHtml(perk)}
         ${usageBadgeHtml(perk)}
         <button class="star${fav ? ' on' : ''}" data-fav-id="${perk.id}" title="즐겨찾기" aria-pressed="${fav}">${fav ? '★' : '☆'}</button>
         ${badgeHtml}
@@ -1131,6 +1234,7 @@ async function runSearch() {
     await ensureSemantic();            // 프로파일(범위/언어)이 바뀌었으면 내부에서 재임베딩
     if (!semantic || !semantic.ready) return;   // 준비 실패 시 상태줄에 안내됨
     const ranked = await semantic.rank(q);
+    if (!ranked) return;                        // 모델 준비 실패 — 상태줄에 안내됨
     render(tiebreakByUsage(ranked, (x) => x.score), q);
   } else if (mode === "llm") {
     if (!q.trim()) { render([], q); return; }
@@ -1182,6 +1286,7 @@ const ALLOWED_MODEL_NAMES = {
 
 // ---- 의미 기반 (transformers.js) — 라이브러리/모델 모두 로컬에서 로드 (외부 다운로드 없음) ----
 const MODEL = "Xenova/multilingual-e5-small";
+const DTYPE = "q8";   // 양자화본. 구워 둔 벡터와 질의 벡터가 같은 공간이어야 하므로 함께 대조한다.
 const LIB = "/vendor/transformers/transformers.min.js";  // 로컬 라이브러리 (브라우저 ESM 빌드)
 
 function cosine(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
@@ -1198,27 +1303,69 @@ async function getEmbed() {
   env.localModelPath = "/models/";
   env.backends.onnx.wasm.wasmPaths = "/vendor/transformers/";
   env.backends.onnx.wasm.numThreads = 1;
-  const extractor = await pipeline("feature-extraction", MODEL, { dtype: "q8" });
+  const extractor = await pipeline("feature-extraction", MODEL, { dtype: DTYPE });
   _embed = async (texts) => (await extractor(texts, { pooling: "mean", normalize: true })).tolist();
   return _embed;
 }
 
-// 현재 검색 프로파일(범위/표시 언어)에 맞는 의미검색 준비. 프로파일이 바뀌면 매트릭스만 다시 임베딩.
+// ---- 구워 둔 코퍼스 벡터 (embeddings/, build_embeddings.py 로 생성) ----
+// 퍽 데이터가 그대로면 코퍼스 임베딩 결과도 항상 같다. 그래서 미리 구워 파일로 두고
+// 여기서는 읽기만 한다 — 모드에 들어올 때 321개를 다시 임베딩하지 않는다.
+const EMB_DIR = "embeddings/";
+let _bakedMeta = null;
+
+// build_embeddings.py 의 passage_hash 와 같은 함수 (FNV-1a 32bit, UTF-8 바이트 기준).
+function passageHash(s) {
+  const b = new TextEncoder().encode(s);
+  let h = 0x811c9dc5;
+  for (let i = 0; i < b.length; i++) h = Math.imul(h ^ b[i], 0x01000193) >>> 0;
+  return h.toString(16).padStart(8, "0");
+}
+
+// 구워 둔 행렬을 현재 퍽 목록 순서로 돌려준다 → {matrix, stale}. 쓸 수 없으면 null.
+// stale = 파일에 없거나 패시지가 달라진 행 번호(출시일이 지나 pending 설명으로 갈아탄 퍽 등).
+// 그 행만 모델이 준비된 뒤 다시 임베딩하므로, 파일을 다시 굽지 않아도 틀린 벡터를 쓰지 않는다.
+async function loadBaked(profile, passages) {
+  try {
+    if (!_bakedMeta) _bakedMeta = await (await fetch(EMB_DIR + "index.json")).json();
+    const meta = _bakedMeta, prof = meta.profiles && meta.profiles[profile];
+    // 모델·양자화가 다르면 벡터 공간이 달라 질의와 비교할 수 없다 → 폴백(그 자리에서 임베딩).
+    if (!prof || meta.model !== MODEL || meta.dtype !== DTYPE
+        || !meta.dim || !Array.isArray(meta.ids)) return null;
+    const dim = meta.dim;
+    const flat = new Float32Array(await (await fetch(EMB_DIR + prof.file)).arrayBuffer());
+    if (flat.length !== meta.ids.length * dim) return null;   // 파일이 메타와 어긋남
+    const row = new Map(meta.ids.map((id, i) => [id, i]));
+    const matrix = [], stale = [];
+    PERKS.forEach((p, i) => {
+      const r = row.get(p.id);
+      const fresh = r != null && prof.hashes && prof.hashes[r] === passageHash(passages[i]);
+      matrix.push(fresh ? Array.from(flat.subarray(r * dim, (r + 1) * dim))
+                        : new Array(dim).fill(0));
+      if (!fresh) stale.push(i);
+    });
+    return { matrix, stale };
+  } catch { return null; }   // 파일 없음/깨짐 → 아래에서 예전 방식으로 폴백
+}
+
+// 현재 검색 프로파일(범위/표시 언어)에 맞는 의미검색 준비. 프로파일이 바뀌면 매트릭스만 교체.
 async function ensureSemantic() {
   const profile = searchProfile();
   if (semantic && semantic.ready && semantic.profile === profile) return;
   if (semantic && semantic.loadingPromise && semantic.loadingProfile === profile) return semantic.loadingPromise;
   semantic = { ready: false, loadingProfile: profile };
-  statusEl.textContent = "AI 모델 준비 중…";
-  semantic.loadingPromise = (async () => {
+  const S = semantic;   // 준비 도중 프로파일이 또 바뀌어도 이 실행분은 제 객체만 건드린다
+  S.loadingPromise = (async () => {
     try {
-      const embed = await getEmbed();
-      // 코퍼스 임베딩 (검색 범위/표시 언어 프로파일별로 캐시)
-      statusEl.textContent = "퍽 설명 분석 중…";
+      const passages = PERKS.map((p) => semanticPassage(p));
       const cacheKey = `${PERKS.length}-${profile}`;
-      let matrix = await loadCache(cacheKey);
+      // 코퍼스 행렬: ① 구워 둔 파일 → ② 예전 IndexedDB 캐시 → ③ 그 자리에서 임베딩
+      const baked = await loadBaked(profile, passages);
+      let matrix = baked ? baked.matrix : await loadCache(cacheKey);
+      const stale = baked ? baked.stale : [];
       if (!matrix) {
-        const passages = PERKS.map((p) => semanticPassage(p));
+        statusEl.textContent = "퍽 설명 분석 중…";
+        const embed = await getEmbed();
         matrix = [];
         const B = 16;
         for (let i = 0; i < passages.length; i += B) {
@@ -1227,11 +1374,37 @@ async function ensureSemantic() {
         }
         saveCache(cacheKey, matrix);
       }
-      semantic.matrix = matrix;
-      semantic.profile = profile;
-      semantic.rank = async (q) => {
+      S.matrix = matrix;
+      S.profile = profile;
+
+      // 모델은 '질의' 한 줄을 임베딩할 때만 필요하다. 여기서는 기다리지 않고 배경에서
+      // 데우기만 한다 — 구운 벡터가 있으면 모드 진입이 즉시 끝나고, 모델은 사용자가
+      // 검색어를 치는 동안 로드된다. 낡은 행(stale)도 이때 함께 고친다.
+      S.embedReady = (async () => {
+        const embed = await getEmbed();
+        if (stale.length) {
+          const fixed = await embed(stale.map((i) => passages[i]));
+          stale.forEach((i, n) => { matrix[i] = fixed[n]; });
+        }
+        return embed;
+      })();
+      S.embedReady.catch(() => {});   // 예열 실패는 검색 시점에 보고한다
+
+      S.rank = async (q) => {
+        let embed;
+        const cold = !S.warm;
+        try {
+          if (cold) statusEl.textContent = "AI 모델 준비 중…";
+          embed = await S.embedReady;
+          S.warm = true;
+          // 예열 중 띄운 안내(모델 준비/다운로드 진행률)만 걷어낸다
+          if (cold && statusEl.textContent.startsWith("AI 모델")) statusEl.textContent = "";
+        } catch (e) {
+          semanticFailed(e, S);
+          return null;
+        }
         const [qv] = await embed([`query: ${q}`]);
-        // 코퍼스는 전체(306개)를 임베딩해 두고, 순위 산출 시 현재 역할만 추린다
+        // 코퍼스는 전체(321개)를 담아 두고, 순위 산출 시 현재 역할만 추린다
         const scored = [];
         PERKS.forEach((perk, i) => {
           if (perk.role === role) scored.push({ perk, score: cosine(qv, matrix[i]) });
@@ -1243,18 +1416,25 @@ async function ensureSemantic() {
         top.forEach((x) => { x.pct = 55 + (x.score - lo) / span * 44; });
         return top;
       };
-      semantic.ready = true;
-      statusEl.textContent = "AI 검색 준비 완료 ✓";
-      setTimeout(() => { if (mode === "semantic") statusEl.textContent = ""; }, 2500);
+      S.ready = true;
+      statusEl.textContent = baked ? "" : "AI 검색 준비 완료 ✓";
+      if (!baked) setTimeout(() => { if (mode === "semantic") statusEl.textContent = ""; }, 2500);
     } catch (e) {
-      console.error(e);
-      statusEl.textContent = (e && e.message === "no-server")
-        ? "로컬 서버가 필요합니다. run.bat 으로 실행하세요. (file:// 로 열면 의미기반 모드는 동작하지 않습니다)"
-        : "AI 모델 준비 실패: " + (e && e.message ? e.message : e);
-      semantic = null;
+      semanticFailed(e, S);
     }
   })();
-  return semantic.loadingPromise;
+  return S.loadingPromise;
+}
+
+// 지금 쓰이고 있는 준비분(S)이 실패했을 때만 상태를 비운다 — 그 사이 프로파일이 바뀌어
+// 새로 준비 중이라면 남의 준비분을 날리지 않는다.
+function semanticFailed(e, S) {
+  console.error(e);
+  if (S && semantic !== S) return;
+  statusEl.textContent = (e && e.message === "no-server")
+    ? "로컬 서버가 필요합니다. run.bat 으로 실행하세요. (file:// 로 열면 의미기반 모드는 동작하지 않습니다)"
+    : "AI 모델 준비 실패: " + (e && e.message ? e.message : e);
+  semantic = null;
 }
 
 // 모델/라이브러리가 없으면 로컬 서버에 1회 다운로드를 요청하고 진행률을 보여준다.
@@ -1385,6 +1565,7 @@ $("#langSeg").addEventListener("click", (e) => {
   syncSettingsUI();
   applyRole();      // 예시 칩·플레이스홀더 언어 갱신
   if (section === "killers") renderKillers();   // 살인마 도감도 표시 언어 반영
+  if (section === "patch") renderPatchNotes();  // 패치노트의 퍽 칩 이름도 표시 언어 반영
   else refresh();   // 카드 다시 그림
 });
 // 검색 범위 전환 — 키워드/AI 는 다음 검색부터, 의미검색은 프로파일이 바뀌므로 재임베딩.
@@ -1553,6 +1734,7 @@ function renderKillerGrid() {
       <img src="${esc(k.portrait_file)}" alt="" loading="lazy">
       <div class="kname">${esc(pick(k.name, k.name_en))}</div>
       <div class="ksub">${esc(pick(k.power_name, k.power_name_en))}</div>
+      ${upcomingChipHtml(k, "살인마")}
     </button>`).join("") + `</div>`;
 }
 
@@ -1589,7 +1771,7 @@ function renderKillerDetail(id) {
     <div class="kd-head">
       <img src="${esc(k.portrait_file)}" alt="">
       <div>
-        <div class="kd-title">${esc(pick(k.name, k.name_en))}</div>
+        <div class="kd-title">${esc(pick(k.name, k.name_en))} ${upcomingChipHtml(k, "살인마")}</div>
         ${pName ? `<div class="kd-power-name">⚡ ${esc(pName)}</div>` : ""}
       </div>
     </div>` +
@@ -1599,7 +1781,58 @@ function renderKillerDetail(id) {
     (addons.length ? `<div class="kd-sec">${dispLang === "en" ? "Add-ons" : "애드온"} <span class="rc">${addons.length}</span></div>${addonHtml}` : "");
 }
 
-// 섹션 전환 (퍽 검색 ↔ 살인마 도감)
+// ==== 📜 패치노트 (Steam 공식 공지 · update_patchnotes_from_steam.py 로 구움) ====
+async function loadPatchNotes() {
+  try {
+    const d = await (await fetch("/patchnotes")).json();
+    PATCHNOTES = (d && Array.isArray(d.patches)) ? d : { patches: [] };
+  } catch { PATCHNOTES = { patches: [] }; }   // 서버 없음(file://) — 안내만
+  patchLoaded = true;
+}
+
+function renderPatchNotes() {
+  const list = PATCHNOTES.patches || [];
+  if (!list.length) {
+    countEl.textContent = "";
+    results.innerHTML = `<div class="empty">패치노트를 불러오지 못했어요.<br>` +
+      `로컬 서버(run.bat / app.py)로 실행했는지, <code>patchnotes.json</code> 이 있는지 확인하세요.<br>` +
+      `(<code>python update_patchnotes_from_steam.py</code> 로 다시 받을 수 있어요)</div>`;
+    return;
+  }
+  const cur = list.find((p) => p.id === patchView) || list[0];
+  patchView = cur.id;
+  countEl.textContent = `📜 패치 ${list.length}개 · 최신 ${list[0].version || list[0].date}`;
+
+  const picks = list.map((p) => `<button class="pn-pick${p.id === cur.id ? " active" : ""}" data-patch="${esc(p.id)}">` +
+    `${esc(p.version || p.title)}${p.ptb ? `<span class="pn-ptb">PTB</span>` : ""}` +
+    `<span class="pn-d">${esc(p.date)}</span></button>`).join("");
+
+  // 이 패치가 언급한 퍽 — 우리 데이터에 있는 것만, 한글 이름으로. 누르면 카드를 펼친다.
+  const mentioned = (cur.perk_ids || []).map((id) => PERKS.find((x) => x.id === id)).filter(Boolean);
+  const perkChips = mentioned.length
+    ? `<div class="pn-perks"><span class="pn-lbl">이 패치에서 언급된 퍽 ${mentioned.length}개</span>` +
+      mentioned.map((p) => `<button class="pn-perk${p.id === patchPerk ? " active" : ""}" data-pnperk="${esc(p.id)}">` +
+        `${esc(dispName(p))}</button>`).join("") + `</div>`
+    : "";
+  const openCard = patchPerk && mentioned.some((p) => p.id === patchPerk)
+    ? cardHtml(mentioned.find((p) => p.id === patchPerk)) : "";
+
+  const body = (cur.blocks || []).map((b) => {
+    if (b.t === "h2") return `<div class="pn-h2">${b.html}</div>`;
+    if (b.t === "h3") return `<div class="pn-h3">${b.html}</div>`;
+    if (b.t === "li") return `<div class="pn-li lv${Math.min(3, b.lvl || 0)}">${b.html}</div>`;
+    return `<div class="pn-p">${b.html}</div>`;
+  }).join("");
+
+  results.innerHTML = `<div class="pn-bar">${picks}</div>
+    <div class="pn-head"><span class="pn-title">${esc(cur.title)}</span>
+      <span class="pn-date">${esc(cur.date)}${cur.ptb ? " · 테스트 서버(PTB)" : ""}</span></div>
+    <div class="pn-src">${esc(PATCHNOTES.source || "Steam 공식 공지")} · 원문(영어) 그대로 ·
+      <a href="${esc(cur.url)}" target="_blank" rel="noopener">Steam 에서 보기 ↗</a></div>
+    ${perkChips}${openCard}${body}`;
+}
+
+// 섹션 전환 (퍽 검색 ↔ 살인마 도감 ↔ 패치노트)
 async function setSection(s) {
   if (section === s) return;
   section = s;
@@ -1609,6 +1842,11 @@ async function setSection(s) {
   $("#examples").style.display = perkMode ? "" : "none";
   $("#perkcount").style.display = perkMode ? "" : "none";
   if (perkMode) { refresh(); return; }
+  if (s === "patch") {
+    if (!patchLoaded) { results.innerHTML = `<div class="empty">불러오는 중…</div>`; await loadPatchNotes(); }
+    renderPatchNotes();
+    return;
+  }
   killerView = null;
   if (!killersLoaded) { results.innerHTML = `<div class="empty">불러오는 중…</div>`; await loadKillers(); }
   renderKillers();
@@ -1623,6 +1861,14 @@ results.addEventListener("click", (e) => {
   if (e.target.closest("#kdBack")) { killerView = null; renderKillers(); window.scrollTo({ top: 0 }); return; }
 });
 
+// 패치노트 클릭 (패치 고르기 / 퍽 칩 → 그 자리에서 카드 펼치기·접기)
+results.addEventListener("click", (e) => {
+  const pick = e.target.closest(".pn-pick");
+  if (pick) { patchView = pick.dataset.patch; patchPerk = null; renderPatchNotes(); window.scrollTo({ top: 0 }); return; }
+  const chip = e.target.closest(".pn-perk");
+  if (chip) { patchPerk = (patchPerk === chip.dataset.pnperk) ? null : chip.dataset.pnperk; renderPatchNotes(); }
+});
+
 render([], "");
 // 퍽 데이터를 서버에서 받은 뒤 화면을 그린다(이후 로직이 PERKS 에 의존).
 loadPerks().then(() => {
@@ -1634,8 +1880,9 @@ loadPerks().then(() => {
   // 퍽 사용률(nightlight) 로드 — 도착하면 뱃지/정렬에 반영 (nightlight 오프라인이면 구운 값 사용)
   loadUsage();
 });
-// 살인마 도감 데이터도 백그라운드로 미리 받아 둔다 (섹션 전환 시 즉시 표시)
+// 살인마 도감·패치노트 데이터도 백그라운드로 미리 받아 둔다 (섹션 전환 시 즉시 표시)
 loadKillers();
+loadPatchNotes();
 
 // ---- 업데이트 확인 (GitHub Releases) ----
 // 서버가 시작 시 GitHub 최신 릴리스를 받아 두면, 여기서 읽어 새 버전이면 배너를 띄운다.

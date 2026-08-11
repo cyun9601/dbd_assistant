@@ -57,9 +57,11 @@ datas += [
     ("perks.json", "."),
     ("killers.json", "."),           # 살인마 도감 데이터
     ("addons.json", "."),            # 애드온 데이터
+    ("patchnotes.json", "."),        # 패치노트 (Steam 공식 공지)
     ("search.js", "."),
     ("synonyms.js", "."),
     ("tags.json", "."),
+    ("embeddings", "embeddings"),    # 구워 둔 의미검색 코퍼스 벡터 (build_embeddings.py)
     ("icons", "icons"),              # 퍽 + 초상화/파워/애드온 아이콘 모두 포함(재귀)
     ("assets/icon.ico", "assets"),   # 창 아이콘(런타임에 webview 가 사용)
 ]

@@ -20,7 +20,15 @@ import re, json, os, sys, html as htmllib, urllib.parse
 
 from update_en_from_wiki import (
     BASE, HERE, fetch, clean_html, to_text, save_icon_webp,
+    PTB_BANNER, PATCH_DATES, patch_release_date, is_upcoming,
 )
+
+# 아직 출시 전인 챕터의 살인마 → 그가 나올 패치. 위키는 미출시 살인마도 목록에
+# 그냥 실어서(초상화 갤러리에 바로 뜬다) 구조만으로는 못 가려낸다. 퍽 쪽
+# UPCOMING_OWNERS 와 같은 방식이며, 출시일이 지나면 자동으로 해제된다.
+UPCOMING_KILLERS = {
+    "The Judgment": "10.1.0",
+}
 
 # 위키가 쓰는 애드온 등급 클래스(<등급>-item-element) → 우리 표기.
 # 최고 등급(이리데슨트)은 위키가 'visceral' 로 표기한다(= ultra-rare).
@@ -114,16 +122,29 @@ def parse_addons(html, killer_id):
         # 아이콘: 구형은 'IconAddon_', 신형(최신 챕터)은 접두사 붙은 'T_UI_iconAddon_'.
         icon = re.search(r'/images/((?:T_UI_)?[Ii]conAddon_[^"?/]+\.png)', tr)
         rc = re.search(r'([a-z-]+)-item-element', tr)
+        desc, _ = strip_banner(clean_html(td.group(1)))
         rows.append({
             "id": pageid,
             "killer_id": killer_id,
             "name_en": name,
             "rarity": RARITY.get(rc.group(1)) if rc else None,
             "icon_wiki": icon.group(1) if icon else None,
-            "desc_html_en": clean_html(td.group(1)),
-            "desc_text_en": to_text(clean_html(td.group(1))),
+            "desc_html_en": desc,
+            "desc_text_en": to_text(desc),
         })
     return rows
+
+
+def strip_banner(html):
+    """위키가 다음 패치 기준으로 미리 고쳐 둔 설명 앞에 붙이는 안내 문구를 걷어낸다.
+    그대로 두면 본문에 섞여 들어간다(퍽 파이프라인과 동일한 처리).
+    반환: (정제된 html, 안내 문구가 가리킨 패치 번호 or None)."""
+    if not html:
+        return html, None
+    m = PTB_BANNER.search(html)
+    if not m:
+        return html, None
+    return clean_html(PTB_BANNER.sub('', html).strip()), m.group(1)
 
 
 def _pick_power_icon(pw_html, power_name_en):
@@ -150,12 +171,12 @@ def parse_killer(kid, name_en, portrait_png):
     html, _ = api_parse(kid)
 
     _, ov_html = section(html, "Overview")
-    ov_html = clean_html(ov_html) if ov_html else ""
+    ov_html, ov_patch = strip_banner(clean_html(ov_html) if ov_html else "")
 
     pw_title, pw_html = section(html, r"Power:_[^\"]+")
     power_name_en = re.sub(r"^Power:\s*", "", pw_title or "").strip()
     power_icon_wiki = _pick_power_icon(pw_html, power_name_en)
-    pw_clean = clean_html(pw_html) if pw_html else ""
+    pw_clean, pw_patch = strip_banner(clean_html(pw_html) if pw_html else "")
 
     addons = parse_addons(html, kid)
 
@@ -177,6 +198,17 @@ def parse_killer(kid, name_en, portrait_png):
         "power_text_en": to_text(pw_clean),
         "addon_ids": [a["id"] for a in addons],
     }
+
+    # 출시 예정 표시 — 미출시 챕터 살인마이거나, 위키가 개요/파워에 안내 문구를 달아 둔 경우.
+    # 날짜는 위키 Release Dates 표를 먼저 보고, 아직 TBA 면 PATCH_DATES 를 쓴다.
+    # 출시일이 지나면 다음 실행 때 자동으로 빠진다.
+    patch = UPCOMING_KILLERS.get(name_en) or ov_patch or pw_patch
+    date = (patch_release_date(patch) or PATCH_DATES.get(patch)) if patch else None
+    if patch and is_upcoming(date):
+        killer["upcoming"] = True
+        killer["upcoming_patch"] = patch
+        killer["upcoming_date"] = date
+
     return killer, addons
 
 
