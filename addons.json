@@ -3453,9 +3453,9 @@
   "desc_text_en": "A wooden ruler deeply etched with the names of enemies. Survivors hit with a Feral Slash suffer from the Oblivious Status Effect for 60 seconds.",
   "icon_file": "icons/addon/IconAddon_etchedRuler.webp",
   "name": "긁힌 자",
-  "desc_html": "적들의 이름이 깊게 새겨진 나무 자.<br>• <i>맹수의 참격</i>에 맞은 생존자는 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>를 겪습니다.",
-  "desc_text": "적들의 이름이 깊게 새겨진 나무 자. 맹수의 참격에 맞은 생존자는 60초 동안 무지 상태 효과를 겪습니다.",
-  "search_blob": "긁힌 자 Etched Ruler 적들의 이름이 깊게 새겨진 나무 자. 맹수의 참격에 맞은 생존자는 60초 동안 무지 상태 효과를 겪습니다. A wooden ruler deeply etched with the names of enemies. Survivors hit with a Feral Slash suffer from the Oblivious Status Effect for 60 seconds."
+  "desc_html": "적들의 이름이 깊게 새겨진 나무 자.<br>• <i>맹수의 참격</i>에 맞은 생존자는 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>를 겪습니다.",
+  "desc_text": "적들의 이름이 깊게 새겨진 나무 자. 맹수의 참격에 맞은 생존자는 60초 동안 인지 불가능 상태 효과를 겪습니다.",
+  "search_blob": "긁힌 자 Etched Ruler 적들의 이름이 깊게 새겨진 나무 자. 맹수의 참격에 맞은 생존자는 60초 동안 인지 불가능 상태 효과를 겪습니다. A wooden ruler deeply etched with the names of enemies. Survivors hit with a Feral Slash suffer from the Oblivious Status Effect for 60 seconds."
  },
  {
   "id": "Julie's_Mix_Tape",
@@ -3999,9 +3999,9 @@
   "desc_text_en": "A spiral notebook filled with stained, handwritten entries. The journal details different equipment used to stalk victims. Going through your past methods triggers thrilling memories. Marked Survivors suffer from the Oblivious Status Effect.",
   "icon_file": "icons/addon/IconAddon_olsensJournal.webp",
   "name": "올슨의 수기",
-  "desc_html": "얼룩진 손글씨 기록으로 가득 찬 스프링 노트.<br>이 수기에는 희생자를 스토킹하는 데 사용된 다양한 장비가 자세히 적혀 있습니다.<br>과거의 수법을 되짚어 보면 짜릿한 기억이 떠오릅니다.<br>• <i>표식된 생존자</i>가 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "얼룩진 손글씨 기록으로 가득 찬 스프링 노트. 이 수기에는 희생자를 스토킹하는 데 사용된 다양한 장비가 자세히 적혀 있습니다. 과거의 수법을 되짚어 보면 짜릿한 기억이 떠오릅니다. 표식된 생존자가 무지 상태 효과에 걸립니다.",
-  "search_blob": "올슨의 수기 Olsen's Journal 얼룩진 손글씨 기록으로 가득 찬 스프링 노트. 이 수기에는 희생자를 스토킹하는 데 사용된 다양한 장비가 자세히 적혀 있습니다. 과거의 수법을 되짚어 보면 짜릿한 기억이 떠오릅니다. 표식된 생존자가 무지 상태 효과에 걸립니다. A spiral notebook filled with stained, handwritten entries. The journal details different equipment used to stalk victims. Going through your past methods triggers thrilling memories. Marked Survivors suffer from the Oblivious Status Effect."
+  "desc_html": "얼룩진 손글씨 기록으로 가득 찬 스프링 노트.<br>이 수기에는 희생자를 스토킹하는 데 사용된 다양한 장비가 자세히 적혀 있습니다.<br>과거의 수법을 되짚어 보면 짜릿한 기억이 떠오릅니다.<br>• <i>표식된 생존자</i>가 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "얼룩진 손글씨 기록으로 가득 찬 스프링 노트. 이 수기에는 희생자를 스토킹하는 데 사용된 다양한 장비가 자세히 적혀 있습니다. 과거의 수법을 되짚어 보면 짜릿한 기억이 떠오릅니다. 표식된 생존자가 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "올슨의 수기 Olsen's Journal 얼룩진 손글씨 기록으로 가득 찬 스프링 노트. 이 수기에는 희생자를 스토킹하는 데 사용된 다양한 장비가 자세히 적혀 있습니다. 과거의 수법을 되짚어 보면 짜릿한 기억이 떠오릅니다. 표식된 생존자가 인지 불가능 상태 효과에 걸립니다. A spiral notebook filled with stained, handwritten entries. The journal details different equipment used to stalk victims. Going through your past methods triggers thrilling memories. Marked Survivors suffer from the Oblivious Status Effect."
  },
  {
   "id": "Telephoto_Lens",
@@ -4012,9 +4012,9 @@
   "desc_text_en": "A manual focus lens to remain undetected while taking pictures from afar. Survivors suffer from the Oblivious Status Effect for 60 seconds after revealing you.",
   "icon_file": "icons/addon/IconAddon_telephotoLens.webp",
   "name": "망원 렌즈",
-  "desc_html": "멀리서 사진을 찍는 동안 발각되지 않게 해 주는 수동 초점 렌즈.<br>• 생존자가 당신을 발각한 후 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "멀리서 사진을 찍는 동안 발각되지 않게 해 주는 수동 초점 렌즈. 생존자가 당신을 발각한 후 60초 동안 무지 상태 효과에 걸립니다.",
-  "search_blob": "망원 렌즈 Telephoto Lens 멀리서 사진을 찍는 동안 발각되지 않게 해 주는 수동 초점 렌즈. 생존자가 당신을 발각한 후 60초 동안 무지 상태 효과에 걸립니다. A manual focus lens to remain undetected while taking pictures from afar. Survivors suffer from the Oblivious Status Effect for 60 seconds after revealing you."
+  "desc_html": "멀리서 사진을 찍는 동안 발각되지 않게 해 주는 수동 초점 렌즈.<br>• 생존자가 당신을 발각한 후 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "멀리서 사진을 찍는 동안 발각되지 않게 해 주는 수동 초점 렌즈. 생존자가 당신을 발각한 후 60초 동안 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "망원 렌즈 Telephoto Lens 멀리서 사진을 찍는 동안 발각되지 않게 해 주는 수동 초점 렌즈. 생존자가 당신을 발각한 후 60초 동안 인지 불가능 상태 효과에 걸립니다. A manual focus lens to remain undetected while taking pictures from afar. Survivors suffer from the Oblivious Status Effect for 60 seconds after revealing you."
  },
  {
   "id": "Chewed_Pen",
@@ -5143,9 +5143,9 @@
   "desc_text_en": "\"A book about the history and legends of Silent Hill and the surrounding area.\" Successful Punishment of the Damned attacks trigger the following effect: Causes hit Survivors to suffer from the Oblivious Status Effect for 80 seconds. \"They called this place 'The Place of the Silent Spirits'.\"",
   "icon_file": "icons/addon/IconAddon_lostMemoriesBook.webp",
   "name": "잃어버린 기억의 책",
-  "desc_html": "<i><span class=\"FlavorText\">\"사일런트 힐과 그 주변 지역의 역사와 전설에 관한 책.\"</span></i>\n<i>천벌</i> 공격이 성공하면 다음 효과가 발동됩니다:<br><br>• 명중된 생존자가 <b><span class=\"Highlight1\">80초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.\n\n<i><span class=\"FlavorText\">\"이곳을 '침묵하는 영혼들의 땅'이라 불렀다.\"</span></i>",
-  "desc_text": "\"사일런트 힐과 그 주변 지역의 역사와 전설에 관한 책.\" 천벌 공격이 성공하면 다음 효과가 발동됩니다: 명중된 생존자가 80초 동안 무지 상태 효과에 걸립니다. \"이곳을 '침묵하는 영혼들의 땅'이라 불렀다.\"",
-  "search_blob": "잃어버린 기억의 책 Lost Memories Book \"사일런트 힐과 그 주변 지역의 역사와 전설에 관한 책.\" 천벌 공격이 성공하면 다음 효과가 발동됩니다: 명중된 생존자가 80초 동안 무지 상태 효과에 걸립니다. \"이곳을 '침묵하는 영혼들의 땅'이라 불렀다.\" \"A book about the history and legends of Silent Hill and the surrounding area.\" Successful Punishment of the Damned attacks trigger the following effect: Causes hit Survivors to suffer from the Oblivious Status Effect for 80 seconds. \"They called this place 'The Place of the Silent Spirits'.\""
+  "desc_html": "<i><span class=\"FlavorText\">\"사일런트 힐과 그 주변 지역의 역사와 전설에 관한 책.\"</span></i>\n<i>천벌</i> 공격이 성공하면 다음 효과가 발동됩니다:<br><br>• 명중된 생존자가 <b><span class=\"Highlight1\">80초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.\n\n<i><span class=\"FlavorText\">\"이곳을 '침묵하는 영혼들의 땅'이라 불렀다.\"</span></i>",
+  "desc_text": "\"사일런트 힐과 그 주변 지역의 역사와 전설에 관한 책.\" 천벌 공격이 성공하면 다음 효과가 발동됩니다: 명중된 생존자가 80초 동안 인지 불가능 상태 효과에 걸립니다. \"이곳을 '침묵하는 영혼들의 땅'이라 불렀다.\"",
+  "search_blob": "잃어버린 기억의 책 Lost Memories Book \"사일런트 힐과 그 주변 지역의 역사와 전설에 관한 책.\" 천벌 공격이 성공하면 다음 효과가 발동됩니다: 명중된 생존자가 80초 동안 인지 불가능 상태 효과에 걸립니다. \"이곳을 '침묵하는 영혼들의 땅'이라 불렀다.\" \"A book about the history and legends of Silent Hill and the surrounding area.\" Successful Punishment of the Damned attacks trigger the following effect: Causes hit Survivors to suffer from the Oblivious Status Effect for 80 seconds. \"They called this place 'The Place of the Silent Spirits'.\""
  },
  {
   "id": "Rust-Coloured_Egg",
@@ -5650,9 +5650,9 @@
   "desc_text_en": "One of the few luxuries Madeleine escaped her past life with. It has a pleasant, disarming scent. Survivors suffer from the Oblivious Status Effect within Victor's Shriek range when controlling Charlotte. \"Beware the deceit of witches, for they exploit the goodness in men's hearts.\" — A History of Witches and Demons, 1602",
   "icon_file": "icons/addon/IconAddon_dropOfPerfume.webp",
   "name": "향수 한 방울",
-  "desc_html": "매들린이 과거의 삶에서 가지고 나온 몇 안 되는 사치품 중 하나.<br>기분 좋고 마음을 누그러뜨리는 향이 난다.<br>• <b>샤를로트</b>를 조종할 때, <b>빅터</b>의 <i>비명</i> 범위 안에 있는 생존자는 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.\n<i><span class=\"FlavorText\">\"마녀의 속임수를 경계하라. 그들은 인간의 선한 마음을 이용하기 때문이다.\" — 마녀와 악마의 역사, 1602년</span></i>",
-  "desc_text": "매들린이 과거의 삶에서 가지고 나온 몇 안 되는 사치품 중 하나. 기분 좋고 마음을 누그러뜨리는 향이 난다. 샤를로트를 조종할 때, 빅터의 비명 범위 안에 있는 생존자는 무지 상태 효과에 걸립니다. \"마녀의 속임수를 경계하라. 그들은 인간의 선한 마음을 이용하기 때문이다.\" — 마녀와 악마의 역사, 1602년",
-  "search_blob": "향수 한 방울 Drop of Perfume 매들린이 과거의 삶에서 가지고 나온 몇 안 되는 사치품 중 하나. 기분 좋고 마음을 누그러뜨리는 향이 난다. 샤를로트를 조종할 때, 빅터의 비명 범위 안에 있는 생존자는 무지 상태 효과에 걸립니다. \"마녀의 속임수를 경계하라. 그들은 인간의 선한 마음을 이용하기 때문이다.\" — 마녀와 악마의 역사, 1602년 One of the few luxuries Madeleine escaped her past life with. It has a pleasant, disarming scent. Survivors suffer from the Oblivious Status Effect within Victor's Shriek range when controlling Charlotte. \"Beware the deceit of witches, for they exploit the goodness in men's hearts.\" — A History of Witches and Demons, 1602"
+  "desc_html": "매들린이 과거의 삶에서 가지고 나온 몇 안 되는 사치품 중 하나.<br>기분 좋고 마음을 누그러뜨리는 향이 난다.<br>• <b>샤를로트</b>를 조종할 때, <b>빅터</b>의 <i>비명</i> 범위 안에 있는 생존자는 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.\n<i><span class=\"FlavorText\">\"마녀의 속임수를 경계하라. 그들은 인간의 선한 마음을 이용하기 때문이다.\" — 마녀와 악마의 역사, 1602년</span></i>",
+  "desc_text": "매들린이 과거의 삶에서 가지고 나온 몇 안 되는 사치품 중 하나. 기분 좋고 마음을 누그러뜨리는 향이 난다. 샤를로트를 조종할 때, 빅터의 비명 범위 안에 있는 생존자는 인지 불가능 상태 효과에 걸립니다. \"마녀의 속임수를 경계하라. 그들은 인간의 선한 마음을 이용하기 때문이다.\" — 마녀와 악마의 역사, 1602년",
+  "search_blob": "향수 한 방울 Drop of Perfume 매들린이 과거의 삶에서 가지고 나온 몇 안 되는 사치품 중 하나. 기분 좋고 마음을 누그러뜨리는 향이 난다. 샤를로트를 조종할 때, 빅터의 비명 범위 안에 있는 생존자는 인지 불가능 상태 효과에 걸립니다. \"마녀의 속임수를 경계하라. 그들은 인간의 선한 마음을 이용하기 때문이다.\" — 마녀와 악마의 역사, 1602년 One of the few luxuries Madeleine escaped her past life with. It has a pleasant, disarming scent. Survivors suffer from the Oblivious Status Effect within Victor's Shriek range when controlling Charlotte. \"Beware the deceit of witches, for they exploit the goodness in men's hearts.\" — A History of Witches and Demons, 1602"
  },
  {
   "id": "Forest_Stew",
@@ -6209,9 +6209,9 @@
   "desc_text_en": "A parasite used in the development of Nemesis T-Types, it is capable of hijacking its host's brain. Survivors suffer from the Oblivious Status Effect for 60 seconds after becoming Contaminated, or until they cure themselves with a Vaccine.",
   "icon_file": "icons/addon/IconAddon_ne-AParasite.webp",
   "name": "Ne-α 기생체",
-  "desc_html": "네메시스 T형 개발에 사용된 기생체로, 숙주의 뇌를 장악할 수 있다.<br>• 생존자는 <i><b>감염</b></i>된 후 <b><span class=\"Highlight1\">60초</span></b> 동안, 또는 백신으로 스스로를 치료할 때까지 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "네메시스 T형 개발에 사용된 기생체로, 숙주의 뇌를 장악할 수 있다. 생존자는 감염된 후 60초 동안, 또는 백신으로 스스로를 치료할 때까지 무지 상태 효과에 걸립니다.",
-  "search_blob": "Ne-α 기생체 Ne-α Parasite 네메시스 T형 개발에 사용된 기생체로, 숙주의 뇌를 장악할 수 있다. 생존자는 감염된 후 60초 동안, 또는 백신으로 스스로를 치료할 때까지 무지 상태 효과에 걸립니다. A parasite used in the development of Nemesis T-Types, it is capable of hijacking its host's brain. Survivors suffer from the Oblivious Status Effect for 60 seconds after becoming Contaminated, or until they cure themselves with a Vaccine."
+  "desc_html": "네메시스 T형 개발에 사용된 기생체로, 숙주의 뇌를 장악할 수 있다.<br>• 생존자는 <i><b>감염</b></i>된 후 <b><span class=\"Highlight1\">60초</span></b> 동안, 또는 백신으로 스스로를 치료할 때까지 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "네메시스 T형 개발에 사용된 기생체로, 숙주의 뇌를 장악할 수 있다. 생존자는 감염된 후 60초 동안, 또는 백신으로 스스로를 치료할 때까지 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "Ne-α 기생체 Ne-α Parasite 네메시스 T형 개발에 사용된 기생체로, 숙주의 뇌를 장악할 수 있다. 생존자는 감염된 후 60초 동안, 또는 백신으로 스스로를 치료할 때까지 인지 불가능 상태 효과에 걸립니다. A parasite used in the development of Nemesis T-Types, it is capable of hijacking its host's brain. Survivors suffer from the Oblivious Status Effect for 60 seconds after becoming Contaminated, or until they cure themselves with a Vaccine."
  },
  {
   "id": "Iridescent_Umbrella_Badge",
@@ -6664,9 +6664,9 @@
   "desc_text_en": "A shiny trinket that a crow took a liking to. The clinking of the bell was a distraction to everyone but Carmina. Swarmed Survivors suffer from the Oblivious Status Effect.",
   "icon_file": "icons/addon/IconAddon_silverBell.webp",
   "name": "은방울",
-  "desc_html": "까마귀가 마음에 들어 한 반짝이는 장신구.<br>방울이 딸랑거리는 소리는 카르미나를 제외한 모두에게 방해가 되었다.<br>• <i>떼에 뒤덮인 생존자</i>는 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "까마귀가 마음에 들어 한 반짝이는 장신구. 방울이 딸랑거리는 소리는 카르미나를 제외한 모두에게 방해가 되었다. 떼에 뒤덮인 생존자는 무지 상태 효과에 걸립니다.",
-  "search_blob": "은방울 Silver Bell 까마귀가 마음에 들어 한 반짝이는 장신구. 방울이 딸랑거리는 소리는 카르미나를 제외한 모두에게 방해가 되었다. 떼에 뒤덮인 생존자는 무지 상태 효과에 걸립니다. A shiny trinket that a crow took a liking to. The clinking of the bell was a distraction to everyone but Carmina. Swarmed Survivors suffer from the Oblivious Status Effect."
+  "desc_html": "까마귀가 마음에 들어 한 반짝이는 장신구.<br>방울이 딸랑거리는 소리는 카르미나를 제외한 모두에게 방해가 되었다.<br>• <i>떼에 뒤덮인 생존자</i>는 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "까마귀가 마음에 들어 한 반짝이는 장신구. 방울이 딸랑거리는 소리는 카르미나를 제외한 모두에게 방해가 되었다. 떼에 뒤덮인 생존자는 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "은방울 Silver Bell 까마귀가 마음에 들어 한 반짝이는 장신구. 방울이 딸랑거리는 소리는 카르미나를 제외한 모두에게 방해가 되었다. 떼에 뒤덮인 생존자는 인지 불가능 상태 효과에 걸립니다. A shiny trinket that a crow took a liking to. The clinking of the bell was a distraction to everyone but Carmina. Swarmed Survivors suffer from the Oblivious Status Effect."
  },
  {
   "id": "Thorny_Nest",
@@ -6911,9 +6911,9 @@
   "desc_text_en": "A pinwheel found in the caves of Izu Oshima. It spins even when there is no wind, disorienting those who see or hear it. Survivors suffer from the Oblivious Status Effect when within 8 metres of powered TVs. This effect lingers for 7 seconds after turning off a TV.",
   "icon_file": "icons/addon/IconAddon_ricketyPinwheel.webp",
   "name": "부서질 듯한 바람개비",
-  "desc_html": "이즈 오시마의 동굴에서 발견된 바람개비.<br>바람이 없어도 돌아가며, 그것을 보거나 소리를 듣는 이들을 혼란에 빠뜨린다.<br>• 생존자는 전력이 공급된 TV로부터 <b><span class=\"Highlight1\">8미터</span></b> 이내에 있을 때 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.<br>• 이 효과는 <b>TV</b>를 끈 후 <b><span class=\"Highlight1\">7초</span></b> 동안 지속됩니다.",
-  "desc_text": "이즈 오시마의 동굴에서 발견된 바람개비. 바람이 없어도 돌아가며, 그것을 보거나 소리를 듣는 이들을 혼란에 빠뜨린다. 생존자는 전력이 공급된 TV로부터 8미터 이내에 있을 때 무지 상태 효과에 걸립니다. 이 효과는 TV를 끈 후 7초 동안 지속됩니다.",
-  "search_blob": "부서질 듯한 바람개비 Rickety Pinwheel 이즈 오시마의 동굴에서 발견된 바람개비. 바람이 없어도 돌아가며, 그것을 보거나 소리를 듣는 이들을 혼란에 빠뜨린다. 생존자는 전력이 공급된 TV로부터 8미터 이내에 있을 때 무지 상태 효과에 걸립니다. 이 효과는 TV를 끈 후 7초 동안 지속됩니다. A pinwheel found in the caves of Izu Oshima. It spins even when there is no wind, disorienting those who see or hear it. Survivors suffer from the Oblivious Status Effect when within 8 metres of powered TVs. This effect lingers for 7 seconds after turning off a TV."
+  "desc_html": "이즈 오시마의 동굴에서 발견된 바람개비.<br>바람이 없어도 돌아가며, 그것을 보거나 소리를 듣는 이들을 혼란에 빠뜨린다.<br>• 생존자는 전력이 공급된 TV로부터 <b><span class=\"Highlight1\">8미터</span></b> 이내에 있을 때 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.<br>• 이 효과는 <b>TV</b>를 끈 후 <b><span class=\"Highlight1\">7초</span></b> 동안 지속됩니다.",
+  "desc_text": "이즈 오시마의 동굴에서 발견된 바람개비. 바람이 없어도 돌아가며, 그것을 보거나 소리를 듣는 이들을 혼란에 빠뜨린다. 생존자는 전력이 공급된 TV로부터 8미터 이내에 있을 때 인지 불가능 상태 효과에 걸립니다. 이 효과는 TV를 끈 후 7초 동안 지속됩니다.",
+  "search_blob": "부서질 듯한 바람개비 Rickety Pinwheel 이즈 오시마의 동굴에서 발견된 바람개비. 바람이 없어도 돌아가며, 그것을 보거나 소리를 듣는 이들을 혼란에 빠뜨린다. 생존자는 전력이 공급된 TV로부터 8미터 이내에 있을 때 인지 불가능 상태 효과에 걸립니다. 이 효과는 TV를 끈 후 7초 동안 지속됩니다. A pinwheel found in the caves of Izu Oshima. It spins even when there is no wind, disorienting those who see or hear it. Survivors suffer from the Oblivious Status Effect when within 8 metres of powered TVs. This effect lingers for 7 seconds after turning off a TV."
  },
  {
   "id": "Ring_Drawing",
@@ -7340,9 +7340,9 @@
   "desc_text_en": "The commands screamed into this device riled up some and disoriented others. Survivors suffer from the Oblivious Status Effect for 30 seconds after using a First Aid Spray.",
   "icon_file": "icons/addon/IconAddon_bullhorn.webp",
   "name": "확성기",
-  "desc_html": "이 장치에 대고 외친 명령은 어떤 이들을 흥분시키고 다른 이들을 혼란에 빠뜨렸다.<br>• 생존자는 응급 처치 스프레이를 사용한 후 <b><span class=\"Highlight1\">30초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "이 장치에 대고 외친 명령은 어떤 이들을 흥분시키고 다른 이들을 혼란에 빠뜨렸다. 생존자는 응급 처치 스프레이를 사용한 후 30초 동안 무지 상태 효과에 걸립니다.",
-  "search_blob": "확성기 Bullhorn 이 장치에 대고 외친 명령은 어떤 이들을 흥분시키고 다른 이들을 혼란에 빠뜨렸다. 생존자는 응급 처치 스프레이를 사용한 후 30초 동안 무지 상태 효과에 걸립니다. The commands screamed into this device riled up some and disoriented others. Survivors suffer from the Oblivious Status Effect for 30 seconds after using a First Aid Spray."
+  "desc_html": "이 장치에 대고 외친 명령은 어떤 이들을 흥분시키고 다른 이들을 혼란에 빠뜨렸다.<br>• 생존자는 응급 처치 스프레이를 사용한 후 <b><span class=\"Highlight1\">30초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "이 장치에 대고 외친 명령은 어떤 이들을 흥분시키고 다른 이들을 혼란에 빠뜨렸다. 생존자는 응급 처치 스프레이를 사용한 후 30초 동안 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "확성기 Bullhorn 이 장치에 대고 외친 명령은 어떤 이들을 흥분시키고 다른 이들을 혼란에 빠뜨렸다. 생존자는 응급 처치 스프레이를 사용한 후 30초 동안 인지 불가능 상태 효과에 걸립니다. The commands screamed into this device riled up some and disoriented others. Survivors suffer from the Oblivious Status Effect for 30 seconds after using a First Aid Spray."
  },
  {
   "id": "Chalice_(Gold)",
@@ -7691,9 +7691,9 @@
   "desc_text_en": "Vital for repairs between battles and a horrifying, gauging, tearing improvisational weapon. Causes Survivors to suffer from the Oblivious Status Effect for 60 seconds, if a Guard fails to damage them during a Hunt.",
   "icon_file": "icons/addon/IconAddon_ironworkersTongs.webp",
   "name": "대장장이의 집게",
-  "desc_html": "전투 사이의 수리에 필수적이었으며, 후벼 파고 찢어발기는 끔찍한 즉석 무기이기도 했다.<br>• <b>경비병</b>이 <i>사냥</i> 중 생존자에게 피해를 입히는 데 실패하면, 그 생존자는 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "전투 사이의 수리에 필수적이었으며, 후벼 파고 찢어발기는 끔찍한 즉석 무기이기도 했다. 경비병이 사냥 중 생존자에게 피해를 입히는 데 실패하면, 그 생존자는 60초 동안 무지 상태 효과에 걸립니다.",
-  "search_blob": "대장장이의 집게 Ironworker's Tongs 전투 사이의 수리에 필수적이었으며, 후벼 파고 찢어발기는 끔찍한 즉석 무기이기도 했다. 경비병이 사냥 중 생존자에게 피해를 입히는 데 실패하면, 그 생존자는 60초 동안 무지 상태 효과에 걸립니다. Vital for repairs between battles and a horrifying, gauging, tearing improvisational weapon. Causes Survivors to suffer from the Oblivious Status Effect for 60 seconds, if a Guard fails to damage them during a Hunt."
+  "desc_html": "전투 사이의 수리에 필수적이었으며, 후벼 파고 찢어발기는 끔찍한 즉석 무기이기도 했다.<br>• <b>경비병</b>이 <i>사냥</i> 중 생존자에게 피해를 입히는 데 실패하면, 그 생존자는 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "전투 사이의 수리에 필수적이었으며, 후벼 파고 찢어발기는 끔찍한 즉석 무기이기도 했다. 경비병이 사냥 중 생존자에게 피해를 입히는 데 실패하면, 그 생존자는 60초 동안 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "대장장이의 집게 Ironworker's Tongs 전투 사이의 수리에 필수적이었으며, 후벼 파고 찢어발기는 끔찍한 즉석 무기이기도 했다. 경비병이 사냥 중 생존자에게 피해를 입히는 데 실패하면, 그 생존자는 60초 동안 인지 불가능 상태 효과에 걸립니다. Vital for repairs between battles and a horrifying, gauging, tearing improvisational weapon. Causes Survivors to suffer from the Oblivious Status Effect for 60 seconds, if a Guard fails to damage them during a Hunt."
  },
  {
   "id": "Sharpened_Mount",
@@ -7925,9 +7925,9 @@
   "desc_text_en": "An ominous hum disseminates from the Drone, blanketing the soundscape and making it difficult to hear anything else. Claw-Trapped Survivors suffer from the Oblivious Status Effect.",
   "icon_file": "icons/addon/IconAddon_brownNoiseGenerator.webp",
   "name": "브라운 노이즈 발생기",
-  "desc_html": "드론에서 불길한 웅웅거림이 퍼져 나와 음향 공간을 뒤덮으며, 다른 소리를 듣기 어렵게 만든다.<br>• <i>발톱 덫에 걸린 생존자</i>는 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "드론에서 불길한 웅웅거림이 퍼져 나와 음향 공간을 뒤덮으며, 다른 소리를 듣기 어렵게 만든다. 발톱 덫에 걸린 생존자는 무지 상태 효과에 걸립니다.",
-  "search_blob": "브라운 노이즈 발생기 Brown Noise Generator 드론에서 불길한 웅웅거림이 퍼져 나와 음향 공간을 뒤덮으며, 다른 소리를 듣기 어렵게 만든다. 발톱 덫에 걸린 생존자는 무지 상태 효과에 걸립니다. An ominous hum disseminates from the Drone, blanketing the soundscape and making it difficult to hear anything else. Claw-Trapped Survivors suffer from the Oblivious Status Effect."
+  "desc_html": "드론에서 불길한 웅웅거림이 퍼져 나와 음향 공간을 뒤덮으며, 다른 소리를 듣기 어렵게 만든다.<br>• <i>발톱 덫에 걸린 생존자</i>는 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "드론에서 불길한 웅웅거림이 퍼져 나와 음향 공간을 뒤덮으며, 다른 소리를 듣기 어렵게 만든다. 발톱 덫에 걸린 생존자는 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "브라운 노이즈 발생기 Brown Noise Generator 드론에서 불길한 웅웅거림이 퍼져 나와 음향 공간을 뒤덮으며, 다른 소리를 듣기 어렵게 만든다. 발톱 덫에 걸린 생존자는 인지 불가능 상태 효과에 걸립니다. An ominous hum disseminates from the Drone, blanketing the soundscape and making it difficult to hear anything else. Claw-Trapped Survivors suffer from the Oblivious Status Effect."
  },
  {
   "id": "Infrared_Upgrade",
@@ -8185,9 +8185,9 @@
   "desc_text_en": "Originally used for communication and entertainment, this has been repurposed for obfuscation. After teleporting to a Slipstreamed Survivor from a Biopod, they suffer from the Oblivious Status Effect for 60 seconds.",
   "icon_file": "icons/addon/IconAddon_hologramGenerator.webp",
   "name": "홀로그램 발생기",
-  "desc_html": "본래 통신과 오락에 쓰였으나, 이제는 교란 용도로 개조되었다.<br>• <b>바이오포드</b>에서 <i>슬립스트림에 걸린 생존자</i>에게 순간이동한 후, 그 생존자는 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "본래 통신과 오락에 쓰였으나, 이제는 교란 용도로 개조되었다. 바이오포드에서 슬립스트림에 걸린 생존자에게 순간이동한 후, 그 생존자는 60초 동안 무지 상태 효과에 걸립니다.",
-  "search_blob": "홀로그램 발생기 Hologram Generator 본래 통신과 오락에 쓰였으나, 이제는 교란 용도로 개조되었다. 바이오포드에서 슬립스트림에 걸린 생존자에게 순간이동한 후, 그 생존자는 60초 동안 무지 상태 효과에 걸립니다. Originally used for communication and entertainment, this has been repurposed for obfuscation. After teleporting to a Slipstreamed Survivor from a Biopod, they suffer from the Oblivious Status Effect for 60 seconds."
+  "desc_html": "본래 통신과 오락에 쓰였으나, 이제는 교란 용도로 개조되었다.<br>• <b>바이오포드</b>에서 <i>슬립스트림에 걸린 생존자</i>에게 순간이동한 후, 그 생존자는 <b><span class=\"Highlight1\">60초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "본래 통신과 오락에 쓰였으나, 이제는 교란 용도로 개조되었다. 바이오포드에서 슬립스트림에 걸린 생존자에게 순간이동한 후, 그 생존자는 60초 동안 인지 불가능 상태 효과에 걸립니다.",
+  "search_blob": "홀로그램 발생기 Hologram Generator 본래 통신과 오락에 쓰였으나, 이제는 교란 용도로 개조되었다. 바이오포드에서 슬립스트림에 걸린 생존자에게 순간이동한 후, 그 생존자는 60초 동안 인지 불가능 상태 효과에 걸립니다. Originally used for communication and entertainment, this has been repurposed for obfuscation. After teleporting to a Slipstreamed Survivor from a Biopod, they suffer from the Oblivious Status Effect for 60 seconds."
  },
  {
   "id": "Hyperawareness_Spray",
@@ -8887,9 +8887,9 @@
   "desc_text_en": "\"The victim’s child was given paper and crayons at the station, while he waited for his father to pick him up.\" Survivors in the Blast Area of the UVX Projectile suffer from the following effect: Inflicts the Oblivious Status Effect for 20 seconds.",
   "icon_file": "icons/addon/IconAddon_sketchAttempt.webp",
   "name": "그림 습작",
-  "desc_html": "<i><span class=\"FlavorText\">\"피해자의 아이는 아버지가 데리러 오기를 기다리는 동안 경찰서에서 종이와 크레용을 받았다.\"</span></i>\n<b>UVX 발사체</b>의 <i>폭발 범위</i> 안에 있는 생존자는 다음 효과에 걸립니다:<br><br>• <b><span class=\"Highlight1\">20초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>를 부여합니다.",
-  "desc_text": "\"피해자의 아이는 아버지가 데리러 오기를 기다리는 동안 경찰서에서 종이와 크레용을 받았다.\" UVX 발사체의 폭발 범위 안에 있는 생존자는 다음 효과에 걸립니다: 20초 동안 무지 상태 효과를 부여합니다.",
-  "search_blob": "그림 습작 Sketch Attempt \"피해자의 아이는 아버지가 데리러 오기를 기다리는 동안 경찰서에서 종이와 크레용을 받았다.\" UVX 발사체의 폭발 범위 안에 있는 생존자는 다음 효과에 걸립니다: 20초 동안 무지 상태 효과를 부여합니다. \"The victim’s child was given paper and crayons at the station, while he waited for his father to pick him up.\" Survivors in the Blast Area of the UVX Projectile suffer from the following effect: Inflicts the Oblivious Status Effect for 20 seconds."
+  "desc_html": "<i><span class=\"FlavorText\">\"피해자의 아이는 아버지가 데리러 오기를 기다리는 동안 경찰서에서 종이와 크레용을 받았다.\"</span></i>\n<b>UVX 발사체</b>의 <i>폭발 범위</i> 안에 있는 생존자는 다음 효과에 걸립니다:<br><br>• <b><span class=\"Highlight1\">20초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>를 부여합니다.",
+  "desc_text": "\"피해자의 아이는 아버지가 데리러 오기를 기다리는 동안 경찰서에서 종이와 크레용을 받았다.\" UVX 발사체의 폭발 범위 안에 있는 생존자는 다음 효과에 걸립니다: 20초 동안 인지 불가능 상태 효과를 부여합니다.",
+  "search_blob": "그림 습작 Sketch Attempt \"피해자의 아이는 아버지가 데리러 오기를 기다리는 동안 경찰서에서 종이와 크레용을 받았다.\" UVX 발사체의 폭발 범위 안에 있는 생존자는 다음 효과에 걸립니다: 20초 동안 인지 불가능 상태 효과를 부여합니다. \"The victim’s child was given paper and crayons at the station, while he waited for his father to pick him up.\" Survivors in the Blast Area of the UVX Projectile suffer from the following effect: Inflicts the Oblivious Status Effect for 20 seconds."
  },
  {
   "id": "Device_of_Undisclosed_Origin",
@@ -8900,9 +8900,9 @@
   "desc_text_en": "\"Was the thing made on Earth? Or somewhere else entirely?\" While within range of seeing the Aura of a Hallucination, Survivors suffer from the following effect: Inflicts the Oblivious Status Effect.",
   "icon_file": "icons/addon/IconAddon_deviceOfUndisclosedOrigin.webp",
   "name": "출처 불명의 장치",
-  "desc_html": "<i><span class=\"FlavorText\">\"이것은 지구에서 만들어졌을까? 아니면 전혀 다른 어딘가에서?\"</span></i>\n<b><i>환영</i></b>의 오라를 볼 수 있는 범위 안에 있는 동안, 생존자는 다음 효과에 걸립니다:<br><br>• <i><b>무지</b></i> <b>상태 효과</b>를 부여합니다.",
-  "desc_text": "\"이것은 지구에서 만들어졌을까? 아니면 전혀 다른 어딘가에서?\" 환영의 오라를 볼 수 있는 범위 안에 있는 동안, 생존자는 다음 효과에 걸립니다: 무지 상태 효과를 부여합니다.",
-  "search_blob": "출처 불명의 장치 Device of Undisclosed Origin \"이것은 지구에서 만들어졌을까? 아니면 전혀 다른 어딘가에서?\" 환영의 오라를 볼 수 있는 범위 안에 있는 동안, 생존자는 다음 효과에 걸립니다: 무지 상태 효과를 부여합니다. \"Was the thing made on Earth? Or somewhere else entirely?\" While within range of seeing the Aura of a Hallucination, Survivors suffer from the following effect: Inflicts the Oblivious Status Effect."
+  "desc_html": "<i><span class=\"FlavorText\">\"이것은 지구에서 만들어졌을까? 아니면 전혀 다른 어딘가에서?\"</span></i>\n<b><i>환영</i></b>의 오라를 볼 수 있는 범위 안에 있는 동안, 생존자는 다음 효과에 걸립니다:<br><br>• <i><b>인지 불가능</b></i> <b>상태 효과</b>를 부여합니다.",
+  "desc_text": "\"이것은 지구에서 만들어졌을까? 아니면 전혀 다른 어딘가에서?\" 환영의 오라를 볼 수 있는 범위 안에 있는 동안, 생존자는 다음 효과에 걸립니다: 인지 불가능 상태 효과를 부여합니다.",
+  "search_blob": "출처 불명의 장치 Device of Undisclosed Origin \"이것은 지구에서 만들어졌을까? 아니면 전혀 다른 어딘가에서?\" 환영의 오라를 볼 수 있는 범위 안에 있는 동안, 생존자는 다음 효과에 걸립니다: 인지 불가능 상태 효과를 부여합니다. \"Was the thing made on Earth? Or somewhere else entirely?\" While within range of seeing the Aura of a Hallucination, Survivors suffer from the following effect: Inflicts the Oblivious Status Effect."
  },
  {
   "id": "Last_Known_Recording",
@@ -9290,9 +9290,9 @@
   "desc_text_en": "\"The realm itself bends to its astounding capacity, populating trials with even more to take.\" Survivors opening a Treasure Chest suffer from the following effects: Inflicts the Oblivious Status Effect for 15 seconds. At least 2 Treasure Chests in the environment will roll a 1 on their Dice Roll.",
   "icon_file": "icons/addon/IconAddon_BagOfHolding.webp",
   "name": "보관의 가방",
-  "desc_html": "<i><span class=\"FlavorText\">\"왕국 자체가 그 놀라운 수용력에 순응하여, 재판에 빼앗을 것을 더욱 가득 채운다.\"</span></i>\n<b>보물 상자</b>를 여는 생존자는 다음 효과에 걸립니다:<br><br>• <b><span class=\"Highlight1\">15초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>를 부여합니다.<br>• 주변의 <b>보물 상자</b> 중 최소 <b><span class=\"Highlight1\">2</span></b>개가 <i>주사위 굴림</i>에서 <b>1</b>이 나옵니다.",
-  "desc_text": "\"왕국 자체가 그 놀라운 수용력에 순응하여, 재판에 빼앗을 것을 더욱 가득 채운다.\" 보물 상자를 여는 생존자는 다음 효과에 걸립니다: 15초 동안 무지 상태 효과를 부여합니다. 주변의 보물 상자 중 최소 2개가 주사위 굴림에서 1이 나옵니다.",
-  "search_blob": "보관의 가방 Bag of Holding \"왕국 자체가 그 놀라운 수용력에 순응하여, 재판에 빼앗을 것을 더욱 가득 채운다.\" 보물 상자를 여는 생존자는 다음 효과에 걸립니다: 15초 동안 무지 상태 효과를 부여합니다. 주변의 보물 상자 중 최소 2개가 주사위 굴림에서 1이 나옵니다. \"The realm itself bends to its astounding capacity, populating trials with even more to take.\" Survivors opening a Treasure Chest suffer from the following effects: Inflicts the Oblivious Status Effect for 15 seconds. At least 2 Treasure Chests in the environment will roll a 1 on their Dice Roll."
+  "desc_html": "<i><span class=\"FlavorText\">\"왕국 자체가 그 놀라운 수용력에 순응하여, 재판에 빼앗을 것을 더욱 가득 채운다.\"</span></i>\n<b>보물 상자</b>를 여는 생존자는 다음 효과에 걸립니다:<br><br>• <b><span class=\"Highlight1\">15초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>를 부여합니다.<br>• 주변의 <b>보물 상자</b> 중 최소 <b><span class=\"Highlight1\">2</span></b>개가 <i>주사위 굴림</i>에서 <b>1</b>이 나옵니다.",
+  "desc_text": "\"왕국 자체가 그 놀라운 수용력에 순응하여, 재판에 빼앗을 것을 더욱 가득 채운다.\" 보물 상자를 여는 생존자는 다음 효과에 걸립니다: 15초 동안 인지 불가능 상태 효과를 부여합니다. 주변의 보물 상자 중 최소 2개가 주사위 굴림에서 1이 나옵니다.",
+  "search_blob": "보관의 가방 Bag of Holding \"왕국 자체가 그 놀라운 수용력에 순응하여, 재판에 빼앗을 것을 더욱 가득 채운다.\" 보물 상자를 여는 생존자는 다음 효과에 걸립니다: 15초 동안 인지 불가능 상태 효과를 부여합니다. 주변의 보물 상자 중 최소 2개가 주사위 굴림에서 1이 나옵니다. \"The realm itself bends to its astounding capacity, populating trials with even more to take.\" Survivors opening a Treasure Chest suffer from the following effects: Inflicts the Oblivious Status Effect for 15 seconds. At least 2 Treasure Chests in the environment will roll a 1 on their Dice Roll."
  },
  {
   "id": "Cloak_of_Invisibility",
@@ -9693,9 +9693,9 @@
   "desc_text_en": "Ideal for holding rope, securing knots, and rigging sails. Causes Survivors affected by Houndsense to also suffer from the Oblivious Status Effect for 20 seconds.",
   "icon_file": "icons/addon/IconAddon_belayingPins.webp",
   "name": "빌레잉 핀",
-  "desc_html": "밧줄을 고정하고, 매듭을 묶고, 돛을 다는 데 안성맞춤이다.<br>• <i>사냥개 감각</i>의 영향을 받는 생존자에게 <b><span class=\"Highlight1\">20초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>도 부여합니다.",
-  "desc_text": "밧줄을 고정하고, 매듭을 묶고, 돛을 다는 데 안성맞춤이다. 사냥개 감각의 영향을 받는 생존자에게 20초 동안 무지 상태 효과도 부여합니다.",
-  "search_blob": "빌레잉 핀 Belaying Pins 밧줄을 고정하고, 매듭을 묶고, 돛을 다는 데 안성맞춤이다. 사냥개 감각의 영향을 받는 생존자에게 20초 동안 무지 상태 효과도 부여합니다. Ideal for holding rope, securing knots, and rigging sails. Causes Survivors affected by Houndsense to also suffer from the Oblivious Status Effect for 20 seconds."
+  "desc_html": "밧줄을 고정하고, 매듭을 묶고, 돛을 다는 데 안성맞춤이다.<br>• <i>사냥개 감각</i>의 영향을 받는 생존자에게 <b><span class=\"Highlight1\">20초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>도 부여합니다.",
+  "desc_text": "밧줄을 고정하고, 매듭을 묶고, 돛을 다는 데 안성맞춤이다. 사냥개 감각의 영향을 받는 생존자에게 20초 동안 인지 불가능 상태 효과도 부여합니다.",
+  "search_blob": "빌레잉 핀 Belaying Pins 밧줄을 고정하고, 매듭을 묶고, 돛을 다는 데 안성맞춤이다. 사냥개 감각의 영향을 받는 생존자에게 20초 동안 인지 불가능 상태 효과도 부여합니다. Ideal for holding rope, securing knots, and rigging sails. Causes Survivors affected by Houndsense to also suffer from the Oblivious Status Effect for 20 seconds."
  },
  {
   "id": "Knotted_Rope",
@@ -9966,9 +9966,9 @@
   "desc_text_en": "They belonged to his best friend, who he tried to keep safe at all costs. Survivors affected by the Kagune Mark experience the following effect while carrying it: Causes them to suffer from the Oblivious Status Effect until the mark is removed.",
   "icon_file": "icons/addon/T_UI_iconAddon_HidesHeadphones.webp",
   "name": "히데의 헤드폰",
-  "desc_html": "그가 무슨 수를 써서라도 지키려 했던 가장 친한 친구의 것이었다.\n<i>붉은 관 표식</i>의 영향을 받는 생존자는 그것을 지니고 있는 동안 다음 효과를 겪습니다:<br><br>• 표식이 제거될 때까지 <i><b>무지</b></i> <b>상태 효과</b>에 시달리게 합니다.",
-  "desc_text": "그가 무슨 수를 써서라도 지키려 했던 가장 친한 친구의 것이었다. 붉은 관 표식의 영향을 받는 생존자는 그것을 지니고 있는 동안 다음 효과를 겪습니다: 표식이 제거될 때까지 무지 상태 효과에 시달리게 합니다.",
-  "search_blob": "히데의 헤드폰 Hide's Headphones 그가 무슨 수를 써서라도 지키려 했던 가장 친한 친구의 것이었다. 붉은 관 표식의 영향을 받는 생존자는 그것을 지니고 있는 동안 다음 효과를 겪습니다: 표식이 제거될 때까지 무지 상태 효과에 시달리게 합니다. They belonged to his best friend, who he tried to keep safe at all costs. Survivors affected by the Kagune Mark experience the following effect while carrying it: Causes them to suffer from the Oblivious Status Effect until the mark is removed."
+  "desc_html": "그가 무슨 수를 써서라도 지키려 했던 가장 친한 친구의 것이었다.\n<i>붉은 관 표식</i>의 영향을 받는 생존자는 그것을 지니고 있는 동안 다음 효과를 겪습니다:<br><br>• 표식이 제거될 때까지 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 시달리게 합니다.",
+  "desc_text": "그가 무슨 수를 써서라도 지키려 했던 가장 친한 친구의 것이었다. 붉은 관 표식의 영향을 받는 생존자는 그것을 지니고 있는 동안 다음 효과를 겪습니다: 표식이 제거될 때까지 인지 불가능 상태 효과에 시달리게 합니다.",
+  "search_blob": "히데의 헤드폰 Hide's Headphones 그가 무슨 수를 써서라도 지키려 했던 가장 친한 친구의 것이었다. 붉은 관 표식의 영향을 받는 생존자는 그것을 지니고 있는 동안 다음 효과를 겪습니다: 표식이 제거될 때까지 인지 불가능 상태 효과에 시달리게 합니다. They belonged to his best friend, who he tried to keep safe at all costs. Survivors affected by the Kagune Mark experience the following effect while carrying it: Causes them to suffer from the Oblivious Status Effect until the mark is removed."
  },
  {
   "id": "Hinami's_Umbrella",
@@ -10200,9 +10200,9 @@
   "desc_text_en": "\"He tried to leave messages as a warning. He did not last long, either.\" While within 24 metres of the Survivor embedded with the Fire Axe, the following primary effects are applied to other Survivors: Decreases the time required to remove the Fire Axe from another Survivor by -50 %. Reveals the Aura of the Fire Axe. Inflicts the Oblivious Status Effect. Additionally, if they are in the Injured State, they also suffer from the secondary effect: Inflicts the Broken Status Effect.",
   "icon_file": "icons/addon/IconAddon_OfficePhone.webp",
   "name": "사무실 전화기",
-  "desc_html": "<i><span class=\"FlavorText\">\"그는 경고의 메시지를 남기려 했다.<br>그 역시 오래 버티지 못했다.\"</span></i>\n<i>소방 도끼</i>가 박힌 생존자로부터 <b><span class=\"Highlight1\">24미터</span></b> 이내에 있는 동안, 다른 생존자에게 다음의 1차 효과가 적용됩니다:<br><br>• 다른 생존자에게서 <i>소방 도끼</i>를 제거하는 데 필요한 시간을 <b><span class=\"Highlight1\">-50 %</span></b> <b>감소</b>시킵니다.<br>• <i>소방 도끼</i>의 오라를 <b>표시</b>합니다.<br>• <i><b>무지</b></i> <b>상태 효과</b>를 부여합니다.\n\n\n추가로, 그들이 부상 상태라면 다음의 2차 효과에도 시달립니다:<br><br>• <i><b>상처</b></i> <b>상태 효과</b>를 부여합니다.",
-  "desc_text": "\"그는 경고의 메시지를 남기려 했다. 그 역시 오래 버티지 못했다.\" 소방 도끼가 박힌 생존자로부터 24미터 이내에 있는 동안, 다른 생존자에게 다음의 1차 효과가 적용됩니다: 다른 생존자에게서 소방 도끼를 제거하는 데 필요한 시간을 -50 % 감소시킵니다. 소방 도끼의 오라를 표시합니다. 무지 상태 효과를 부여합니다. 추가로, 그들이 부상 상태라면 다음의 2차 효과에도 시달립니다: 상처 상태 효과를 부여합니다.",
-  "search_blob": "사무실 전화기 Office Phone \"그는 경고의 메시지를 남기려 했다. 그 역시 오래 버티지 못했다.\" 소방 도끼가 박힌 생존자로부터 24미터 이내에 있는 동안, 다른 생존자에게 다음의 1차 효과가 적용됩니다: 다른 생존자에게서 소방 도끼를 제거하는 데 필요한 시간을 -50 % 감소시킵니다. 소방 도끼의 오라를 표시합니다. 무지 상태 효과를 부여합니다. 추가로, 그들이 부상 상태라면 다음의 2차 효과에도 시달립니다: 상처 상태 효과를 부여합니다. \"He tried to leave messages as a warning. He did not last long, either.\" While within 24 metres of the Survivor embedded with the Fire Axe, the following primary effects are applied to other Survivors: Decreases the time required to remove the Fire Axe from another Survivor by -50 %. Reveals the Aura of the Fire Axe. Inflicts the Oblivious Status Effect. Additionally, if they are in the Injured State, they also suffer from the secondary effect: Inflicts the Broken Status Effect."
+  "desc_html": "<i><span class=\"FlavorText\">\"그는 경고의 메시지를 남기려 했다.<br>그 역시 오래 버티지 못했다.\"</span></i>\n<i>소방 도끼</i>가 박힌 생존자로부터 <b><span class=\"Highlight1\">24미터</span></b> 이내에 있는 동안, 다른 생존자에게 다음의 1차 효과가 적용됩니다:<br><br>• 다른 생존자에게서 <i>소방 도끼</i>를 제거하는 데 필요한 시간을 <b><span class=\"Highlight1\">-50 %</span></b> <b>감소</b>시킵니다.<br>• <i>소방 도끼</i>의 오라를 <b>표시</b>합니다.<br>• <i><b>인지 불가능</b></i> <b>상태 효과</b>를 부여합니다.\n\n\n추가로, 그들이 부상 상태라면 다음의 2차 효과에도 시달립니다:<br><br>• <i><b>상처</b></i> <b>상태 효과</b>를 부여합니다.",
+  "desc_text": "\"그는 경고의 메시지를 남기려 했다. 그 역시 오래 버티지 못했다.\" 소방 도끼가 박힌 생존자로부터 24미터 이내에 있는 동안, 다른 생존자에게 다음의 1차 효과가 적용됩니다: 다른 생존자에게서 소방 도끼를 제거하는 데 필요한 시간을 -50 % 감소시킵니다. 소방 도끼의 오라를 표시합니다. 인지 불가능 상태 효과를 부여합니다. 추가로, 그들이 부상 상태라면 다음의 2차 효과에도 시달립니다: 상처 상태 효과를 부여합니다.",
+  "search_blob": "사무실 전화기 Office Phone \"그는 경고의 메시지를 남기려 했다. 그 역시 오래 버티지 못했다.\" 소방 도끼가 박힌 생존자로부터 24미터 이내에 있는 동안, 다른 생존자에게 다음의 1차 효과가 적용됩니다: 다른 생존자에게서 소방 도끼를 제거하는 데 필요한 시간을 -50 % 감소시킵니다. 소방 도끼의 오라를 표시합니다. 인지 불가능 상태 효과를 부여합니다. 추가로, 그들이 부상 상태라면 다음의 2차 효과에도 시달립니다: 상처 상태 효과를 부여합니다. \"He tried to leave messages as a warning. He did not last long, either.\" While within 24 metres of the Survivor embedded with the Fire Axe, the following primary effects are applied to other Survivors: Decreases the time required to remove the Fire Axe from another Survivor by -50 %. Reveals the Aura of the Fire Axe. Inflicts the Oblivious Status Effect. Additionally, if they are in the Injured State, they also suffer from the secondary effect: Inflicts the Broken Status Effect."
  },
  {
   "id": "Party_Hat",
@@ -10408,9 +10408,9 @@
   "desc_text_en": "\"A dazzling stage prop worn by a Pharoah's daughter, as distracting as it is fake.\" Modifies the Glowing Fungus with the following effect: Causes Survivors to suffer from the Oblivious Status Effect while under its effects.",
   "icon_file": "icons/addon/IconAddon_brokenTiara.webp",
   "name": "부서진 티아라",
-  "desc_html": "<i><span class=\"FlavorText\">\"파라오의 딸이 착용하던 눈부신 무대 소품으로, 가짜인 만큼이나 시선을 끈다.\"</span></i>\n빛나는 균류를 다음 효과로 변경합니다:<br><br>• 그 효과를 받는 동안 생존자가 <i><b>무지</b></i> <b>상태 효과</b>에 시달리게 합니다.",
-  "desc_text": "\"파라오의 딸이 착용하던 눈부신 무대 소품으로, 가짜인 만큼이나 시선을 끈다.\" 빛나는 균류를 다음 효과로 변경합니다: 그 효과를 받는 동안 생존자가 무지 상태 효과에 시달리게 합니다.",
-  "search_blob": "부서진 티아라 Broken Tiara \"파라오의 딸이 착용하던 눈부신 무대 소품으로, 가짜인 만큼이나 시선을 끈다.\" 빛나는 균류를 다음 효과로 변경합니다: 그 효과를 받는 동안 생존자가 무지 상태 효과에 시달리게 합니다. \"A dazzling stage prop worn by a Pharoah's daughter, as distracting as it is fake.\" Modifies the Glowing Fungus with the following effect: Causes Survivors to suffer from the Oblivious Status Effect while under its effects."
+  "desc_html": "<i><span class=\"FlavorText\">\"파라오의 딸이 착용하던 눈부신 무대 소품으로, 가짜인 만큼이나 시선을 끈다.\"</span></i>\n빛나는 균류를 다음 효과로 변경합니다:<br><br>• 그 효과를 받는 동안 생존자가 <i><b>인지 불가능</b></i> <b>상태 효과</b>에 시달리게 합니다.",
+  "desc_text": "\"파라오의 딸이 착용하던 눈부신 무대 소품으로, 가짜인 만큼이나 시선을 끈다.\" 빛나는 균류를 다음 효과로 변경합니다: 그 효과를 받는 동안 생존자가 인지 불가능 상태 효과에 시달리게 합니다.",
+  "search_blob": "부서진 티아라 Broken Tiara \"파라오의 딸이 착용하던 눈부신 무대 소품으로, 가짜인 만큼이나 시선을 끈다.\" 빛나는 균류를 다음 효과로 변경합니다: 그 효과를 받는 동안 생존자가 인지 불가능 상태 효과에 시달리게 합니다. \"A dazzling stage prop worn by a Pharoah's daughter, as distracting as it is fake.\" Modifies the Glowing Fungus with the following effect: Causes Survivors to suffer from the Oblivious Status Effect while under its effects."
  },
  {
   "id": "First_Libretto",
@@ -10733,9 +10733,9 @@
   "desc_text_en": "\"Hands of the Creel family's grandfather clock, corrupted by Henry's dark power.\" Modifies the Grandfather Clocks with the following effect: Causes Survivors to gain the Oblivious Status Effect while interacting with the Grandfather Clocks and for 12 seconds after.",
   "icon_file": "icons/addon/IconAddon_ClockHands.webp",
   "name": "시계 바늘",
-  "desc_html": "<i><span class=\"FlavorText\">\"크릴 가의 괘종시계 바늘로, 헨리의 어두운 힘에 오염되었다.\"</span></i>\n<i>괘종시계</i>를 다음 효과로 변경합니다:<br><br>• <i>괘종시계</i>와 상호작용하는 동안, 그리고 상호작용 후 <b><span class=\"Highlight1\">12초</span></b> 동안 생존자가 <i><b>무지</b></i> <b>상태 효과</b>를 얻게 합니다.",
-  "desc_text": "\"크릴 가의 괘종시계 바늘로, 헨리의 어두운 힘에 오염되었다.\" 괘종시계를 다음 효과로 변경합니다: 괘종시계와 상호작용하는 동안, 그리고 상호작용 후 12초 동안 생존자가 무지 상태 효과를 얻게 합니다.",
-  "search_blob": "시계 바늘 Clock Hands \"크릴 가의 괘종시계 바늘로, 헨리의 어두운 힘에 오염되었다.\" 괘종시계를 다음 효과로 변경합니다: 괘종시계와 상호작용하는 동안, 그리고 상호작용 후 12초 동안 생존자가 무지 상태 효과를 얻게 합니다. \"Hands of the Creel family's grandfather clock, corrupted by Henry's dark power.\" Modifies the Grandfather Clocks with the following effect: Causes Survivors to gain the Oblivious Status Effect while interacting with the Grandfather Clocks and for 12 seconds after."
+  "desc_html": "<i><span class=\"FlavorText\">\"크릴 가의 괘종시계 바늘로, 헨리의 어두운 힘에 오염되었다.\"</span></i>\n<i>괘종시계</i>를 다음 효과로 변경합니다:<br><br>• <i>괘종시계</i>와 상호작용하는 동안, 그리고 상호작용 후 <b><span class=\"Highlight1\">12초</span></b> 동안 생존자가 <i><b>인지 불가능</b></i> <b>상태 효과</b>를 얻게 합니다.",
+  "desc_text": "\"크릴 가의 괘종시계 바늘로, 헨리의 어두운 힘에 오염되었다.\" 괘종시계를 다음 효과로 변경합니다: 괘종시계와 상호작용하는 동안, 그리고 상호작용 후 12초 동안 생존자가 인지 불가능 상태 효과를 얻게 합니다.",
+  "search_blob": "시계 바늘 Clock Hands \"크릴 가의 괘종시계 바늘로, 헨리의 어두운 힘에 오염되었다.\" 괘종시계를 다음 효과로 변경합니다: 괘종시계와 상호작용하는 동안, 그리고 상호작용 후 12초 동안 생존자가 인지 불가능 상태 효과를 얻게 합니다. \"Hands of the Creel family's grandfather clock, corrupted by Henry's dark power.\" Modifies the Grandfather Clocks with the following effect: Causes Survivors to gain the Oblivious Status Effect while interacting with the Grandfather Clocks and for 12 seconds after."
  },
  {
   "id": "Gutted_Supercom",
@@ -11032,9 +11032,9 @@
   "desc_text_en": "\"No one could survive being submerged in this poison.\" After performing a Jump Scare, Survivors within 8 metres of a Hook or a Scrap Pile are inflicted with Oblivious Status Effect for 13 seconds.",
   "icon_file": "icons/addon/T_UI_iconAddon_ToxicWaste.webp",
   "name": "유독성 폐기물",
-  "desc_html": "<i><span class=\"FlavorText\">\"이 독에 잠긴 채로는 누구도 살아남을 수 없었다.\"</span></i><br><br>• <b>깜짝 놀래기</b>를 수행한 후, 갈고리나 <b>고철 더미</b> <b><span class=\"Highlight1\">8미터</span></b> 이내에 있는 생존자에게 <b><span class=\"Highlight1\">13초</span></b> 동안 <i><b>무지</b></i> <b>상태 효과</b>를 부여합니다.",
-  "desc_text": "\"이 독에 잠긴 채로는 누구도 살아남을 수 없었다.\" 깜짝 놀래기를 수행한 후, 갈고리나 고철 더미 8미터 이내에 있는 생존자에게 13초 동안 무지 상태 효과를 부여합니다.",
-  "search_blob": "유독성 폐기물 Toxic Waste \"이 독에 잠긴 채로는 누구도 살아남을 수 없었다.\" 깜짝 놀래기를 수행한 후, 갈고리나 고철 더미 8미터 이내에 있는 생존자에게 13초 동안 무지 상태 효과를 부여합니다. \"No one could survive being submerged in this poison.\" After performing a Jump Scare, Survivors within 8 metres of a Hook or a Scrap Pile are inflicted with Oblivious Status Effect for 13 seconds."
+  "desc_html": "<i><span class=\"FlavorText\">\"이 독에 잠긴 채로는 누구도 살아남을 수 없었다.\"</span></i><br><br>• <b>깜짝 놀래기</b>를 수행한 후, 갈고리나 <b>고철 더미</b> <b><span class=\"Highlight1\">8미터</span></b> 이내에 있는 생존자에게 <b><span class=\"Highlight1\">13초</span></b> 동안 <i><b>인지 불가능</b></i> <b>상태 효과</b>를 부여합니다.",
+  "desc_text": "\"이 독에 잠긴 채로는 누구도 살아남을 수 없었다.\" 깜짝 놀래기를 수행한 후, 갈고리나 고철 더미 8미터 이내에 있는 생존자에게 13초 동안 인지 불가능 상태 효과를 부여합니다.",
+  "search_blob": "유독성 폐기물 Toxic Waste \"이 독에 잠긴 채로는 누구도 살아남을 수 없었다.\" 깜짝 놀래기를 수행한 후, 갈고리나 고철 더미 8미터 이내에 있는 생존자에게 13초 동안 인지 불가능 상태 효과를 부여합니다. \"No one could survive being submerged in this poison.\" After performing a Jump Scare, Survivors within 8 metres of a Hook or a Scrap Pile are inflicted with Oblivious Status Effect for 13 seconds."
  },
  {
   "id": "Eye_Goop",

@@ -27,23 +27,22 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 DEFAULT_MODEL = "gpt-4.1"
 
-# DBD 한국어 용어집 — 기존 perks.json 한글 번역과 일관되도록 주요 용어를 고정한다.
-GLOSSARY = """\
-[핵심 용어] (반드시 이 번역어를 사용)
-Killer=살인마, Survivor=생존자, Perk=퍽, The Trial/Trial=시련, Trial Grounds=시련장,
-Aura=오라, Obsession=집착 대상, Terror Radius=공포 범위, Status Effect=상태 효과,
-Basic Attack=기본 공격, Special Attack=특수 공격, cooldown=재사용 대기시간, Token=토큰,
-Generator=발전기, Pallet=판자, Vault=넘어가기, Window=창문, Hook=갈고리, Locker=로커,
-Totem=토템, Hex=저주, Dull Totem=무효 토템, Bloodpoints=블러드포인트,
-Injured=부상, Healthy=건강, Dying State=빈사 상태, Downed=쓰러진, Chase=추격, Stun=기절,
-Scratch Marks=긁힌 자국, charge=충전, meter/gauge=게이지, Endurance=인내,
-[상태 효과] Haste=신속, Hindered=둔화, Exposed=노출, Undetectable=은신, Oblivious=무지,
-Incapacitated=무력화, Broken=상처, Deep Wound=깊은 상처, Hemorrhage=출혈, Mangled=손상,
-Blindness=실명, Exhausted=탈진, Mending=붕대 감기, Bloodlust=블러드러스트,
-[살인마 공식 한글명 예] The Trapper=트래퍼, The Wraith=레이스, The Hillbilly=힐빌리,
-The Nurse=널스, The Huntress=헌트리스, The Shape=셰이프, The Doctor=닥터, The Hag=마녀,
-The Spirit=스피릿, The Legion=리전, The Plague=플레이그, The Nightmare=나이트메어,
-The Pig=피그, The Clown=클라운, The Oni=오니, The Blight=블라이트."""
+# DBD 한국어 용어집 — glossary.json 이 단일 소스. 기존 데이터 한글 번역과 일관되도록
+# 주요 용어를 고정한다. 용어 추가/변경은 glossary.json 에서 한다.
+def _load_glossary():
+    g = json.load(open(os.path.join(HERE, "glossary.json"), encoding="utf-8"))
+    sections = [("core", "[핵심 용어] (반드시 이 번역어를 사용)"),
+                ("status_effects", "[상태 효과]"),
+                ("killer_names", "[살인마 공식 한글명 예]")]
+    lines = []
+    for key, title in sections:
+        pairs = ", ".join(f"{en}={ko}" for en, ko in g.get(key, {}).items())
+        if pairs:
+            lines.append(f"{title} {pairs}")
+    return "\n".join(lines)
+
+
+GLOSSARY = _load_glossary()
 
 SYSTEM = (
     "당신은 비대칭 공포 게임 Dead by Daylight(데드 바이 데이라이트)의 한국어 로컬라이제이션 "
