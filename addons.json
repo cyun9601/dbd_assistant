@@ -2621,9 +2621,9 @@
   "desc_text_en": "A modification to the Reverse Bear Trap: The addition of interlocking razor blades makes it impossible to move suddenly in the Jigsaw Box without slitting one's wrists. While injured, Survivors failing a Skill Check at a Jigsaw Box become afflicted by the Deep Wound Status Effect.",
   "icon_file": "icons/addon/IconAddon_interlockingRazor.webp",
   "name": "맞물리는 면도날",
-  "desc_html": "역방향 곰덫에 대한 개조:<br>맞물리는 면도날을 추가하여 손목을 베지 않고서는 직쏘 상자 안에서 갑작스럽게 움직이는 것이 불가능하게 만든다.<br>• 부상 상태에서 <b>직쏘 상자</b>의 기술 판정에 실패한 생존자는 <i><b>깊은 상처</b></i> <b>상태 효과</b>에 걸립니다.",
-  "desc_text": "역방향 곰덫에 대한 개조: 맞물리는 면도날을 추가하여 손목을 베지 않고서는 직쏘 상자 안에서 갑작스럽게 움직이는 것이 불가능하게 만든다. 부상 상태에서 직쏘 상자의 기술 판정에 실패한 생존자는 깊은 상처 상태 효과에 걸립니다.",
-  "search_blob": "맞물리는 면도날 Interlocking Razor 역방향 곰덫에 대한 개조: 맞물리는 면도날을 추가하여 손목을 베지 않고서는 직쏘 상자 안에서 갑작스럽게 움직이는 것이 불가능하게 만든다. 부상 상태에서 직쏘 상자의 기술 판정에 실패한 생존자는 깊은 상처 상태 효과에 걸립니다. A modification to the Reverse Bear Trap: The addition of interlocking razor blades makes it impossible to move suddenly in the Jigsaw Box without slitting one's wrists. While injured, Survivors failing a Skill Check at a Jigsaw Box become afflicted by the Deep Wound Status Effect."
+  "desc_html": "역방향 곰덫에 대한 개조:<br>맞물리는 면도날을 추가하여 손목을 베지 않고서는 직쏘 상자 안에서 갑작스럽게 움직이는 것이 불가능하게 만든다.<br>• 부상 상태에서 <b>직쏘 상자</b>의 스킬체크에 실패한 생존자는 <i><b>깊은 상처</b></i> <b>상태 효과</b>에 걸립니다.",
+  "desc_text": "역방향 곰덫에 대한 개조: 맞물리는 면도날을 추가하여 손목을 베지 않고서는 직쏘 상자 안에서 갑작스럽게 움직이는 것이 불가능하게 만든다. 부상 상태에서 직쏘 상자의 스킬체크에 실패한 생존자는 깊은 상처 상태 효과에 걸립니다.",
+  "search_blob": "맞물리는 면도날 Interlocking Razor 역방향 곰덫에 대한 개조: 맞물리는 면도날을 추가하여 손목을 베지 않고서는 직쏘 상자 안에서 갑작스럽게 움직이는 것이 불가능하게 만든다. 부상 상태에서 직쏘 상자의 스킬체크에 실패한 생존자는 깊은 상처 상태 효과에 걸립니다. A modification to the Reverse Bear Trap: The addition of interlocking razor blades makes it impossible to move suddenly in the Jigsaw Box without slitting one's wrists. While injured, Survivors failing a Skill Check at a Jigsaw Box become afflicted by the Deep Wound Status Effect."
  },
  {
   "id": "John's_Medical_File",
@@ -2686,9 +2686,9 @@
   "desc_text_en": "A modification to the Reverse Bear Trap: The addition of razor sharp wires makes it extra difficult and potentially painful to search them. While healthy, Survivors failing a Skill Check at a Jigsaw Box become injured. Increases the Skill Check difficulty by +20 %.",
   "icon_file": "icons/addon/IconAddon_razorWires.webp",
   "name": "가시 철사줄",
-  "desc_html": "역방향 곰덫에 대한 개조:<br>면도날처럼 날카로운 철사를 추가하여 뒤지는 것을 더욱 어렵고 잠재적으로 고통스럽게 만든다.<br>• 건강한 상태에서 <b>직쏘 상자</b>의 기술 판정에 실패한 생존자는 부상을 입습니다.<br>• 기술 판정 난이도를 <b><span class=\"Highlight1\">+20 %</span></b> <b>증가</b>시킵니다.",
-  "desc_text": "역방향 곰덫에 대한 개조: 면도날처럼 날카로운 철사를 추가하여 뒤지는 것을 더욱 어렵고 잠재적으로 고통스럽게 만든다. 건강한 상태에서 직쏘 상자의 기술 판정에 실패한 생존자는 부상을 입습니다. 기술 판정 난이도를 +20 % 증가시킵니다.",
-  "search_blob": "가시 철사줄 Razor Wires 역방향 곰덫에 대한 개조: 면도날처럼 날카로운 철사를 추가하여 뒤지는 것을 더욱 어렵고 잠재적으로 고통스럽게 만든다. 건강한 상태에서 직쏘 상자의 기술 판정에 실패한 생존자는 부상을 입습니다. 기술 판정 난이도를 +20 % 증가시킵니다. A modification to the Reverse Bear Trap: The addition of razor sharp wires makes it extra difficult and potentially painful to search them. While healthy, Survivors failing a Skill Check at a Jigsaw Box become injured. Increases the Skill Check difficulty by +20 %."
+  "desc_html": "역방향 곰덫에 대한 개조:<br>면도날처럼 날카로운 철사를 추가하여 뒤지는 것을 더욱 어렵고 잠재적으로 고통스럽게 만든다.<br>• 건강한 상태에서 <b>직쏘 상자</b>의 스킬체크에 실패한 생존자는 부상을 입습니다.<br>• 스킬체크 난이도를 <b><span class=\"Highlight1\">+20 %</span></b> <b>증가</b>시킵니다.",
+  "desc_text": "역방향 곰덫에 대한 개조: 면도날처럼 날카로운 철사를 추가하여 뒤지는 것을 더욱 어렵고 잠재적으로 고통스럽게 만든다. 건강한 상태에서 직쏘 상자의 스킬체크에 실패한 생존자는 부상을 입습니다. 스킬체크 난이도를 +20 % 증가시킵니다.",
+  "search_blob": "가시 철사줄 Razor Wires 역방향 곰덫에 대한 개조: 면도날처럼 날카로운 철사를 추가하여 뒤지는 것을 더욱 어렵고 잠재적으로 고통스럽게 만든다. 건강한 상태에서 직쏘 상자의 스킬체크에 실패한 생존자는 부상을 입습니다. 스킬체크 난이도를 +20 % 증가시킵니다. A modification to the Reverse Bear Trap: The addition of razor sharp wires makes it extra difficult and potentially painful to search them. While healthy, Survivors failing a Skill Check at a Jigsaw Box become injured. Increases the Skill Check difficulty by +20 %."
  },
  {
   "id": "Utility_Blades",
@@ -7808,9 +7808,9 @@
   "desc_text_en": "An original copy of the first issue of Adi Valente, the comic her father made while Adriana was a child. Reduces the Success Zone of Skill Checks for Claw-Trapped Survivors by -20 %.",
   "icon_file": "icons/addon/IconAddon_adiValenteIssue1.webp",
   "name": "아디 발렌테 1호",
-  "desc_html": "아드리아나가 어릴 때 그녀의 아버지가 만든 만화 <b><i>아디 발렌테</i></b> 창간호의 원본 사본.<br>• <i>발톱 덫에 걸린 생존자</i>의 기술 판정 성공 구간을 <b><span class=\"Highlight1\">-20 %</span></b> <b>감소</b>시킵니다.",
-  "desc_text": "아드리아나가 어릴 때 그녀의 아버지가 만든 만화 아디 발렌테 창간호의 원본 사본. 발톱 덫에 걸린 생존자의 기술 판정 성공 구간을 -20 % 감소시킵니다.",
-  "search_blob": "아디 발렌테 1호 Adi Valente Issue 1 아드리아나가 어릴 때 그녀의 아버지가 만든 만화 아디 발렌테 창간호의 원본 사본. 발톱 덫에 걸린 생존자의 기술 판정 성공 구간을 -20 % 감소시킵니다. An original copy of the first issue of Adi Valente, the comic her father made while Adriana was a child. Reduces the Success Zone of Skill Checks for Claw-Trapped Survivors by -20 %."
+  "desc_html": "아드리아나가 어릴 때 그녀의 아버지가 만든 만화 <b><i>아디 발렌테</i></b> 창간호의 원본 사본.<br>• <i>발톱 덫에 걸린 생존자</i>의 스킬체크 성공 구간을 <b><span class=\"Highlight1\">-20 %</span></b> <b>감소</b>시킵니다.",
+  "desc_text": "아드리아나가 어릴 때 그녀의 아버지가 만든 만화 아디 발렌테 창간호의 원본 사본. 발톱 덫에 걸린 생존자의 스킬체크 성공 구간을 -20 % 감소시킵니다.",
+  "search_blob": "아디 발렌테 1호 Adi Valente Issue 1 아드리아나가 어릴 때 그녀의 아버지가 만든 만화 아디 발렌테 창간호의 원본 사본. 발톱 덫에 걸린 생존자의 스킬체크 성공 구간을 -20 % 감소시킵니다. An original copy of the first issue of Adi Valente, the comic her father made while Adriana was a child. Reduces the Success Zone of Skill Checks for Claw-Trapped Survivors by -20 %."
  },
  {
   "id": "High-Current_Upgrade",
@@ -7886,9 +7886,9 @@
   "desc_text_en": "Capable of directing high-frequency noises in a single direction over great distances, the Drones can focus in on one individual and distract them from danger for some time. Claw-Trapped Survivors no longer receive a warning sound of impending Skill Checks.",
   "icon_file": "icons/addon/IconAddon_shotgunSpeakers.webp",
   "name": "샷건 스피커",
-  "desc_html": "먼 거리에 걸쳐 고주파 소음을 한 방향으로 집중시킬 수 있어, 드론이 한 사람에게 초점을 맞춰 한동안 위험으로부터 주의를 돌릴 수 있다.<br>• <i>발톱 덫에 걸린 생존자</i>는 더 이상 다가오는 기술 판정에 대한 경고음을 듣지 못합니다.",
-  "desc_text": "먼 거리에 걸쳐 고주파 소음을 한 방향으로 집중시킬 수 있어, 드론이 한 사람에게 초점을 맞춰 한동안 위험으로부터 주의를 돌릴 수 있다. 발톱 덫에 걸린 생존자는 더 이상 다가오는 기술 판정에 대한 경고음을 듣지 못합니다.",
-  "search_blob": "샷건 스피커 Shotgun Speakers 먼 거리에 걸쳐 고주파 소음을 한 방향으로 집중시킬 수 있어, 드론이 한 사람에게 초점을 맞춰 한동안 위험으로부터 주의를 돌릴 수 있다. 발톱 덫에 걸린 생존자는 더 이상 다가오는 기술 판정에 대한 경고음을 듣지 못합니다. Capable of directing high-frequency noises in a single direction over great distances, the Drones can focus in on one individual and distract them from danger for some time. Claw-Trapped Survivors no longer receive a warning sound of impending Skill Checks."
+  "desc_html": "먼 거리에 걸쳐 고주파 소음을 한 방향으로 집중시킬 수 있어, 드론이 한 사람에게 초점을 맞춰 한동안 위험으로부터 주의를 돌릴 수 있다.<br>• <i>발톱 덫에 걸린 생존자</i>는 더 이상 다가오는 스킬체크에 대한 경고음을 듣지 못합니다.",
+  "desc_text": "먼 거리에 걸쳐 고주파 소음을 한 방향으로 집중시킬 수 있어, 드론이 한 사람에게 초점을 맞춰 한동안 위험으로부터 주의를 돌릴 수 있다. 발톱 덫에 걸린 생존자는 더 이상 다가오는 스킬체크에 대한 경고음을 듣지 못합니다.",
+  "search_blob": "샷건 스피커 Shotgun Speakers 먼 거리에 걸쳐 고주파 소음을 한 방향으로 집중시킬 수 있어, 드론이 한 사람에게 초점을 맞춰 한동안 위험으로부터 주의를 돌릴 수 있다. 발톱 덫에 걸린 생존자는 더 이상 다가오는 스킬체크에 대한 경고음을 듣지 못합니다. Capable of directing high-frequency noises in a single direction over great distances, the Drones can focus in on one individual and distract them from danger for some time. Claw-Trapped Survivors no longer receive a warning sound of impending Skill Checks."
  },
  {
   "id": "Stereo_Remote_Mic",
@@ -11136,9 +11136,9 @@
   "desc_text_en": "\"The badge of an officer who discovered that some things aren't worth investigating.\" While in Omnipresent Evil, passing within 4 metres of a Generator causes the Generator to explode, lose -5 % progress and begin regressing. If a Survivor is repairing the Generator, all Survivors repairing it will instead get a special Skill Check. If the Skill Check is failed, the Generator loses -10 % additional progress on top of the base Skill Check penalty.",
   "icon_file": "icons/addon/T_UI_iconAddon_DeputysBadge.webp",
   "name": "보안관의 배지",
-  "desc_html": "<i><span class=\"FlavorText\">\"어떤 일은 파헤칠 가치가 없다는 것을 깨달은 한 경관의 배지.\"</span></i><br><br>• <b>편재하는 악</b> 상태에서 발전기 <b><span class=\"Highlight1\">4미터</span></b> 이내를 지나가면 그 <b>발전기</b>가 폭발하며 <b><span class=\"Highlight1\">-5 %</span></b> 진행도를 잃고 퇴행하기 시작합니다.<br>• 생존자가 그 <b>발전기</b>를 수리 중이라면, 그것을 수리하는 모든 생존자에게 대신 특수 기술 판정이 나타납니다.<br><b>기술 판정</b>에 실패하면, 기본 <b>기술 판정</b> 페널티에 더해 <b>발전기</b>가 <b>-10 %</b> 추가 진행도를 잃습니다.",
-  "desc_text": "\"어떤 일은 파헤칠 가치가 없다는 것을 깨달은 한 경관의 배지.\" 편재하는 악 상태에서 발전기 4미터 이내를 지나가면 그 발전기가 폭발하며 -5 % 진행도를 잃고 퇴행하기 시작합니다. 생존자가 그 발전기를 수리 중이라면, 그것을 수리하는 모든 생존자에게 대신 특수 기술 판정이 나타납니다. 기술 판정에 실패하면, 기본 기술 판정 페널티에 더해 발전기가 -10 % 추가 진행도를 잃습니다.",
-  "search_blob": "보안관의 배지 Deputy's Badge \"어떤 일은 파헤칠 가치가 없다는 것을 깨달은 한 경관의 배지.\" 편재하는 악 상태에서 발전기 4미터 이내를 지나가면 그 발전기가 폭발하며 -5 % 진행도를 잃고 퇴행하기 시작합니다. 생존자가 그 발전기를 수리 중이라면, 그것을 수리하는 모든 생존자에게 대신 특수 기술 판정이 나타납니다. 기술 판정에 실패하면, 기본 기술 판정 페널티에 더해 발전기가 -10 % 추가 진행도를 잃습니다. \"The badge of an officer who discovered that some things aren't worth investigating.\" While in Omnipresent Evil, passing within 4 metres of a Generator causes the Generator to explode, lose -5 % progress and begin regressing. If a Survivor is repairing the Generator, all Survivors repairing it will instead get a special Skill Check. If the Skill Check is failed, the Generator loses -10 % additional progress on top of the base Skill Check penalty."
+  "desc_html": "<i><span class=\"FlavorText\">\"어떤 일은 파헤칠 가치가 없다는 것을 깨달은 한 경관의 배지.\"</span></i><br><br>• <b>편재하는 악</b> 상태에서 발전기 <b><span class=\"Highlight1\">4미터</span></b> 이내를 지나가면 그 <b>발전기</b>가 폭발하며 <b><span class=\"Highlight1\">-5 %</span></b> 진행도를 잃고 퇴행하기 시작합니다.<br>• 생존자가 그 <b>발전기</b>를 수리 중이라면, 그것을 수리하는 모든 생존자에게 대신 특수 스킬체크가 나타납니다.<br><b>스킬체크</b>에 실패하면, 기본 <b>스킬체크</b> 페널티에 더해 <b>발전기</b>가 <b>-10 %</b> 추가 진행도를 잃습니다.",
+  "desc_text": "\"어떤 일은 파헤칠 가치가 없다는 것을 깨달은 한 경관의 배지.\" 편재하는 악 상태에서 발전기 4미터 이내를 지나가면 그 발전기가 폭발하며 -5 % 진행도를 잃고 퇴행하기 시작합니다. 생존자가 그 발전기를 수리 중이라면, 그것을 수리하는 모든 생존자에게 대신 특수 스킬체크가 나타납니다. 스킬체크에 실패하면, 기본 스킬체크 페널티에 더해 발전기가 -10 % 추가 진행도를 잃습니다.",
+  "search_blob": "보안관의 배지 Deputy's Badge \"어떤 일은 파헤칠 가치가 없다는 것을 깨달은 한 경관의 배지.\" 편재하는 악 상태에서 발전기 4미터 이내를 지나가면 그 발전기가 폭발하며 -5 % 진행도를 잃고 퇴행하기 시작합니다. 생존자가 그 발전기를 수리 중이라면, 그것을 수리하는 모든 생존자에게 대신 특수 스킬체크가 나타납니다. 스킬체크에 실패하면, 기본 스킬체크 페널티에 더해 발전기가 -10 % 추가 진행도를 잃습니다. \"The badge of an officer who discovered that some things aren't worth investigating.\" While in Omnipresent Evil, passing within 4 metres of a Generator causes the Generator to explode, lose -5 % progress and begin regressing. If a Survivor is repairing the Generator, all Survivors repairing it will instead get a special Skill Check. If the Skill Check is failed, the Generator loses -10 % additional progress on top of the base Skill Check penalty."
  },
  {
   "id": "Missing_Corkscrew",

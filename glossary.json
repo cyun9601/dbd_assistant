@@ -28,6 +28,11 @@
   "Totem": "토템",
   "Hex": "저주",
   "Dull Totem": "무효 토템",
+  "Boon": "호재",
+  "Boon Totem": "호재 토템",
+  "Boon Perk": "호재 특전",
+  "Bless/Blessing (Totem)": "호재 부여",
+  "Blood Favour": "피의 가호",
   "Bloodpoints": "블러드포인트",
   "Injured": "부상",
   "Healthy": "건강",
@@ -38,6 +43,9 @@
   "Scratch Marks": "긁힌 자국",
   "charge": "충전",
   "meter/gauge": "게이지",
+  "Skill Check": "스킬체크",
+  "Great Skill Check": "스킬체크 대성공",
+  "Good Skill Check": "스킬체크 성공",
   "Endurance": "인내"
  },
  "status_effects": {
