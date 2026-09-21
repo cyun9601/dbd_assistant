@@ -625,8 +625,10 @@ function pendingBlockHtml(perk) {
     ? perk.pending.desc_html_en : (perk.pending.desc_html || perk.pending.desc_html_en);
   if (!pd) return "";
   const label = `🔜 ${perk.upcoming_patch || ""} 변경 예정 설명`.replace("  ", " ");
+  const source = perk.pending.source_url
+    ? `<br><br><a href="${esc(perk.pending.source_url)}" target="_blank" rel="noopener">공식 PTB 패치노트 ↗</a>` : "";
   return `<button class="en-toggle" type="button" data-open-label="${esc(label)} 닫기" data-shut-label="${esc(label)}">${esc(label)}</button>` +
-    `<div class="desc-en" hidden>${pd}</div>`;
+    `<div class="desc-en" hidden>${pd}${source}</div>`;
 }
 
 // 별칭(원깜 등)은 닉네임이라 언어 무관 — 어느 검색 범위/표시 언어에서도 매칭.
@@ -1801,7 +1803,10 @@ function renderPatchNotes() {
   }
   const cur = list.find((p) => p.id === patchView) || list[0];
   patchView = cur.id;
-  countEl.textContent = `📜 패치 ${list.length}개 · 최신 ${list[0].version || list[0].date}`;
+  const live = list.find((p) => !p.ptb && !/preview/i.test(p.title));
+  const ptb = list.find((p) => p.ptb && !list.some((q) => !q.ptb && !/preview/i.test(q.title) && q.version === p.version));
+  countEl.textContent = `📜 패치 ${list.length}개` +
+    (live ? ` · 정식 ${live.version}` : "") + (ptb ? ` · PTB ${ptb.version}` : "");
 
   const picks = list.map((p) => `<button class="pn-pick${p.id === cur.id ? " active" : ""}" data-patch="${esc(p.id)}">` +
     `${esc(p.version || p.title)}${p.ptb ? `<span class="pn-ptb">PTB</span>` : ""}` +
@@ -1827,7 +1832,7 @@ function renderPatchNotes() {
   results.innerHTML = `<div class="pn-bar">${picks}</div>
     <div class="pn-head"><span class="pn-title">${esc(cur.title)}</span>
       <span class="pn-date">${esc(cur.date)}${cur.ptb ? " · 테스트 서버(PTB)" : ""}</span></div>
-    <div class="pn-src">${esc(PATCHNOTES.source || "Steam 공식 공지")} · 원문(영어) 그대로 ·
+    <div class="pn-src">${esc(PATCHNOTES.source || "Steam 공식 공지")} · 수집 ${esc(PATCHNOTES.fetched || "")} · 원문(영어) 그대로 ·
       <a href="${esc(cur.url)}" target="_blank" rel="noopener">Steam 에서 보기 ↗</a></div>
     ${perkChips}${openCard}${body}`;
 }

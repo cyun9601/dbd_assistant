@@ -31,7 +31,7 @@ UA = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # 패치노트로 볼 글 — "10.1.0 | PTB Patch Notes", "10.0.1", "9.6.2 | Bugfix Patch" 등
-VERSION_RE = re.compile(r'(\d+\.\d+\.\d+)')
+VERSION_RE = re.compile(r'\b(\d+\.\d+\.\d+[a-z]?)\b', re.I)
 NOTE_TITLE_RE = re.compile(r'^\s*\d+\.\d+\.\d+|patch notes|bugfix patch', re.I)
 
 
@@ -125,7 +125,8 @@ def nkey(s):
 
 def perk_index():
     """퍽 이름(영문) + 라이선스 만료 개명 이름 → perk id"""
-    perks = json.load(open(os.path.join(HERE, "perks.json"), encoding='utf-8'))
+    with open(os.path.join(HERE, "perks.json"), encoding='utf-8') as f:
+        perks = json.load(f)
     idx = {}
     for p in perks:
         for nm in [p['name_en']] + (p.get('former_names_en') or []):
@@ -147,7 +148,7 @@ def perks_mentioned(body, idx):
     return found
 
 
-PERK_SECTION_RE = re.compile(r'perk\s+(?:updates?|changes?)', re.I)
+PERK_SECTION_RE = re.compile(r'perk\s+(?:updates?|changes?)|(?:killer|survivor)\s+perks?\s*$', re.I)
 
 
 def perks_changed(blocks, idx):
@@ -160,14 +161,15 @@ def perks_changed(blocks, idx):
     out, inside = [], False
     for b in blocks:
         if b['t'] in ('h2', 'h3'):
-            inside = bool(PERK_SECTION_RE.search(b['html']))
+            inside = bool(PERK_SECTION_RE.search(re.sub(r'<[^>]+>', '', b['html']).strip()))
             continue
         if not inside or b['t'] != 'li' or b.get('lvl', 0) != 0:
             continue
-        m = re.match(r'\s*<b>(.+?)</b>\s*$', b['html'])
+        # 이름 뒤에 (Rework), 설명, 중첩 <i> 등이 붙는 공지도 있다.
+        m = re.match(r'\s*<b>(.+?)</b>', b['html'])
         if not m:
             continue
-        pid = idx.get(nkey(re.sub(r'</?[bi]>|\(.*?\)', '', m.group(1)).rstrip(': ')))
+        pid = idx.get(nkey(re.sub(r'<[^>]+>|\(.*?\)', '', m.group(1)).rstrip(': ')))
         if pid and pid not in out:
             out.append(pid)
     return out
@@ -183,6 +185,12 @@ def main():
     events = data.get('events') or []
     idx = perk_index()
 
+    path = os.path.join(HERE, "patchnotes.json")
+    try:
+        with open(path, encoding='utf-8') as f:
+            previous = {p['id']: p for p in json.load(f).get('patches', [])}
+    except FileNotFoundError:
+        previous = {}
     patches = []
     for e in events:
         title = (e.get('event_name') or '').strip()
@@ -193,8 +201,9 @@ def main():
             continue
         gid = str(e['gid'])
         ver = VERSION_RE.search(title)
-        date = datetime.date.fromtimestamp(e['rtime32_start_time']).isoformat()
+        date = datetime.datetime.fromtimestamp(e['rtime32_start_time'], datetime.timezone.utc).date().isoformat()
         blocks = to_blocks(body)
+        changed = perks_changed(blocks, idx)
         patches.append({
             "id": gid,
             "version": ver.group(1) if ver else "",
@@ -202,15 +211,18 @@ def main():
             "date": date,
             "ptb": bool(re.search(r'\bPTB\b', title, re.I)),
             "url": NEWS_URL % gid,
-            "perk_ids": perks_mentioned(body, idx),
-            "perk_updates": perks_changed(blocks, idx),
+            "perk_ids": list(dict.fromkeys(perks_mentioned(body, idx) + changed)),
+            "perk_updates": changed,
             "blocks": blocks,
         })
         sys.stderr.write(f"  {date}  {title[:48]:50} blocks={len(blocks):4} "
                          f"perks={len(patches[-1]['perk_ids']):3} "
                          f"changed={len(patches[-1]['perk_updates'])}\n")
 
-    patches.sort(key=lambda p: (p['date'], p['version']), reverse=True)
+    if not patches:
+        raise RuntimeError('패치노트를 수집하지 못했습니다. 기존 파일을 유지합니다.')
+    previous.update({p['id']: p for p in patches})
+    patches = sorted(previous.values(), key=lambda p: (p['date'], p['version']), reverse=True)
     out = {
         "source": "Steam 공식 공지 (Dead by Daylight)",
         "source_url": f"{BASE}/news/app/{APPID}",
@@ -218,7 +230,6 @@ def main():
         "note": "본문은 공식 원문(영어) 그대로입니다 — Steam 에 한국어판 공지가 없습니다.",
         "patches": patches,
     }
-    path = os.path.join(HERE, "patchnotes.json")
     with open(path, "w", encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     size = os.path.getsize(path) / 1024

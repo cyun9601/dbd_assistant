@@ -1,0 +1,40 @@
+[
+ {
+  "dataset": "perks",
+  "id": "Celestial_Witness",
+  "field": "desc_html_en",
+  "reviewed": "2026-09-21",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/669500224005211596",
+  "expected_text_sha256": "43892061001b377ab6a772f63f3bd27154863a2e3c9459ce5f6072a55f11ba2f",
+  "corrected_text_sha256": "23c9d1513f13d3776aab59ec1a4f95450dfc5f1fa02cb1e756deb34e2a1dde7f",
+  "replace": [
+   [
+    "is ",
+    "is at least "
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "killers",
+  "id": "The_Knight",
+  "field": "power_html_en",
+  "reviewed": "2026-09-21",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/683011656593179537",
+  "expected_text_sha256": "acae70cdd8e11e8e77c43e08574c5898bad6241a03299e640cf225925b2456b0",
+  "corrected_text_sha256": "033af5f63a3740a47ccc2e1eaee0fced4ec7840df05894ff2ed54c914cb3b71e",
+  "replace": [],
+  "append_html": "<br><br><b>Guard Hunt — 10.1.1 update</b><br>• Dropping a Pallet during a Hunt causes the Guard to path around it. If the resulting path is longer than 48 metres, the Guard abandons the Hunt.<br>• Dropping a Pallet directly onto a Guard causes it to move through the Pallet."
+ },
+ {
+  "dataset": "killers",
+  "id": "The_Judgment",
+  "field": "power_html_en",
+  "reviewed": "2026-09-21",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/683012290458421393",
+  "expected_text_sha256": "4d31e95467d76aa8f16b4673d9745f3c7c4baade609654f14986b6d15ccc0112",
+  "corrected_text_sha256": "3ed39475dd27284443901e8823d5f68fee7ee1015a97fc0d4792a5b36e1518ba",
+  "replace": [],
+  "append_html": "<br><br><b>Exile rescue — 10.1.2 update</b><br>• Survivors rescued from Exile respawn at least 32 metres away from The Judgment and are immune to Divine Light for 1 second."
+ }
+]

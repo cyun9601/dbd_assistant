@@ -17,6 +17,8 @@ usage:
   python update_killers_from_wiki.py The_Trapper ...  # 특정 살인마만 (개발/검증용)
 """
 import re, json, os, sys, html as htmllib, urllib.parse
+from data_corrections import apply_corrections
+from translate_killers import rebuild_killer_blob, rebuild_addon_blob
 
 from update_en_from_wiki import (
     BASE, HERE, fetch, clean_html, to_text, save_icon_webp,
@@ -245,7 +247,8 @@ def carry(new, old, fields, defaults):
 
 # ───────────────────────── 메인 ─────────────────────────
 def main(argv):
-    only = {urllib.parse.unquote(a) for a in argv}   # 인코딩된 id(The_Onry%C5%8D)로도 지정 가능
+    no_icons = '--no-icons' in argv
+    only = {urllib.parse.unquote(a) for a in argv if a != '--no-icons'}
     sys.stderr.write("Fetching Killers list...\n")
     lst = killer_list()
     if only:
@@ -257,31 +260,37 @@ def main(argv):
 
     killers, addons = [], []
     n_icon = 0
+    failed = []
     for kid, name_en, portrait in lst:
         try:
             k, ax = parse_killer(kid, name_en, portrait)
         except Exception as e:  # noqa — 개별 실패는 건너뛰고 계속
             sys.stderr.write(f"  FAIL {kid}: {repr(e)[:80]}\n")
+            failed.append(kid)
+            continue
+
+        if not k['power_html_en'] or not ax:
+            failed.append(kid)
+            sys.stderr.write(f"  FAIL {kid}: 파워/애드온 파싱 결과가 비어 있습니다\n")
             continue
 
         # 초상화 · 파워 아이콘 (위키 원본 파일명은 임시 필드로 넘어옴 → pop 후 다운로드)
         k.pop("portrait_wiki", None)
         pw_wiki = k.pop("power_icon_wiki", None)
         k["portrait_file"] = f"icons/killer_portrait/{kid}.webp"
-        if dl_icon(portrait, k["portrait_file"]):
+        if (not no_icons or not os.path.exists(os.path.join(HERE, k['portrait_file']))) and dl_icon(portrait, k["portrait_file"]):
             n_icon += 1
         if pw_wiki:
             k["power_icon"] = f"icons/power/{kid}.webp"
-            if dl_icon(pw_wiki, k["power_icon"]):
+            if (not no_icons or not os.path.exists(os.path.join(HERE, k['power_icon']))) and dl_icon(pw_wiki, k["power_icon"]):
                 n_icon += 1
         else:
             k["power_icon"] = ""
 
         carry(k, prev_k.get(kid, {}), KILLER_MANUAL,
               {"aliases": [], "former_names": [], "former_names_en": []})
-        k["search_blob"] = " ".join(filter(None, [
-            k["name"], k["name_en"], k["power_name_en"],
-            k["overview_text_en"], k["power_text_en"]]))
+        apply_corrections(k, 'killers')
+        rebuild_killer_blob(k)
         killers.append(k)
 
         # 애드온
@@ -289,18 +298,20 @@ def main(argv):
             iw = a.pop("icon_wiki", None)
             if iw:
                 a["icon_file"] = f"icons/addon/{iw.rsplit('.', 1)[0]}.webp"
-                if dl_icon(iw, a["icon_file"]):
+                if (not no_icons or not os.path.exists(os.path.join(HERE, a['icon_file']))) and dl_icon(iw, a["icon_file"]):
                     n_icon += 1
             else:
                 a["icon_file"] = ""
             carry(a, prev_a.get(a["id"], {}), ADDON_MANUAL, {})
-            a["search_blob"] = " ".join(filter(None, [
-                a["name"], a["name_en"], a["desc_text_en"]]))
+            rebuild_addon_blob(a)
             addons.append(a)
 
         sys.stderr.write(f"  [{len(killers):2}] {name_en:22} "
                          f"power={k['power_name_en']!r:28} addons={len(ax)}\n")
 
+    # 일부 수집 실패를 정상적인 삭제로 오인하여 기존 도감을 지우지 않는다.
+    if failed:
+        raise RuntimeError(f"수집 실패로 데이터 저장을 중단했습니다: {', '.join(failed)}")
     # 저장 (perks.json 과 동일 포맷)
     _dump(os.path.join(HERE, "killers.json"), killers, only, prev_k, "id")
     _dump(os.path.join(HERE, "addons.json"), addons, only, prev_a, "id")
@@ -315,7 +326,7 @@ def _dump(path, records, only, prev, key):
         for r in records:
             merged[r[key]] = r
         records = list(merged.values())
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline='\n') as f:
         json.dump(records, f, ensure_ascii=False, indent=1)
     sys.stderr.write(f"Wrote {path} ({len(records)} records)\n")
 

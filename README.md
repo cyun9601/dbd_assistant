@@ -117,8 +117,17 @@
 
 ## 데이터 갱신 (새 퍽 추가 시)
 
+**현재 데이터 기준(2026-09-21): 정식 10.1.2a / 10.2.0 PTB.** PTB 변경 퍽 58개는 영어·한국어 예정 설명으로 따로 보관합니다. 정식 출시일은 미정이며, 현재 효과와 예정 효과를 섞지 않습니다. [반영 내용과 공식 출처](docs/data-update-2026-09-21.md)
+
+전체 데이터를 갱신할 때는 패치노트를 먼저 수집한 뒤 위키 데이터를 갱신합니다:
+
 ```bash
+python update_patchnotes_from_steam.py
 python update_en_from_wiki.py
+python update_killers_from_wiki.py --no-icons
+# 원문이 바뀐 현재/예정 한국어 설명을 glossary.json 기준으로 번역한 다음:
+python build_embeddings.py
+python -m unittest discover -s tests -v
 ```
 
 deadbydaylight.wiki.gg(공식 위키)에서 살인마·생존자 퍽의 **영어 설명문·아이콘**을 다시 받아
@@ -139,6 +148,7 @@ deadbydaylight.wiki.gg(공식 위키)에서 살인마·생존자 퍽의 **영어
 출시 전에는 카드에서 **`🔜 … 변경 예정 설명`** 버튼으로 바뀔 내용을 펼쳐 볼 수 있습니다.
 
 패치가 나간 뒤 스크립트를 다시 돌리면 `pending` 을 본문으로 **승격**하고(로그에 `PROMOTE`) 예정 관련 필드를 정리합니다.
+다음 PTB에서도 같은 퍽이 바뀌면 **이전 예정본을 먼저 승격한 뒤** 새 예정본을 저장합니다. 공식 PTB 노트에 전체 효과 설명이 있으면 위키보다 우선하며, 원문이나 대상 패치가 바뀌었을 때는 이전 한국어 예정 번역을 재사용하지 않습니다.
 영어는 위키에서 자동으로 받지만 **`pending.desc_html`(한글 예정본)은 손번역**입니다 — 비어 있으면 실행 로그가
 `한글 예정본 없음` 으로 알려주고, 앱은 그동안 라이브 설명을 그대로 보여줍니다.
 
@@ -190,6 +200,7 @@ Steam 공식 공지(스토어 뉴스와 같은 원문)에서 패치노트를 받
 
 ```bash
 python update_killers_from_wiki.py                 # 전체 살인마 수집
+python update_killers_from_wiki.py --no-icons      # 기존 아이콘은 유지, 누락된 아이콘만 다운로드
 python update_killers_from_wiki.py "The_Trapper"    # 특정 살인마만 (개발/검증용)
 ```
 
@@ -275,6 +286,7 @@ python -m PyInstaller --noconfirm --clean dbd.spec
 | `update_en_from_wiki.py` | 퍽 영어 설명·아이콘 갱신 (deadbydaylight.wiki.gg) |
 | `update_killers_from_wiki.py` | 살인마 개요·파워·애드온 갱신 (deadbydaylight.wiki.gg) → `killers.json`/`addons.json`/아이콘 |
 | `update_patchnotes_from_steam.py` | 패치노트 수집 (Steam 공식 공지) → `patchnotes.json` |
+| `data_corrections.json` / `data_corrections.py` | 공식 패치노트로 검토한 위키 누락 보완 · 원문 변경 시 재검토 요구 |
 | `ko_merge.py` | 살인마/애드온 한글 번역 청크 분할(split)·병합(apply) — 영어 원문을 나눠 번역 후 합침 |
 | `translate_killers.py` | (선택) 살인마/애드온 영어 → 한글 자동 번역 (OpenAI/Anthropic API) |
 | `build_data.py` | (레거시) 초기 퍽 부트스트랩 스크립트 |

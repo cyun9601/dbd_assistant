@@ -25,6 +25,7 @@ usage: python update_en_from_wiki.py [--no-icons]
 import re, json, os, sys, io, time, datetime, urllib.request, urllib.parse, html as htmllib
 from html.parser import HTMLParser
 from PIL import Image
+from data_corrections import apply_corrections
 
 BASE = "https://deadbydaylight.wiki.gg"
 UA = {"User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -101,20 +102,89 @@ def pending_perk_updates():
     놓친다. 파일이 없으면 빈 dict — 그 경우 배너 감지로만 동작한다.
     """
     try:
-        data = json.load(open(os.path.join(HERE, "patchnotes.json"), encoding='utf-8'))
+        with open(os.path.join(HERE, "patchnotes.json"), encoding='utf-8') as f:
+            data = json.load(f)
     except (FileNotFoundError, ValueError):
         sys.stderr.write("  (patchnotes.json 없음 — 미출시 퍽 변경은 위키 배너로만 감지)\n")
         return {}
+    released = {p['version'] for p in data.get('patches', [])
+                if not p.get('ptb') and 'preview' not in p.get('title', '').lower()
+                and p.get('date', '9999') <= TODAY}
     out = {}
     for pt in data.get('patches') or []:
         ver = pt.get('version')
-        if not ver:
+        if not ver or not pt.get('ptb') or ver in released:
             continue
         if not is_upcoming(patch_release_date(ver) or PATCH_DATES.get(ver)):
             continue                      # 이미 나온 패치
         for pid in pt.get('perk_updates') or []:
             out.setdefault(pid, ver)
     return out
+
+
+def promote_pending(p, released=(), today=None):
+    """지난 예정본을 먼저 승격한다. 다음 PTB가 같은 퍽을 바꿔도 섞이지 않는다."""
+    date = p.get('upcoming_date')
+    if not (p.get('upcoming_patch') in released or
+            (date and date <= (today or TODAY))):
+        return False
+    pending = p.pop('pending', None)
+    if pending:
+        for field in ('desc_html', 'desc_text', 'desc_html_en', 'desc_text_en'):
+            if pending.get(field):
+                p[field] = pending[field]
+        p['search_blob'] = f"{p['name']} {p['owner']} {p['desc_text']}"
+    for field in ('upcoming', 'upcoming_kind', 'upcoming_patch', 'upcoming_date'):
+        p.pop(field, None)
+    return bool(pending)
+
+
+def set_pending(p, html, patch, source_url=None):
+    """원문이나 대상 패치가 바뀌면 이전 한글 예정 번역을 재사용하지 않는다."""
+    previous = p.get('pending') or {}
+    if p.get('upcoming_patch') != patch or previous.get('desc_text_en') != to_text(html):
+        previous = {}
+    p['pending'] = {
+        'desc_html_en': html, 'desc_text_en': to_text(html),
+        'desc_html': previous.get('desc_html', ''),
+        'desc_text': previous.get('desc_text', ''),
+    }
+    if source_url:
+        p['pending']['source_url'] = source_url
+
+
+def official_pending_descriptions(notes, updates):
+    """PTB의 완전한 퍽 설명을 사용한다. 위키의 갱신/배너 누락도 보완한다."""
+    from update_patchnotes_from_steam import PERK_SECTION_RE, perk_index
+    idx = perk_index()
+    result = {}
+    for note in notes.get('patches', []):
+        if not note.get('ptb'):
+            continue
+        inside, pid, lines = False, None, []
+
+        def finish():
+            if pid and lines and updates.get(pid) == note['version']:
+                result.setdefault(pid, ('<br>'.join(lines), note['url']))
+
+        for block in note.get('blocks', []):
+            if block['t'] in ('h2', 'h3'):
+                finish()
+                pid, lines = None, []
+                inside = bool(PERK_SECTION_RE.search(to_text(block['html'])))
+            elif inside and block['t'] == 'li':
+                if block.get('lvl', 0) == 0:
+                    finish()
+                    label = re.sub(r'<[^>]+>|\(.*?\)', '', block['html'])
+                    pid, lines = idx.get(nkey(label)), []
+                elif pid:
+                    text = to_text(block['html'])
+                    if text.lower().startswith('dev note:'):
+                        continue
+                    text = re.sub(r'\s*\((?:was\b|new\b|previously\b|now\b).*?\)', '', text, flags=re.I)
+                    lines.append('• ' + htmllib.escape(text))
+        finish()
+    return result
 
 
 def fetch(url, retries=3):
@@ -272,7 +342,7 @@ def clean_html(raw):
 def to_text(html):
     t = re.sub(r'<br>', ' ', html)
     t = re.sub(r'<[^>]+>', '', t).replace('•', '')
-    return re.sub(r'\s+', ' ', t).strip()
+    return re.sub(r'\s+', ' ', htmllib.unescape(t)).strip()
 
 
 # ───────────────────────── 매칭 키 ─────────────────────────
@@ -332,11 +402,23 @@ def main():
 
     no_icons = '--no-icons' in sys.argv
     pending_updates = pending_perk_updates()
-    perks = json.load(open(os.path.join(HERE, "perks.json"), encoding='utf-8'))
+    try:
+        with open(os.path.join(HERE, 'patchnotes.json'), encoding='utf-8') as f:
+            notes = json.load(f)
+    except FileNotFoundError:
+        notes = {}
+    released = {p['version'] for p in notes.get('patches', [])
+                if not p.get('ptb') and 'preview' not in p.get('title', '').lower()
+                and p.get('date', '9999') <= TODAY}
+    official_pending = official_pending_descriptions(notes, pending_updates)
+    with open(os.path.join(HERE, "perks.json"), encoding='utf-8') as f:
+        perks = json.load(f)
     n_desc = n_icon = n_pending = 0
     icon_fail, unmatched, upcoming, promoted = [], [], [], []
     seen_rows = set()
     for p in perks:
+        if promote_pending(p, released):
+            promoted.append(p)
         r = match(p)
         if not r:
             unmatched.append(p)
@@ -355,11 +437,16 @@ def main():
         #   update = 이미 있는 퍽의 설명이 바뀔 예정(PTB 배너) → 앱에서 "업데이트 예정"
         # 날짜는 위키 Release Dates 표를 먼저 보고, 아직 TBA 면 PATCH_DATES 를 쓴다.
         owner_patch = UPCOMING_OWNERS.get(p.get('owner_en'))
+        if owner_patch in released:
+            owner_patch = None
         patch, kind = ((owner_patch, 'new') if owner_patch else
                        (pending_updates[p['id']], 'update') if p['id'] in pending_updates else
                        (ptb.group(1), 'update') if ptb else (None, None))
         date = (patch_release_date(patch) or PATCH_DATES.get(patch)) if patch else None
-        if patch and is_upcoming(date):
+        if patch and patch not in released and is_upcoming(date):
+            if kind == 'update':
+                pending_html, source = official_pending.get(p['id'], (h, None))
+                set_pending(p, pending_html, patch, source)
             p['upcoming'] = True
             p['upcoming_kind'] = kind
             p['upcoming_patch'] = patch
@@ -368,11 +455,6 @@ def main():
                 # 기존 퍽이 바뀌는 경우: 본문은 **라이브 설명**을 그대로 두고,
                 # 위키가 주는 예정 설명은 pending 에만 담는다. 앱이 출시일부터
                 # pending 을 본문으로 쓰고, 그전까지는 라이브를 보여준다.
-                pend = p.setdefault('pending', {})
-                pend['desc_html_en'] = h
-                pend['desc_text_en'] = to_text(h)
-                pend.setdefault('desc_html', '')   # 한글 예정 설명은 손번역
-                pend.setdefault('desc_text', '')
                 n_pending += 1
             else:
                 p['desc_html_en'] = h              # 신규 퍽은 라이브 설명이 따로 없다
@@ -396,6 +478,7 @@ def main():
         # 예전 방식(날짜 출처 표시)에서 남은 키 정리 — 이제 날짜는 PATCH_DATES 로 관리한다
         for k in ('upcoming_date_source', 'upcoming_date_estimated'):
             p.pop(k, None)
+        apply_corrections(p, 'perks')
         # 아이콘 갱신(기존 경로에 덮어쓰기)
         if not no_icons:
             try:
@@ -413,7 +496,7 @@ def main():
     known_twins = [r for r in new_rows if nkey(r['name']) in known_alt]
 
     # 저장 (라운드트립 동일 포맷 — 변경 라인만 diff)
-    with open(os.path.join(HERE, "perks.json"), "w", encoding='utf-8') as f:
+    with open(os.path.join(HERE, "perks.json"), "w", encoding='utf-8', newline='\n') as f:
         json.dump(perks, f, ensure_ascii=False, indent=1)
 
     sys.stderr.write(
