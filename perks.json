@@ -1696,11 +1696,12 @@
   "former_names": [],
   "former_names_en": [],
   "pending": {
-   "desc_html_en": "• You basic-vault Windows 15/20/25% faster.<br>• Your basic-attack recovery is 15/20/25% faster.<br>• Whenever you are blinded or Pallet-stunned, the duration is 25% longer.",
-   "desc_text_en": "You basic-vault Windows 15/20/25% faster. Your basic-attack recovery is 15/20/25% faster. Whenever you are blinded or Pallet-stunned, the duration is 25% longer.",
-   "desc_html": "창문을 기본 행동으로 넘어가는 속도가 <b><span class=\"Highlight1\">15</span>/<span class=\"Highlight2\">20</span>/<span class=\"Highlight3\">25</span></b>% 증가합니다.<br>기본 공격 후 회복 속도가 <b><span class=\"Highlight1\">15</span>/<span class=\"Highlight2\">20</span>/<span class=\"Highlight3\">25</span></b>% 증가합니다.<br>실명하거나 판자에 기절하면 그 지속 시간이 25% 증가합니다.",
-   "desc_text": "창문을 기본 행동으로 넘어가는 속도가 15/20/25% 증가합니다. 기본 공격 후 회복 속도가 15/20/25% 증가합니다. 실명하거나 판자에 기절하면 그 지속 시간이 25% 증가합니다.",
-   "source_url": "https://store.steampowered.com/news/app/381210/view/706656822950364293"
+   "desc_html_en": "• You basic-vault Windows 15/20/25% faster.<br>• Your missed and obstructed basic-attack recovery is 15/20/25% faster.<br>• Whenever you are blinded or Pallet-stunned, the duration is 25% longer.",
+   "desc_text_en": "You basic-vault Windows 15/20/25% faster. Your missed and obstructed basic-attack recovery is 15/20/25% faster. Whenever you are blinded or Pallet-stunned, the duration is 25% longer.",
+   "desc_html": "창문을 기본 행동으로 넘어가는 속도가 <b><span class=\"Highlight1\">15</span>/<span class=\"Highlight2\">20</span>/<span class=\"Highlight3\">25</span></b>% 증가합니다.<br>빗나가거나 막힌 기본 공격 후 회복 속도가 <b><span class=\"Highlight1\">15</span>/<span class=\"Highlight2\">20</span>/<span class=\"Highlight3\">25</span></b>% 증가합니다.<br>실명하거나 판자에 기절하면 그 지속 시간이 25% 증가합니다.",
+   "desc_text": "창문을 기본 행동으로 넘어가는 속도가 15/20/25% 증가합니다. 빗나가거나 막힌 기본 공격 후 회복 속도가 15/20/25% 증가합니다. 실명하거나 판자에 기절하면 그 지속 시간이 25% 증가합니다.",
+   "source_url": "https://store.steampowered.com/news/app/381210/view/706656822950364293",
+   "live_changes_url": "https://store.steampowered.com/news/app/381210/view/716791824502491130"
   },
   "upcoming": true,
   "upcoming_kind": "update",
@@ -4527,11 +4528,12 @@
   "former_names": [],
   "former_names_en": [],
   "pending": {
-   "desc_html_en": "• Once per trial, while you do not have 2 Hook States, are next to a hooked Survivor use Active Ability Button 2 to unhook them:<br>• They lose 1 Hook State.<br>• You gain 1 Hook State.<br>• You scream.<br>• You become Injured<br>• You become Broken for 160/140/120s.<br>• Shoulder the Burden is deactivated for all Survivors.",
-   "desc_text_en": "Once per trial, while you do not have 2 Hook States, are next to a hooked Survivor use Active Ability Button 2 to unhook them: They lose 1 Hook State. You gain 1 Hook State. You scream. You become Injured You become Broken for 160/140/120s. Shoulder the Burden is deactivated for all Survivors.",
-   "desc_html": "시련당 한 번, 자신의 갈고리 단계가 2단계에 이르지 않았을 때, 갈고리에 걸린 생존자 옆에서 특수 능력 버튼 2를 눌러 구조할 수 있습니다:<br>• 구조한 생존자의 갈고리 단계가 1 감소합니다.<br>• 자신의 갈고리 단계가 1 증가합니다.<br>• 비명을 지릅니다.<br>• 부상 상태가 됩니다.<br>• <b><span class=\"Highlight1\">160</span>/<span class=\"Highlight2\">140</span>/<span class=\"Highlight3\">120</span></b>초 동안 상처 상태가 됩니다.<br>• 모든 생존자의 부담 감당이 비활성화됩니다.",
-   "desc_text": "시련당 한 번, 자신의 갈고리 단계가 2단계에 이르지 않았을 때, 갈고리에 걸린 생존자 옆에서 특수 능력 버튼 2를 눌러 구조할 수 있습니다: 구조한 생존자의 갈고리 단계가 1 감소합니다. 자신의 갈고리 단계가 1 증가합니다. 비명을 지릅니다. 부상 상태가 됩니다. 160/140/120초 동안 상처 상태가 됩니다. 모든 생존자의 부담 감당이 비활성화됩니다.",
-   "source_url": "https://store.steampowered.com/news/app/381210/view/706656822950364293"
+   "desc_html_en": "• Once per trial, while you do not have 2 Hook States, are next to a hooked Survivor use Active Ability Button 2 to unhook them:<br>• They lose 1 Hook State.<br>• You gain 1 Hook State.<br>• You scream.<br>• You become Injured<br>• You become Broken for 160/140/120s.",
+   "desc_text_en": "Once per trial, while you do not have 2 Hook States, are next to a hooked Survivor use Active Ability Button 2 to unhook them: They lose 1 Hook State. You gain 1 Hook State. You scream. You become Injured You become Broken for 160/140/120s.",
+   "desc_html": "시련당 한 번, 자신의 갈고리 단계가 2단계에 이르지 않았을 때, 갈고리에 걸린 생존자 옆에서 특수 능력 버튼 2를 눌러 구조할 수 있습니다:<br>• 구조한 생존자의 갈고리 단계가 1 감소합니다.<br>• 자신의 갈고리 단계가 1 증가합니다.<br>• 비명을 지릅니다.<br>• 부상 상태가 됩니다.<br>• <b><span class=\"Highlight1\">160</span>/<span class=\"Highlight2\">140</span>/<span class=\"Highlight3\">120</span></b>초 동안 상처 상태가 됩니다.",
+   "desc_text": "시련당 한 번, 자신의 갈고리 단계가 2단계에 이르지 않았을 때, 갈고리에 걸린 생존자 옆에서 특수 능력 버튼 2를 눌러 구조할 수 있습니다: 구조한 생존자의 갈고리 단계가 1 감소합니다. 자신의 갈고리 단계가 1 증가합니다. 비명을 지릅니다. 부상 상태가 됩니다. 160/140/120초 동안 상처 상태가 됩니다.",
+   "source_url": "https://store.steampowered.com/news/app/381210/view/706656822950364293",
+   "live_changes_url": "https://store.steampowered.com/news/app/381210/view/716791824502491130"
   },
   "upcoming": true,
   "upcoming_kind": "update",
@@ -4747,18 +4749,7 @@
   "usage": 0.81,
   "aliases": [],
   "former_names": [],
-  "former_names_en": [],
-  "pending": {
-   "desc_html_en": "• Whenever you gain Deep Wound while you have Endurance passively mend over 40/35/30s.",
-   "desc_text_en": "Whenever you gain Deep Wound while you have Endurance passively mend over 40/35/30s.",
-   "desc_html": "인내 상태에서 깊은 상처를 얻으면, <b><span class=\"Highlight1\">40</span>/<span class=\"Highlight2\">35</span>/<span class=\"Highlight3\">30</span></b>초에 걸쳐 자동으로 붕대 감기가 진행됩니다.",
-   "desc_text": "인내 상태에서 깊은 상처를 얻으면, 40/35/30초에 걸쳐 자동으로 붕대 감기가 진행됩니다.",
-   "source_url": "https://store.steampowered.com/news/app/381210/view/706656822950364293"
-  },
-  "upcoming": true,
-  "upcoming_kind": "update",
-  "upcoming_patch": "10.2.0",
-  "upcoming_date": null
+  "former_names_en": []
  },
  {
   "id": "S40P01",
@@ -5692,11 +5683,12 @@
   "former_names": [],
   "former_names_en": [],
   "pending": {
-   "desc_html_en": "• Good basic Skill Check zones are 150/175/200% bigger.<br>• Great basic Skill Check zones are 30% bigger.",
-   "desc_text_en": "Good basic Skill Check zones are 150/175/200% bigger. Great basic Skill Check zones are 30% bigger.",
-   "desc_html": "기본 스킬체크의 성공 구역 크기가 <b><span class=\"Highlight1\">150</span>/<span class=\"Highlight2\">175</span>/<span class=\"Highlight3\">200</span></b>% 증가합니다.<br>기본 스킬체크의 대성공 구역 크기가 30% 증가합니다.",
-   "desc_text": "기본 스킬체크의 성공 구역 크기가 150/175/200% 증가합니다. 기본 스킬체크의 대성공 구역 크기가 30% 증가합니다.",
-   "source_url": "https://store.steampowered.com/news/app/381210/view/706656822950364293"
+   "desc_html_en": "• Good basic Skill Check zones are 150/175/200% bigger.",
+   "desc_text_en": "Good basic Skill Check zones are 150/175/200% bigger.",
+   "desc_html": "기본 스킬체크의 성공 구역 크기가 <b><span class=\"Highlight1\">150</span>/<span class=\"Highlight2\">175</span>/<span class=\"Highlight3\">200</span></b>% 증가합니다.",
+   "desc_text": "기본 스킬체크의 성공 구역 크기가 150/175/200% 증가합니다.",
+   "source_url": "https://store.steampowered.com/news/app/381210/view/706656822950364293",
+   "live_changes_url": "https://store.steampowered.com/news/app/381210/view/716791824502491130"
   },
   "upcoming": true,
   "upcoming_kind": "update",

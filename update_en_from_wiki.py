@@ -57,6 +57,30 @@ UPCOMING_OWNERS = {
     "The Judgment": "10.1.0",
     "Aurora Stardotter": "10.1.0",
 }
+# PTB 뒤 공식 개발자 업데이트("PTB to Live Changes")로 확정된 정식 변경.
+# 정식 패치노트가 나오기 전까지는 공식 PTB 노트에서 뽑은 예정본(pending)에 이 변경을
+# 덧씌운다 — 출시 때 승격되는 예정본이 PTB 그대로가 아니라 정식 효과가 되도록.
+#   drop    : 예정본에서 지울 줄 (영어 패턴, 한글 패턴)
+#   replace : 바꿀 문구 [(옛 영어, 새 영어), (옛 한글, 새 한글)]
+#   revert  : 정식에서 변경을 되돌림 → 예정본·예정 표시를 떼고 라이브 설명을 유지
+# 패치가 정식으로 나가 released 에 들어가면 자동으로 무시되므로 지우지 않아도 된다.
+PTB_LIVE_CHANGES = {
+    "10.2.0": {
+        "url": "https://store.steampowered.com/news/app/381210/view/716791824502491130",
+        "perks": {
+            "S45P03": {                      # Shoulder the Burden — 전체 비활성화 조건 삭제
+                "drop": [("deactivated for all Survivors", "부담 감당이 비활성화")]},
+            "This_Is_Not_Happening": {       # 대성공 구역 증가 삭제
+                "drop": [("Great basic Skill Check", "대성공 구역")]},
+            "K36P03": {                      # Dark Arrogance — 공격 회복은 빗나간/막힌 공격만
+                "replace": [("Your basic-attack recovery is",
+                             "Your missed and obstructed basic-attack recovery is"),
+                            ("기본 공격 후 회복 속도가",
+                             "빗나가거나 막힌 기본 공격 후 회복 속도가")]},
+            "BorrowedTime": {"revert": True},   # 정식에서는 현재 라이브 효과 유지
+        },
+    },
+}
 MONTHS = {m: i for i, m in enumerate(
     ['January', 'February', 'March', 'April', 'May', 'June', 'July',
      'August', 'September', 'October', 'November', 'December'], 1)}
@@ -151,6 +175,36 @@ def set_pending(p, html, patch, source_url=None):
     }
     if source_url:
         p['pending']['source_url'] = source_url
+
+
+def live_changes(patch, pid, released=()):
+    """정식 출시 전 개발자 업데이트로 확정된 변경 → (변경 dict, 출처 URL). 없으면 (None, None)."""
+    if not patch or patch in released:
+        return None, None
+    entry = PTB_LIVE_CHANGES.get(patch) or {}
+    change = (entry.get('perks') or {}).get(pid)
+    return (change, entry.get('url')) if change else (None, None)
+
+
+def edit_lines(html, change, lang):
+    """예정본(<br> 로 나뉜 줄 목록)에 drop/replace 를 적용한다. lang: 0=영어, 1=한글."""
+    drops = [d[lang] for d in change.get('drop', [])]
+    lines = [l for l in html.split('<br>') if not any(d in to_text(l) for d in drops)]
+    out = '<br>'.join(lines)
+    for old, new in change.get('replace', []):
+        if old in out and new not in out:      # 이미 반영된 예정본에는 다시 적용하지 않는다
+            out = out.replace(old, new)
+    return out
+
+
+def apply_live_changes(p, change, url):
+    """set_pending 뒤에 호출 — 한글 예정본에도 같은 변경을 적용하고 출처를 남긴다."""
+    pend = p.get('pending') or {}
+    if pend.get('desc_html'):
+        pend['desc_html'] = edit_lines(pend['desc_html'], change, 1)
+        pend['desc_text'] = to_text(pend['desc_html'])
+    pend['live_changes_url'] = url
+    p['pending'] = pend
 
 
 def official_pending_descriptions(notes, updates):
@@ -414,7 +468,7 @@ def main():
     with open(os.path.join(HERE, "perks.json"), encoding='utf-8') as f:
         perks = json.load(f)
     n_desc = n_icon = n_pending = 0
-    icon_fail, unmatched, upcoming, promoted = [], [], [], []
+    icon_fail, unmatched, upcoming, promoted, reverted = [], [], [], [], []
     seen_rows = set()
     for p in perks:
         if promote_pending(p, released):
@@ -443,10 +497,21 @@ def main():
                        (pending_updates[p['id']], 'update') if p['id'] in pending_updates else
                        (ptb.group(1), 'update') if ptb else (None, None))
         date = (patch_release_date(patch) or PATCH_DATES.get(patch)) if patch else None
-        if patch and patch not in released and is_upcoming(date):
+        change, change_url = live_changes(patch, p['id'], released)
+        if change and change.get('revert'):
+            # 개발자 업데이트에서 정식 되돌림 — 라이브 설명(영어 포함)을 그대로 두고
+            # 예정본·예정 표시만 뗀다. 위키는 아직 PTB 기준이라 영어도 갱신하지 않는다.
+            for k in ('pending', 'upcoming', 'upcoming_kind', 'upcoming_patch', 'upcoming_date'):
+                p.pop(k, None)
+            reverted.append((p, patch))
+        elif patch and patch not in released and is_upcoming(date):
             if kind == 'update':
                 pending_html, source = official_pending.get(p['id'], (h, None))
+                if change:
+                    pending_html = edit_lines(pending_html, change, 0)
                 set_pending(p, pending_html, patch, source)
+                if change:
+                    apply_live_changes(p, change, change_url)
             p['upcoming'] = True
             p['upcoming_kind'] = kind
             p['upcoming_patch'] = patch
@@ -507,6 +572,9 @@ def main():
     for p in promoted:
         sys.stderr.write(f"  PROMOTE {p['role']:8} {p['name_en']!r} — 패치가 나갔으니 "
                          f"예정 설명을 본문으로 올렸습니다\n")
+    for p, patch in reverted:
+        sys.stderr.write(f"  REVERT {p['role']:8} {p['name_en']!r} — {patch} 정식에서 PTB 변경을 "
+                         f"되돌림(개발자 업데이트) · 라이브 설명 유지\n")
     for p in unmatched:
         sys.stderr.write(f"  KEEP  {p['role']:8} {p['name_en']!r} (id={p['id']})\n")
     if upcoming:

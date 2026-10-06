@@ -2,7 +2,7 @@
  "model": "Xenova/multilingual-e5-small",
  "dtype": "q8",
  "dim": 384,
- "built": "2026-09-21",
+ "built": "2026-10-06",
  "ids": [
   "Save_The_Best_For_Last",
   "Unrelenting",
