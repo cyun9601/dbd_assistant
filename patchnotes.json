@@ -1,9 +1,2444 @@
 {
  "source": "Steam 공식 공지 (Dead by Daylight)",
  "source_url": "https://store.steampowered.com/news/app/381210",
- "fetched": "2026-10-06",
+ "fetched": "2026-10-07",
  "note": "본문은 공식 원문(영어) 그대로입니다 — Steam 에 한국어판 공지가 없습니다.",
  "patches": [
+  {
+   "id": "716791824502491334",
+   "version": "10.2.0",
+   "title": "10.2.0 | Mid-Chapter",
+   "date": "2026-10-06",
+   "ptb": false,
+   "url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+   "perk_ids": [
+    "Agitation",
+    "Bitter_Murmur",
+    "K36P03",
+    "DeadMansSwitch",
+    "Deerstalker",
+    "K28P01",
+    "Distressing",
+    "K37P03",
+    "FireUp",
+    "K31P01",
+    "K40P01",
+    "HexBloodFavor",
+    "K39P01",
+    "Hex_Thrill_Of_The_Hunt",
+    "Insidious",
+    "Iron_Grasp",
+    "InTheDark",
+    "K32P03",
+    "K41P01",
+    "Monstrous_Shrine",
+    "BoonDestroyer",
+    "Spies_From_The_Shadows",
+    "K29P01",
+    "K35P01",
+    "K35P03",
+    "Unrelenting",
+    "Whispers",
+    "S33P01",
+    "BloodPact",
+    "S40P02",
+    "Calm_Spirit",
+    "Dark_Sense",
+    "S46P01",
+    "S30P02",
+    "Five_Moves_Ahead",
+    "Flow_State",
+    "S35P02",
+    "Kindred",
+    "No_One_Left_Behind",
+    "Pharmacy",
+    "Plunderers_Instinct",
+    "Premonition",
+    "Resilience",
+    "S49P01",
+    "S25P03",
+    "S45P03",
+    "Small_Game",
+    "Solidarity",
+    "Spine_Chill",
+    "StakeOut",
+    "This_Is_Not_Happening",
+    "WakeUp",
+    "WellMakeIt",
+    "WindowsOfOpportunity",
+    "BorrowedTime",
+    "ObjectOfObsession",
+    "SoleSurvivor",
+    "Slippery_Meat"
+   ],
+   "perk_updates": [
+    "Agitation",
+    "Bitter_Murmur",
+    "K36P03",
+    "DeadMansSwitch",
+    "Deerstalker",
+    "K28P01",
+    "Distressing",
+    "K37P03",
+    "FireUp",
+    "K31P01",
+    "K40P01",
+    "HexBloodFavor",
+    "K39P01",
+    "Hex_Thrill_Of_The_Hunt",
+    "Insidious",
+    "Iron_Grasp",
+    "InTheDark",
+    "K32P03",
+    "K41P01",
+    "Monstrous_Shrine",
+    "BoonDestroyer",
+    "Spies_From_The_Shadows",
+    "K29P01",
+    "K35P01",
+    "K35P03",
+    "Unrelenting",
+    "Whispers",
+    "S33P01",
+    "BloodPact",
+    "S40P02",
+    "ObjectOfObsession",
+    "Calm_Spirit",
+    "Dark_Sense",
+    "S46P01",
+    "SoleSurvivor",
+    "S30P02",
+    "Five_Moves_Ahead",
+    "Flow_State",
+    "S35P02",
+    "Kindred",
+    "No_One_Left_Behind",
+    "Pharmacy",
+    "Plunderers_Instinct",
+    "Premonition",
+    "Resilience",
+    "S49P01",
+    "S25P03",
+    "S45P03",
+    "Slippery_Meat",
+    "Small_Game",
+    "Solidarity",
+    "Spine_Chill",
+    "StakeOut",
+    "This_Is_Not_Happening",
+    "WakeUp",
+    "WellMakeIt",
+    "WindowsOfOpportunity",
+    "BorrowedTime"
+   ],
+   "blocks": [
+    {
+     "t": "h2",
+     "html": "<b>Features</b>"
+    },
+    {
+     "t": "h3",
+     "html": "<b>Survivor Intent System</b>"
+    },
+    {
+     "t": "li",
+     "html": "Survivors can send and receive text messages during a match",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "By pressing and holding the scroll-button when using a Mouse, or the right d-pad input on controllers, players can open the messages wheel",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "8 messages are available for players to select and send",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Hovering the message, and releasing scroll-button/right, will send the message",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Inputs are customizable",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Sent messages are shown to all Survivors, next to their information on the left side of the screen",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Messages are predefined",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Players can customize on Settings their messages selection",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "On Match Details, Players can mute and unmute any other player during a match",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Muting is not communicated to the muted player",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "On Settings, players can deactivate the system, if they want to opt out",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "On Match Details, Players that have deactivated the system are marked with a \"no\" icon to surface that they have opted out",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "For reducing spamming, a 1s cooldown is applied when players send messages too quickly",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "If a player keeps spamming, their cooldown will increase up to 5 seconds",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Waiting before sending new messages will reset the cooldown to its shortest duration",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "The \"Gameplay\" section has been added to Settings",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "The options for the system are on the Gameplay Tab, under \"Messages\"",
+     "lvl": 2
+    },
+    {
+     "t": "h3",
+     "html": "<b>Abandon, Surrender, End Trial</b>"
+    },
+    {
+     "t": "li",
+     "html": "<b>Abandon Option</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Survivor Condition - When all other Survivors are bots, the remaining human Survivor gains the option to <b>Abandon</b>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Survivor is considered <b>Abandoned</b>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Killer Condition - When all remaining Survivors are bots, and at least 1 is not in the Dying State, the Killer gains the option to <b>Abandon </b>(new condition)",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Killer is considered <b>Abandoned</b>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Survivor outcome depends on what state they were in when the Killer Abandoned",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Surrender Option</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Survivor Condition - When all the Survivors are in the Dying State simultaneously, Survivors gain the option to <b>Surrender </b>(previously <b>Abandon</b>)",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Survivors are considered <b>Surrendered</b>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>End Trial Option</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Killer Condition - When all remaining Survivors are bots, and in the Dying State, the Killer gains the option to <b>End Trial</b> (new condition)",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Survivor outcome depends on what state they were in when the Killer Ends Trial",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note:</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "<i>We removed two existing conditions that could promote negative gameplay behaviours or cause players to leave prematurely. The conditions that were removed are:</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Survivor Condition - If a Survivor repeatedly recovers from being downed</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Killer Condition - If no Generator has been completed or worked on for a prolonged window</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>We added and adjusted existing conditions to ensure the feature's intentions are being met. The intention behind every option type is as follows:</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Abandon: Gives a Survivor/Killer the opportunity to leave a Trial if conditions do not promote fair or engaging gameplay (i.e. too many bots). This counts as an MMR draw.</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Surrender: Gives a Survivor the opportunity to leave a Trial if the outcome is inevitable and unfavourable. This counts as an MMR loss.</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>End Trial: Gives a Killer the opportunity to prematurely end a Trial if the outcome is inevitable and favourable. All remaining bot Survivors are Sacrificed, and the MMR outcome depends on the total match results.</i>",
+     "lvl": 2
+    },
+    {
+     "t": "h2",
+     "html": "<b>Content</b>"
+    },
+    {
+     "t": "p",
+     "html": "<i>Dev Note: With this release, we are doing a pass on general perks - the perks new players gain access to when they begin their journey. We want to update them because a lot of them haven't been updated in a long time. Dead by Daylight has changed a lot over the years, so it felt right to adjust these and give them more utility or strength. Between making perk tiers closer in terms of strength, simplification or other improvements, there's something for everyone. Additionally, having released the Diminishing Returns system a few updates ago, we've looked at perks we felt could use some adjustments to account for this system being in the game.</i>"
+    },
+    {
+     "t": "h3",
+     "html": "<b>Killer Perk Updates</b>"
+    },
+    {
+     "t": "li",
+     "html": "<b>Agitation</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While carrying a Survivor:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You gain <b>14/16</b>/18% Haste. <i>(was 6/12/18%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Your Terror Radius is 12m larger.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Bitter Murmur</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Generator is completed, you see the Auras of Survivors within <b>20</b>m of it for <b>10</b>s. <i>(was 16m and 5s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When all Generators are completed, you see the Auras of all Survivors for <b>16/18/20</b>s. <i>(was 5/7/10s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Dark Arrogance</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "You basic-vault Windows 15/20/25% faster.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Your missed basic-attack cooldown is <b>15/20/25%</b> shorter. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you are blinded or Pallet-stunned, the duration is <b>25</b>%<b> </b>longer. <i>(was 15%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Dead Man's Switch</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "When you hook a Survivor, the first time a Survivor stops repairing a Generator for more than<b> 2</b>s, it is blocked for <b>30/35/40</b>s. Cooldown: <b>30/35/40</b>s. <i>(was when a Survivor instantly stopped repairing a Generator, and 25/30/35s block duration and 50s cooldown)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Adding a brief delay before the block can occur will encourage the Killer to pressure the generator they want to defend, which we suspect will lead to more interactivity between both sides.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Deerstalker</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Every 40/35/30s, the Survivor with the least time in chase sees your Aura for <b>4</b>s. <i>(was 3s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "While a Survivor sees your Aura, you see their Aura.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Dissolution</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "3s after a Survivor takes damage from a basic-attack, for <b>13/14/15</b>s, the next time a Survivor fast-vaults a Pallet while within your Terror Radius, it is destroyed. <i>(was any damage and 12/16/20s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Some Killers benefited from this perk a lot more than others. To lower that gap, we're bringing back the basic-attack trigger condition.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Distressing</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Survivors within your Terror Radius repair<b> 6/7/8</b>% slower. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Your Terror Radius is <b>30</b>% larger. <i>(was 20/23/30%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Dominance</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "The first time each Totem is being blessed or cleansed by a Survivor: <i>(was Totems and Chests)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "It is blocked for<b> 25</b>s. <i>(was 8/12/16s)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "That Survivor screams. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see their Aura for <b>3/4/5</b>s. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Fire Up</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Generator is completed, earn 1 Token, up to 5.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "For each Token:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You basic-break Pallets and Breakable Walls <b>6/7/8</b>% faster. <i>(was 4/5/6%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You damage Generators <b>6/7/8</b>% faster. <i>(was 4/5/6%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You pick-up and drop Survivors <b>6/7/8</b>% faster. <i>(was 4/5/6%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You basic-vault Windows <b>6/7/8</b>% faster. <i>(was 4/5/6%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Game Afoot</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While chasing the Obsession, whenever you basic-break a Pallet or Breakable Wall, or damage a Generator, you gain <b>10</b>% Haste for 8/9/10s. <i>(was 7%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you damage the Survivor with the most chase time with a basic-attack, they become the Obsession.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Help Wanted</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you damage a Generator, it is compromised.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When that Generator is completed by Survivors:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Your successful basic-attack cooldowns are 25% shorter for <b>70/80/90</b>s<b> </b><i>(was 40/50/60s)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Generators not being repaired regress at<b> 150</b>%<b> </b>speed for<b> 70/80/90</b>s<b> </b><i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Other Generators lose compromised. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Up to <b>3</b> Generators can be compromised at a time.<b> </b><i>(was 1 Generator)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Hex: Blood Favor</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "When the trial starts, a Dull Totem ignites.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever a healthy Survivor becomes injured by your basic-attack, Upright Pallets within <b>32</b>m of them are blocked for <b>13/14</b>/15s. <i>(was any damage and 24/28/32m and 15s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Some Killers benefited from this perk a lot more than others. To lower that gap, we're bringing back the basic-attack trigger condition.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Hex: Nothing but Misery</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "After you damage Survivors with a basic-attack <b>4</b> times, a Dull Totem ignites. <i>(was 8 times)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you damage a Survivor with a basic-attack:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "They gain 5% Hindered for 10/12.5/15s.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "They vault <b>10</b>% slower for <b>10/12.5/15</b>s <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Hex: Thrill of the Hunt </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "The first time you hook a Survivor, a Dull Totem ignites.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When you hook a Survivor, block all Hex Totems for <b>4/5/6</b>s for each lit Hex Totem.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Thrill of the Hunt has been excelling at totem defense, especially on certain Killers. This update aims at requiring a little more input from the Killer to benefit from the totem defense powerhouse.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Insidious</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "After being idle for <b>2</b>s, you gain Undetectable. <i>(was 3/2/1s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you act, this ends after <b>6/7/8</b>s. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Iron Grasp</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While carrying a Survivor:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Their wiggle is 75% weaker.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "They wiggle <b>10/11</b>/12% slower. <i>(was 4/8/12%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Knock Out</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Survivor drops a Pallet, for the next<b> </b>6s, if they move <b>10</b>m away from it, they gain <b>20</b>% Hindered for<b> 2/3/4s</b>. <i>(was 6m and 5%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "This ends early if the Pallet is broken. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Machine Learning</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you damage a Generator, it is compromised.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When any compromised Generator is completed by Survivors:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You gain 8% Haste for 40/50/60s",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You gain Undetectable for 40/50/60s",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Other Generators lose compromised. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Up to <b>3</b> Generators can be compromised at a time.<b> </b><i>(was 1 Generator)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Ravenous</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "The first time you hook each Survivor, you earn<b> </b>1 Token. For each token:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Gain <b>4</b>% Haste while carrying Survivors. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Hook Survivors <b>4</b>% faster. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "When you have 4 Tokens, all Survivors:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Scream.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Gain Exposed for <b>80/85/90</b>s. <i>(was 40/50/60s)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Scourge Hook: Monstrous Shrine</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "When the trial starts:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "4 random hooks become Scourge Hooks.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "The Basement Hooks become Scourge Hooks.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "While you are at least 24m away from a Survivor on a Scourge Hook, Generators not being repaired regress at <b>150/175/200</b>% speed. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Shattered Hope </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you snuff a Boon Totem, it is destroyed.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Totem is blessed, cleansed or destroyed: <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Dull Totems are blocked for <b>16/18/20</b>s. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Hex Totems are blocked for <b>16/18/20</b>s. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Auras of Boon Totems for <b>16/18/20</b>s. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Spies from the Shadows</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Survivor scares a Crow within <b>36/38/40</b>m<b> </b>of you, you are alerted. Cooldown <b>3</b>s. <i>(was 20/28/36m and 5s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Superior Anatomy</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Survivor medium or fast-vaults within 12m of you, the next time you basic-vault a Window, you basic-vault Windows 30/35/40% faster for<b> 10</b>s<b>. </b>Cooldown:<b> 20</b>s. <i>(was basic-vault once faster and 25s cooldown)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Unbound</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Survivor takes damage, for the next <b>26/28/30</b>s, whenever you basic-vault a window, you gain <b>5</b>% Haste for<b> 25</b>s. <i>(was 24/27/30s and 7% Haste for 10s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Undone </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you hook a Survivor, you earn <b>1</b> tokens, up to <b>3</b>.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you damage a Generator, spend all tokens. For each token spent:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "The Generator loses<b> 8/9/10</b>% progress.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "The Generator is blocked for <b>8/9/10</b>s.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Unrelenting</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Your missed basic-attack cooldown is <b>30/35/40</b>% shorter. <i>(was 20/25/30%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Your successful basic-attack cooldown is <b>10</b>% shorter. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Diminishing Returns allows us to return the long-since-removed successful basic-attack cooldown. Additionally for cases where you're smacking a lock off a locker or hitting a pallet instead of a player. This perk now also includes obstructed basic-attacks.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Whispers</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While within <b>28/26/24</b>m of a Survivor, you randomly hear whispers. <i>(was 48/40/32m)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "While outside of <b>28/26/24</b>m of a Survivor, you gain <b>5</b>% Haste. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "h3",
+     "html": "<b>Survivor Perk Updates</b>"
+    },
+    {
+     "t": "li",
+     "html": "<b>Better Than New</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you finish healing another Survivor, until they take damage:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "They bless and cleanse <b>40/45/50</b>% faster. <i>(was 12/14/16%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "They heal <b>40/45/50</b>% faster. <i>(was 12/14/16%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "They unlock Chests <b>40/45/50</b>%<b> </b> faster. <i>(was 12/14/16%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Blood Pact</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While you are not the Obsession:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "While you or the Obsession is injured, you see each other's Auras.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Whenever you finish healing the Obsession or they finish healing you, while within 16m of each other, you both gain 5/6/7% Haste.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "While you are the Obsession if you are hooked another Survivor becomes the Obsession. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When the trial starts, you are less likely to be the Obsession.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Boon: Illumination</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While next to a Totem, use Active Ability Button to bless it, creating a unique Boon Totem that combines all your Boons.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Survivors within the Boon's range:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "See the Auras of Chests.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "See the Auras of Generators.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "While you have a Boon Totem, you bless <b>150/175/200</b>% faster. <i>(was bless and cleanse 6/8/10%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Bound by Obsession \\</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While you are the Obsession, every 30s, the Killer sees your Aura for <b>4</b>s. <i>(was 3s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "While the Killer sees your Aura:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You see their Aura.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You bless and cleanse Totems <b>8/9/10</b>% faster. <i>(was only cleanse and 2/4/6%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You heal <b>8/9/10</b>% faster. <i>(was 2/4/6%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You repair <b>8/9/10</b>% faster. <i>(was 2/4/6%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "When the trial starts, you are more likely to be the Obsession",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Calm Spirit</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "You do not scare Crows or scream.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You bless and cleanse Totems, and unlock Chests silently and<b> 8/9/10</b>% faster. <i>(was 40/35/30% slower)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Dark Sense</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Generator is completed, when the Killer gets within<b> 20m</b> of you, for <b>13/14</b>/<b>15</b>s: <i>(was 24m and 5/7/10s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You see the Aura of Pallets and Windows within <b>32</b>m<b> </b><i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Auras of other Survivors. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Killer's Aura.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Being a generic perk, we saw an opportunity to update it to provide auras that help learn map layouts and pallet spawn points.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Do No Harm</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While healing another Survivor for each Hook State they have:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You heal <b>30/35/40</b>% faster. <i>(was 30/40/50%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Great basic Skill Check, grant<b> 3</b>%<b> </b>more progress. <i>(was separate from the Hook State)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Increase the odds of triggering a Skill Check by<b> 5</b>%. <i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Down to the Last \\</b> <i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you are hooked or complete a generator, you earn <b>1 </b>Token, up to <b>6</b>.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "For each Token, other Survivors open Exit Gates <b>10</b>% faster.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When you are the last Survivor, if you have at least <b>3</b> Tokens:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You can unlock the Hatch.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "For each Token, the Killer cannot see your Aura for <b>6/8/10</b>s.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Empathic Connection</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "You heal other Survivors <b>30/35/40</b>% faster. <i>(was 25/30/35%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Injured Survivors see your Aura.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Five Moves Ahead</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While you are in the Killer's Terror radius or chased by the Killer:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You see the Auras of the 5 closest Pallets. <i>(was Pallets and Windows)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "After you drop a Pallet, you start moving 50% earlier.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Whenever you drop a Pallet, cooldown: 40/35/30s.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Following the change to Windows of Opportunity below, we want to make Five Moves Ahead specialize in Pallets.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Flow State</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a generator is completed, earn 1 token, up to 5.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "For each token:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You bless and cleanse Totems <b>13/14/15</b>% faster. <i>(was 8/9/10%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You heal <b>13/14/15</b>% faster. <i>(was 8/9/10%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You unhook Survivors <b>13/14/15</b>% faster. <i>(was 8/9/10%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Friendly Competition</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you finish repairing a Generator with at least 1 other Survivor, Survivors who finished repairing it repair <b>10</b>% faster for <b>80/85/90</b>s<b>.</b> <i>(was 5% for 100/110/120s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Kindred</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While you are hooked, all Survivors see each others' Auras. While the Killer is within <b>14/15</b>/16m, all Survivors sees the Killer's Aura. <i>(was 8/12/16m)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "While another Survivor is hooked, you see the Auras of other Survivors. While the Killer is within <b>14/15</b>/16m of the hooked Survivor, you see the Killer's Aura. <i>(was 8/12/16m)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>No One Left Behind</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "When all Generators are completed:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You heal <b>80/90</b>/100% faster. <i>(was 50/75/100%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You unhook other Survivors<b> 80/90</b>/100% faster. <i>(was 50/75/100%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Whenever you unhook a Survivor, they gain 10% more Haste.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Auras of other Survivors.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Pharmacy</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you unlock a Chest, it will contain a rare Med-Kit.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You unlock and rummage Chests 75/100/125% faster. <i>(was only unlock)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You can rummage each Chest <b>1</b> time. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "The range at which the Killer hears you unlocking Chests is 12m shorter.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Plunderer's Instinct</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "You see the aura of Chests and Items. <i>(was only within 32/48/64m)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You unlock chests <b>150%/175%/200</b>% faster. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you unlock a Chest you are<b> </b>50% more likely to find an item of higher rarity.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Premonition </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While not chased by the Killer, whenever you look in the Killer’s direction within <b>32</b>m<b>: </b><i>(was 36m and within 45 degrees)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You are notified.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Killer's Aura for <b>3</b>s<b>. </b><i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Cooldown: <b>55/50/45</b>s. <i>(was 60/45/30s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Resilience</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While injured:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You bless and cleanse Totems <b>7/8</b>/9% faster.<i> (was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You heal <b>7/8</b>/9% faster. <i>(was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You open Exit Gates <b>7/8</b>/9% faster. <i>(was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You repair <b>7/8</b>/9% faster. <i>(was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You sabotage Hooks <b>7/8</b>/9% faster.<i> (was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You unhook Survivors <b>7/8</b>/9% fester. <i>(was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You unlock chests <b>7/8</b>/9% faster. <i>(was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You vault <b>7/8</b>/9% faster. <i>(was 3/6/9%)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Road Life </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While injured and repairing a Generator: <i>(was injured and not broken)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you hit a basic great Skill Check, you earn 1<b> </b>Token.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Whenever you miss a basic Skill Check, you lose 1<b> </b>Token.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "When you have 6/5/4 Tokens, you can heal yourself. Spend all Tokens to heal yourself <b>10% </b>faster. <i>(now grants the ability to self-heal)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When you stop healing, this ends after <b>4</b>s. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Self-Preservation</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever another Survivor is hooked, you gain Elusive for <b>13/14/15</b>s.<i> (was 20/25/30s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Shoulder the Burden</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Once per trial, while you do not have 2 Hook States, are next to a hooked Survivor use Active Ability Button 2 to unhook them:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "They lose 1 Hook State.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You gain 1 Hook State.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You scream.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You become Injured <i>(was Exposed for 60/50/40s)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You become Broken for <b>160/140/120</b>s<b>. </b><i>(NEW)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Its current downsides are minor compared to its effect, especially in coordinated groups. We are increasing the downside and standardizing how it benefits killers at different strength levels.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Slippery Meat<i> </i></b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Other Survivors unhook you <b>90/95/100</b>% faster.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you are unhooked, you gain <b>5</b>% more Haste.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Small Game</b> <i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Within <b>10/11/12</b>m of a Totem, you see its Aura.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Solidarity</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While injured and healing another Survivor you also gain healing progress at <b>65/70/75</b>% speed. <i>(was without a Med-Kit and 50/60/70%)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Spine Chill </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever the Killer looks at you within <b>40</b>m:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You are notified.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You cannot scream for <b>12</b>s.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You vault <b>10</b>% faster for <b>12</b>s.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Cooldown: <b>40/35/30</b>s",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Stake Out</b> <i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "After hiding for <b>15</b>s within <b>24</b>m of the Killer, while in their Terror Radius, you earn <b>1</b> Token, up to <b>2/3/4</b>.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "While you have at least 1 Token, basic Skill Checks are replaced by special Skill Checks. Special Skill Checks grant <b>+4%</b> more progress.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you hit or miss a special Skill Check, spend <b>1</b> Token.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: We want to give players an extra challenge: more risk and reward from their skill checks. The Special Skill Check is more difficult and no longer activates other Skill Check perks.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>This is Not Happening </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Good basic Skill Check zones are <b>150/175/200</b>% bigger. <i>(NEW)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Wake Up!</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "When all Generators are completed:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You see the Auras of Exit Gate Switches.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "While opening an Exit Gate, other Survivors see your Aura.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You open Exit Gates <b>8/9/10</b>% faster, and an additional <b>20</b>% faster for each other Survivor alive. <i>(was 8/10/12.5% per any Survivor alive)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>We'll Make It</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you unhook a Survivor, for <b>70/80</b>/90s, you heal other Survivors 100% faster. <i>(was 30/60/90s)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Windows of Opportunity </b><i>(Rework)</i>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Within<b> 24</b>m of you see the Auras of Windows.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You vault Windows <b>10</b>% faster.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you vault a Window, cooldown: <b>40/35/30</b>s.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Windows of Opportunity's benefits have been added to Dark Sense. Learning maps and pallet spawns is core to improving at Dead by Daylight, so we want this to be available to anyone joining us in the Fog with a general perk!</i>",
+     "lvl": 1
+    },
+    {
+     "t": "h3",
+     "html": "<b>Killer Adjustments</b>"
+    },
+    {
+     "t": "li",
+     "html": "<b>The Mastermind</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Made adjustments to Virulent Bound to reduce collision with ground-level geometry.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Made adjustments to Virulent Bound logic to allow <i>some</i> momentum off of ledges (except when grabbing a Survivor).",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Made adjustments to Virulent Bound controls, allowing sidesteps between each Bound.",
+     "lvl": 1
+    },
+    {
+     "t": "h3",
+     "html": "<b>New Rift - Academia</b>"
+    },
+    {
+     "t": "li",
+     "html": "New, college-themed outfits for Vee, The Huntress, Claudette, Renato, Thalita & The Clown",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Design a Cosmetic 2025 winning outfits for Kate & The Deathslinger",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Many more rewards!",
+     "lvl": 0
+    },
+    {
+     "t": "h2",
+     "html": "<b>Bug Fixes</b>"
+    },
+    {
+     "t": "h3",
+     "html": "<b>Audio</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the basic-attack grunts of The Judgment remain the same after losing Zealous.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where there was missing SFX when losing Zealous as The Judgment.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the SFX of The Judgment losing Zealous was playing when the Killer sent a Survivor to Exile while in the Zealous state.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where certain Curios did not have their assigned interaction SFX when inspecting them in the Archives.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where two overlapping grunts were occurring when using the Power Struggle perk ability.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the incorrect voice line for The First was playing when activating World Breaker mode.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Unknown no longer had any audio effects on its voice in the lobby.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Bot improvements </b>"
+    },
+    {
+     "t": "li",
+     "html": "Tentative fix for Survivor Bots sometimes automatically revealing Ghostface from anywhere on the map.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Survivor Bots tried to force a Flashlight save for too long against the Lightborn perk.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Characters</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Houndmaster performed a basic attack immediately after using the Chase or Search command.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Judgment's Visceral add-on 'Mirror of the Creators' failed to make Divine Light bounce on tall obstructions.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Judgment's Divine Light was jittery and stuttered when used.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Judgment's Divine Light power got stuck on the ground when using the add-on 'Prayer Kneeler'.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Judgment was missing dust VFX when hitting an object with a basic attack.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Judgment triggered Killer Instinct on hiding Survivors when the near miss beta setting was active.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where using The Pig's Ambush power while pointing the camera downward caused the camera to clip into the ground and the Killer's arm to appear distorted.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Mastermind lacked downward acceleration when falling from a vault from a higher location with Virulent Bound.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Twins' Charlotte was unable to see the Aura of Exit Gates if the last Generator was completed while controlling Victor.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the Aura of the Exit Gates was missing while in The Knight's Summoning Phase.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Environment/Maps</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Treatment Theater where the door frames are not aligned.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in The Thompson House where The Nurse could get stuck in the combine harvester.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Trickster's Delusion where Lockers where overlapping in a clothing store.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Midwich Elementary School where Punishment of the Damned could not travel up a set of stairs.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Dead Dawg Saloon where the Punishment of the Damned could not travel up a set of stairs.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Fractured Cowshed where assets blocked the navigation of players.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Nostromo Wreckage where The Trapper could hide a trap under the ground.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Treatment Theater where a hook could get stuck in a vending machine.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in The Thompson House where The Nurse could get stuck after Blinking inside the farm truck.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Groaning Storehouse where the floor tiling appeared blurry.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue in Grim Pantry where The Nurse could get stuck under the floor of the small cabin.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Perks</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where you could still search Vigil by some removed Status Effects.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the Killer Stun score event and Exhausted status were applied when a Survivor failed to stun The Nurse with Head On.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Totems appeared blocked for one Survivor for the rest of the Trial when blocked by Thrill of the Hunt.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Celestial Witness did not always make the furthest away Survivor the Obsession when within 40m of the Killer.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Superior Anatomy's timer activated when performing a special-vault.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Stake Out's token stayed the same when stopping the interaction during a basic Skill Check.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Stake Out tokens were spent during a Special Skill Check.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Dark Arrogance was missing the 25% Blindness increased duration.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Judgment's Loud Noise Notification could be spammed by Survivors equipped with Made For This.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Platforms</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where rarely on Epic Game Store, the keyboard inputs woud fail to register until restarting the application.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Quests</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where progress was missing on repair Skill Checks on Generator Quests when using the Brand New Part add-on.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>UI</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the mending progress bar would have a flickering border when afflicted by Deep Wound.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed scaling and overlapping issues in the Survivor Intent menu when playing with UI scale values smaller than 100%.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Removed an incorrectly displayed lock icon on toggle settings with two options in the Settings menu.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where a soft-lock could occur when transitioning to an online lobby while the Curious menu was opened.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the matchmaking widget was present during the offerings screen.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Legion's BFF add-on would display an incorrect token count in the HUD.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where an incorrect hook stage was appearing on Survivors' statuses in the HUD while spectating.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the matchmaking button was interactable while the event entry screen was opened.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where held interactions with mouse inputs were prevented if cancelled while the Communication Wheel was opened.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the Hex: Thrill of the Hunt perk icon was put back in its regular unactivated state when the related Hex Totem was cleansed.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the duration radial timer was missing on the perk icon when Hex: Thrill of the Hunt activated.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Distressing's icon was missing from the Survivor's HUD while repairing.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where incorrect information was present in The Animatronic's Gameplay Showcase.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where several Killers were missing more detailed information in their Gameplay Showcase.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed readability issues with the matchmaking button, making adjustments to the color scheme of the background, size and the thickness on the outline of the lobby participants indicator.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Misc</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the Dungeon Crawler achievement was unable to be completed on the Forgotten Ruins map.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the game could crash during a match.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the Hack the Mainframe achievement was unable to be completed.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where the Outrun the Overlap achievement was unable to be completed.",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where Survivors dying in the Exile as The Judgment were unable to give progress for the 'Kill survivors by any means' Tome Challenge.",
+     "lvl": 0
+    },
+    {
+     "t": "h2",
+     "html": "<b>Changes from PTB</b>"
+    },
+    {
+     "t": "h3",
+     "html": "<b>Survivor Perk Updates</b>"
+    },
+    {
+     "t": "li",
+     "html": "<b>Borrowed Time</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Reverted.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: While the effect of passively mending from Deep Wound has potential, we felt it needed more time on the drawing board. We have reverted Borrowed Time to its previous iteration, which players thought was useful to help teammates get away after being Unhooked.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Dark Sense</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Generator is completed, when the Killer gets within<b> 20m</b> of you, for <b>13/14</b>/<b>15</b>s: <i>(was 24m and 8/8/10s on PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You see the Aura of Pallets and Windows within <b>32</b>m<b> </b><i>(was 24m on PTB)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Auras of other Survivors.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Killer's Aura.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: We want to provide a free, general perk to take on the role of teaching players map layouts and pallet spawns. We'll continue to keep an eye on Dark Sense to see if it's stepping up to its new role or if it needs additional changes to better support newer players.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Do No Harm</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While healing another Survivor for each Hook State they have:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You heal <b>30/35/40</b>% faster. <i>(was 40/45/50% on PTB)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Great basic Skill Check, grant<b> </b>3%<b> </b>more progress.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Increase the odds of triggering a Skill Check by<b> </b>5%.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<b>Empathic Connection</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "You heal other Survivors <b>30/35/40</b>% faster. <i>(was 40/45/50% on PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Injured Survivors see your Aura.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Some of the healing perk buffs on the PTB overlapped too much with other healing perks. We've made some adjustments with this in mind.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Premonition</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While not chased by the Killer, whenever you look in the Killer’s direction within <b>32</b>m<b>:</b>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You are notified.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You see the Killer's Aura for <b>3</b>s<b>.</b>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Cooldown: <b>55/50/45</b>s. <i>(was 70/65/60s on the PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Road Life</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "While injured and repairing a Generator:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you hit a basic great Skill Check, you earn 1<b> </b>Token.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Whenever you miss a basic Skill Check, you lose 1<b> </b>Token.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "When you have 6/5/4 Tokens, you can heal yourself. Spend all Tokens to heal yourself <b>10</b>%<b> </b>faster. <i>(was 100% on PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When you stop healing, this ends after 4s.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Shoulder the Burden</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Once per trial, while you do not have 2 Hook States, are next to a hooked Survivor use Active Ability Button 2 to unhook them:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "They lose 1 Hook State.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You gain 1 Hook State.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You scream.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You become Injured",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You become Broken for <b>160/140/120</b>s<b>.</b>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>(Deactivated for all other Survivors removed.)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: The feedback about the hard limitation per trial was heard, so we have removed it.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Stake Out</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "After hiding for <b>15</b>s within <b>24</b>m of the Killer, while in their Terror Radius, you earn <b>1</b> Token, up to <b>2/3/4</b>.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "While you have at least 1 Token, basic Skill Checks are replaced by special Skill Checks.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Special Skill Checks grant <b>+4%</b> more progress. <i>(Additional downside for missing a Skill Check removed.)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you hit or miss a special Skill Check, spend <b>1</b> Token.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>This is Not Happening</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Good basic Skill Check zones are <b>150/175/200</b>% bigger.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>(Great basic Skill Check zone increase removed.)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Due to it's synergy with Hyperfocus, we're removing the bonus to the Great zone from This is Not Happening.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "h3",
+     "html": "<b>Killer Perk Updates</b>"
+    },
+    {
+     "t": "li",
+     "html": "<b>Bitter Murmur</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Generator is completed, you see the Auras of Survivors within 20m of it for <b>10</b>s. <i>(was 8s on the PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When all Generators are completed, you see the Auras of all Survivors for <b>16/18/20</b>s. <i>(was 10/12/14s on the PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Dark Arrogance</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "You basic-vault Windows 15/20/25% faster.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Your missed basic-attack cooldown is 15/20/25% shorter. <i>(was all forms of basic-attack recovery on the PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Whenever you are blinded or Pallet-stunned, the duration is 25% longer.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Stacking successful basic-attack recovery led to very short chases on the PTB. Chases are some of the most interactive parts of trials, so we want to make sure they aren't cut too short.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Help Wanted</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you damage a Generator, it is compromised.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When that Generator is completed by Survivors:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "Your successful basic-attack cooldowns are 25% shorter for <b>70/80/90</b>s<b> </b><i>(was 100/110/120s on the PTB)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Generators not being repaired regress at<b> </b>150%<b> </b>speed for<b> 70/80/90</b>s<b> </b><i>(was 100/110/120s on the PTB)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Other Generators lose compromised.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Up to <b>3</b> Generators can be compromised at a time.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: A small adjustment to how strong Compromised Generator perks are. Given they are more easily triggerable, we felt their strength should be a little lower than on PTB.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Hex: Thrill of the Hunt</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "The first time you hook a Survivor, a Dull Totem ignites.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When you hook a Survivor, block all Hex Totems for <b>4/5/6</b>s for each lit Hex Totem. <i>(was 6/7/8s on the PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: A little snowball went a long way on the PTB. A slight reduction to the block duration should provide more windows for Hexes to be cleansed.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Knock Out</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever a Survivor drops a Pallet, for the next 6s, if they move 10m away from it, they gain 20% Hindered for <b>2/3/4</b>s. <i>(was 3/4/5s on the PTB)</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "This ends early if the Pallet is broken.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: Hindered will be removed as soon as the break action begins. We've lowered the overall strength as it could lead to uninteractive scenarios.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<b>Machine Learning</b>",
+     "lvl": 0
+    },
+    {
+     "t": "li",
+     "html": "Whenever you damage a Generator, it is compromised.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "When any compromised Generator is completed by Survivors:",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "You gain <b>8</b>% Haste for 40/50/60s <i>(was 10% on the PTB)</i>",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "You gain Undetectable for 40/50/60s",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Other Generators lose compromised.",
+     "lvl": 2
+    },
+    {
+     "t": "li",
+     "html": "Up to <b>3</b> Generators can be compromised at a time.",
+     "lvl": 1
+    },
+    {
+     "t": "li",
+     "html": "<i>Dev Note: As noted above, this is a small adjustment to how strong Compromised Generator perks are. Given they are more easily triggerable, we felt their strength should be a little lower than on PTB.</i>",
+     "lvl": 1
+    },
+    {
+     "t": "h3",
+     "html": "<b>Bot Improvements</b>"
+    },
+    {
+     "t": "li",
+     "html": "Bots now listen to Intent messages sent by players, and will change their goals accordingly.",
+     "lvl": 0
+    },
+    {
+     "t": "h3",
+     "html": "<b>Bug Fixes</b>"
+    },
+    {
+     "t": "li",
+     "html": "Fixed an issue where The Dark Lord could not perform basic attacks in both Vampire and Wolf form.",
+     "lvl": 0
+    },
+    {
+     "t": "h2",
+     "html": "<b>Known Issues</b>"
+    },
+    {
+     "t": "li",
+     "html": "When playing as The Slasher, the prompt \"Throw Spike\" will appear for the rest of the trial after throwing a Spike once.",
+     "lvl": 0
+    }
+   ]
+  },
   {
    "id": "670628659676053756",
    "version": "10.1.2a",

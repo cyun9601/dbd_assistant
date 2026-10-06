@@ -77,70 +77,81 @@ class UpdatedDatasetTests(unittest.TestCase):
     def setUpClass(cls):
         cls.perks = read('perks.json')
         cls.notes = read('patchnotes.json')
+        cls.by_id = {p['id']: p for p in cls.perks}
 
-    def test_all_57_ptb_perks_have_both_translations_and_live_descriptions(self):
-        # PTB 58개 중 Borrowed Time 은 10.2.0 PTB→정식 개발자 업데이트에서 되돌려졌다.
-        note = next(p for p in self.notes['patches'] if p['version'] == '10.2.0' and p['ptb'])
-        pending = [p for p in self.perks if p.get('upcoming_patch') == '10.2.0']
-        self.assertEqual(len(pending), 57)
-        self.assertEqual(sum(p['role'] == 'killer' for p in pending), 27)
-        self.assertEqual({p['id'] for p in pending} | {'BorrowedTime'}, set(note['perk_updates']))
-        self.assertTrue(set(note['perk_updates']) <= set(note['perk_ids']))
-        for p in pending:
-            self.assertIsNone(p['upcoming_date'])
-            self.assertEqual(p['upcoming_kind'], 'update')
+    def test_10_2_0_live_notes_are_collected_and_pending_descriptions_promoted(self):
+        live = next(p for p in self.notes['patches'] if p['version'] == '10.2.0' and not p['ptb'])
+        ptb = next(p for p in self.notes['patches'] if p['version'] == '10.2.0' and p['ptb'])
+        self.assertEqual((live['title'], live['date']), ('10.2.0 | Mid-Chapter', '2026-10-06'))
+        self.assertEqual(len(live['perk_updates']), 58)
+        self.assertEqual(set(live['perk_updates']), set(ptb['perk_updates']))
+        self.assertTrue(set(live['perk_updates']) <= set(live['perk_ids']))
+        # 정식 출시 → 예정 표시·예정본이 하나도 남지 않고, 변경 퍽 58개 모두 양쪽 설명을 가진다
+        for p in self.perks:
+            for k in ('upcoming', 'upcoming_kind', 'upcoming_patch', 'upcoming_date', 'pending'):
+                self.assertNotIn(k, p, (p['id'], k))
+        for pid in live['perk_updates']:
             for field in ('desc_html', 'desc_text', 'desc_html_en', 'desc_text_en'):
-                self.assertTrue(p[field], (p['id'], field))
-                self.assertTrue(p['pending'][field], (p['id'], field))
-            self.assertEqual(p['pending']['source_url'], note['url'])
+                self.assertTrue(self.by_id[pid][field], (pid, field))
 
-    def test_current_and_pending_effects_are_distinct(self):
-        by_id = {p['id']: p for p in self.perks}
-        thrill = by_id['Hex_Thrill_Of_The_Hunt']
-        self.assertIn('8/9/10', thrill['desc_text'])
-        self.assertIn('6/7/8', thrill['pending']['desc_text'])
-        windows = by_id['WindowsOfOpportunity']
-        self.assertIn('Pallets', windows['desc_text_en'])
-        self.assertNotIn('Pallets', windows['pending']['desc_text_en'])
-        self.assertIn('20/25/30', by_id['Vigil']['desc_text'])
-        self.assertNotIn('upcoming', by_id['Vigil'])
-        self.assertIn('24', by_id['K30P01']['desc_text'])
-        self.assertIn('40/35/30', by_id['RepressedAlliance']['desc_text'])
+    def test_promoted_descriptions_follow_the_live_notes_not_the_ptb(self):
+        # 정식 노트에서 PTB와 달라진 수치. 위키는 아직 PTB 기준이라 영어는 data_corrections.json 으로 보정한다.
+        expect = {
+            'Bitter_Murmur': (['10초', '16/18/20'], ['10 seconds', '16/18/20']),
+            'Dark_Sense': (['20미터', '13/14/15', '32미터 이내의 판자'], ['20 metres', '13/14/15', 'within 32 metres']),
+            'S46P01': (['30/35/40'], ['30/35/40', '60/70/80']),
+            'S30P02': (['30/35/40'], ['30/35/40']),
+            'K40P01': (['70/80/90'], ['70/80/90']),
+            'Hex_Thrill_Of_The_Hunt': (['4/5/6'], ['4/5/6', '20/25/30']),
+            'InTheDark': (['2/3/4'], ['2/3/4']),
+            'K32P03': (['8% 신속'], ['+8 %']),
+            'Premonition': (['55/50/45'], ['55/50/45']),
+            'S49P01': (['10% 증가'], ['+10 %']),
+        }
+        for pid, (ko, en) in expect.items():
+            for needle in ko:
+                self.assertIn(needle, self.by_id[pid]['desc_text'], (pid, needle))
+            for needle in en:
+                self.assertIn(needle, self.by_id[pid]['desc_text_en'], (pid, needle))
+        self.assertNotIn('100%', self.by_id['S49P01']['desc_text'])
+        self.assertNotIn('잃습니다', self.by_id['StakeOut']['desc_text'])
+        self.assertNotIn('on miss', self.by_id['StakeOut']['desc_text_en'])
+        # 이전 패치 데이터와 섞이지 않았는지
+        self.assertIn('20/25/30', self.by_id['Vigil']['desc_text'])
+        self.assertIn('24', self.by_id['K30P01']['desc_text'])
+        self.assertIn('40/35/30', self.by_id['RepressedAlliance']['desc_text'])
 
-    def test_ptb_to_live_developer_update_is_reflected_in_pending(self):
-        by_id = {p['id']: p for p in self.perks}
-        url = wiki.PTB_LIVE_CHANGES['10.2.0']['url']
-        # Borrowed Time: 정식에서 되돌림 → 예정본 없음, 라이브 설명 유지
-        borrowed = by_id['BorrowedTime']
-        self.assertNotIn('pending', borrowed)
-        self.assertNotIn('upcoming', borrowed)
+    def test_ptb_to_live_developer_update_is_reflected_in_live_descriptions(self):
+        by_id = self.by_id
+        borrowed = by_id['BorrowedTime']          # 정식에서 리워크 철회 → 라이브 설명 유지
         self.assertIn('Endurance', borrowed['desc_text_en'])
+        self.assertNotIn('Deep Wound', borrowed['desc_text_en'])
         self.assertIn('인내', borrowed['desc_text'])
-        # Shoulder the Burden: 전체 비활성화 조건 삭제
-        burden = by_id['S45P03']['pending']
+        burden = by_id['S45P03']                  # 전체 비활성화 조건 삭제
         self.assertNotIn('deactivated', burden['desc_text_en'])
         self.assertNotIn('비활성화', burden['desc_text'])
         self.assertIn('160/140/120', burden['desc_text'])
-        self.assertEqual(burden['live_changes_url'], url)
-        # This Is Not Happening: 대성공 구역 증가 삭제
-        tinh = by_id['This_Is_Not_Happening']['pending']
+        tinh = by_id['This_Is_Not_Happening']     # 대성공 구역 증가 삭제
         self.assertNotIn('Great', tinh['desc_text_en'])
         self.assertNotIn('대성공', tinh['desc_text'])
         self.assertIn('150/175/200', tinh['desc_text'])
-        # Dark Arrogance: 공격 회복은 빗나간/막힌 공격만
-        arrogance = by_id['K36P03']['pending']
+        arrogance = by_id['K36P03']               # 공격 회복은 빗나간/막힌 공격만
         self.assertIn('missed and obstructed basic-attack recovery', arrogance['desc_text_en'])
         self.assertIn('빗나가거나 막힌 기본 공격', arrogance['desc_text'])
-        # 변경이 반영된 퍽은 스크립트를 다시 돌려도 한글 예정본이 유지된다
-        for pid in ('S45P03', 'This_Is_Not_Happening', 'K36P03'):
-            p = copy.deepcopy(by_id[pid])
-            change, change_url = wiki.live_changes('10.2.0', pid)
-            before = p['pending']['desc_text']
-            wiki.set_pending(p, wiki.edit_lines(p['pending']['desc_html_en'], change, 0), '10.2.0',
-                             p['pending']['source_url'])
-            wiki.apply_live_changes(p, change, change_url)
-            self.assertEqual(p['pending']['desc_text'], before)
-            self.assertEqual(p['pending']['live_changes_url'], url)
+        windows = by_id['WindowsOfOpportunity']   # 위키 오타(40/35/30 seconds) → 24미터
+        self.assertIn('within 24 metres', windows['desc_text_en'])
+        self.assertNotIn('Pallets', windows['desc_text_en'])
+        self.assertIn('24미터', windows['desc_text'])
+
+    def test_live_corrections_cover_every_perk_that_differs_from_the_ptb(self):
+        live_url = next(p for p in self.notes['patches'] if p['version'] == '10.2.0' and not p['ptb'])['url']
+        corrections = [c for c in read('data_corrections.json') if c['dataset'] == 'perks' and c['reviewed'] == '2026-10-07']
+        self.assertEqual({c['id'] for c in corrections}, {
+            'Bitter_Murmur', 'Dark_Sense', 'S46P01', 'S30P02', 'K40P01', 'Hex_Thrill_Of_The_Hunt', 'InTheDark',
+            'K32P03', 'Premonition', 'S49P01', 'StakeOut', 'BorrowedTime',
+            'K36P03', 'S45P03', 'This_Is_Not_Happening', 'WindowsOfOpportunity'})
+        for c in corrections:
+            self.assertEqual((c['field'], c['source_url']), ('desc_html_en', live_url), c['id'])
 
     def test_live_changes_are_ignored_once_the_patch_is_released(self):
         self.assertEqual(wiki.live_changes('10.2.0', 'BorrowedTime', released={'10.2.0'}), (None, None))

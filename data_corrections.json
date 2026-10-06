@@ -36,5 +36,281 @@
   "corrected_text_sha256": "3ed39475dd27284443901e8823d5f68fee7ee1015a97fc0d4792a5b36e1518ba",
   "replace": [],
   "append_html": "<br><br><b>Exile rescue — 10.1.2 update</b><br>• Survivors rescued from Exile respawn at least 32 metres away from The Judgment and are immune to Divine Light for 1 second."
+ },
+ {
+  "dataset": "perks",
+  "id": "Bitter_Murmur",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "4fa3fad3b7425635e16b9c0b6c76bf7146ac5792566e17ff6d325034475f0b31",
+  "corrected_text_sha256": "381e9056c638366ac1b85b65fd558d1f88e659d1e43cd61ecb95ec2b228e74a4",
+  "replace": [
+   [
+    "<b><span class=\"Highlight1\">8 seconds</span></b>",
+    "<b><span class=\"Highlight1\">10 seconds</span></b>"
+   ],
+   [
+    "<b><span class=\"Highlight1\">10</span></b>/<b><span class=\"Highlight2\">12</span></b>/<b><span class=\"Highlight3\">14</span></b>",
+    "<b><span class=\"Highlight1\">16</span></b>/<b><span class=\"Highlight2\">18</span></b>/<b><span class=\"Highlight3\">20</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "Dark_Sense",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "6d57065541f71695e088890da15f02fe1460dd6a16c370ec42a0e078ecd0b3d2",
+  "corrected_text_sha256": "bcb781b6dbe717e66bf5385e09ffed162bb80d2540e62d9016d807f3044fba33",
+  "replace": [
+   [
+    "gets within <b><span class=\"Highlight1\">24 metres</span></b>",
+    "gets within <b><span class=\"Highlight1\">20 metres</span></b>"
+   ],
+   [
+    "<b><span class=\"Highlight1\">8</span></b>/<b><span class=\"Highlight2\">9</span></b>/<b><span class=\"Highlight3\">10</span></b>",
+    "<b><span class=\"Highlight1\">13</span></b>/<b><span class=\"Highlight2\">14</span></b>/<b><span class=\"Highlight3\">15</span></b>"
+   ],
+   [
+    "Windows within <b><span class=\"Highlight1\">24 metres</span></b>",
+    "Windows within <b><span class=\"Highlight1\">32 metres</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "S46P01",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "0be2d59cb4ae283798b6fcc8f89e8c0576f1230f14b39c56fd71751ab46dafde",
+  "corrected_text_sha256": "cc762b6cb6cc67b0c921b5ca9d423f02f88cf92f730e96c36aa440c87ce4b0cb",
+  "replace": [
+   [
+    "<b><span class=\"Highlight1\">30</span></b>/<b><span class=\"Highlight2\">40</span></b>/<b><span class=\"Highlight3\">50</span></b>",
+    "<b><span class=\"Highlight1\">30</span></b>/<b><span class=\"Highlight2\">35</span></b>/<b><span class=\"Highlight3\">40</span></b>"
+   ],
+   [
+    "<b><span class=\"Highlight1\">60</span></b>/<b><span class=\"Highlight2\">80</span></b>/<b><span class=\"Highlight3\">100</span></b>",
+    "<b><span class=\"Highlight1\">60</span></b>/<b><span class=\"Highlight2\">70</span></b>/<b><span class=\"Highlight3\">80</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "S30P02",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "ee6e8cb5185e1a0e698db0d2a1fc06322cff59e797a686647776a98c81dca6db",
+  "corrected_text_sha256": "daa7c2121e8174bc1e6a0e1d25528bca43245a79c2b1c7dcbe5fb23817e02c2e",
+  "replace": [
+   [
+    "<b><span class=\"Highlight1\">40</span></b>/<b><span class=\"Highlight2\">45</span></b>/<b><span class=\"Highlight3\">50</span></b>",
+    "<b><span class=\"Highlight1\">30</span></b>/<b><span class=\"Highlight2\">35</span></b>/<b><span class=\"Highlight3\">40</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "K40P01",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "10635690cff5061d61a1c825490b4dbbe802ffee5c4ebacb041d6b53bdaf2399",
+  "corrected_text_sha256": "3ed8322d6859cce9a737de8310a9a6c1e87ec5246e00dac49fc1aca55d22c8c6",
+  "replace": [
+   [
+    "<b><span class=\"Highlight1\">100</span></b>/<b><span class=\"Highlight2\">110</span></b>/<b><span class=\"Highlight3\">120</span></b>",
+    "<b><span class=\"Highlight1\">70</span></b>/<b><span class=\"Highlight2\">80</span></b>/<b><span class=\"Highlight3\">90</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "Hex_Thrill_Of_The_Hunt",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "1a2962b85f6e322af6273cabff58446c19581554bbeb537cd01ffec01e54a7c9",
+  "corrected_text_sha256": "b2e8120c568b660c98c205583de6e8e2dc3bc2c4d43e05dde22dc396c4a08891",
+  "replace": [
+   [
+    "<b><span class=\"Highlight1\">6</span></b>/<b><span class=\"Highlight2\">7</span></b>/<b><span class=\"Highlight3\">8</span></b>",
+    "<b><span class=\"Highlight1\">4</span></b>/<b><span class=\"Highlight2\">5</span></b>/<b><span class=\"Highlight3\">6</span></b>"
+   ],
+   [
+    "<b><span class=\"Highlight1\">30</span></b>/<b><span class=\"Highlight2\">35</span></b>/<b><span class=\"Highlight3\">40</span></b>",
+    "<b><span class=\"Highlight1\">20</span></b>/<b><span class=\"Highlight2\">25</span></b>/<b><span class=\"Highlight3\">30</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "InTheDark",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "674e82fa3760108826ef46cb5ff087423fea4fa8f716e431e0051ee137e574d9",
+  "corrected_text_sha256": "90ff26f1283cac312917581e86348ed21c3776e3ded4fe16be8459c09494a98b",
+  "replace": [
+   [
+    "<b><span class=\"Highlight1\">3</span></b>/<b><span class=\"Highlight2\">4</span></b>/<b><span class=\"Highlight3\">5</span></b>",
+    "<b><span class=\"Highlight1\">2</span></b>/<b><span class=\"Highlight2\">3</span></b>/<b><span class=\"Highlight3\">4</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "K32P03",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "7aa7606fbb7e89c21cb31ca4ead343bc5ddc54f5d2e8c96a7b6298b08b37e40d",
+  "corrected_text_sha256": "aa48edf47f8f5ebea19dcd53a42b75dbf6ef659d8db41f02c8ad4a1fa6dc9e48",
+  "replace": [
+   [
+    "<b><span class=\"Highlight3\">+10 %</span></b> <i><b>Haste</b></i>",
+    "<b><span class=\"Highlight3\">+8 %</span></b> <i><b>Haste</b></i>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "Premonition",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "539b2c3a3034a27df4fe097f7c76beceb52b6be6f6a49d59402a305011e9b54e",
+  "corrected_text_sha256": "f1c889679006572a0799769a1bc5408904d7c28cd3c21c536e0c66c51f2ea35c",
+  "replace": [
+   [
+    "<b><span class=\"Highlight1\">70</span></b>/<b><span class=\"Highlight2\">65</span></b>/<b><span class=\"Highlight3\">60</span></b>",
+    "<b><span class=\"Highlight1\">55</span></b>/<b><span class=\"Highlight2\">50</span></b>/<b><span class=\"Highlight3\">45</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "S49P01",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "699f175c2488acf0a38981f262a930382e9cbc149941aa91d6e6f6dfe8579533",
+  "corrected_text_sha256": "bda6213aaad90d5132c2f0d6624a5e68ce667325035f2e55b947d33a4f63848a",
+  "replace": [
+   [
+    "Self-Healing speed by <b><span class=\"Highlight3\">+100 %</span></b>",
+    "Self-Healing speed by <b><span class=\"Highlight3\">+10 %</span></b>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "StakeOut",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "3cb5d306a3de12e430e6f8f293738fd07409281900a7b8b6646318ca30cbc526",
+  "corrected_text_sha256": "14fcbfe1093360ad1ef3dbe919d867286255a1ec3a67b2bbfe2bb88e13139c1b",
+  "replace": [
+   [
+    "more progress on success and lose <b><span class=\"Highlight3\">-4 %</span></b> more progress on miss.",
+    "more progress on success."
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "BorrowedTime",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "d503b67ac4fe80efe198cf778a57dee502c31a86c66f8bae1b6ae8b240a1c8ac",
+  "corrected_text_sha256": "171cdc2027d4b13b66d58819bd676c80e2d2bb83070a46dc59e10717899d8fd2",
+  "replace": [
+   [
+    "Whenever you gain Deep Wound while you have Endurance <b>Status Effect</b>, <i>Borrowed Time</i> activates:<br>• Passively mend yourself over a period of <b><span class=\"Highlight1\">40</span></b>/<b><span class=\"Highlight2\">35</span></b>/<b><span class=\"Highlight3\">30</span></b> <b>seconds</b>.\n<i><span class=\"FlavorText\">\"Probably stings like hell, but it ain't gonna kill ya. Up and at 'em soldier. Time to move!\" — Bill Overbeck</span></i>",
+    "<i><span class=\"FlavorText\">\"You are fuelled with an unexpected energy when saving an ally from a hook.\"</span></i>\nWhenever you unhook another Survivor, they benefit from the following effects:<br><br>• <b>Extends</b> the duration of the <i><b>Endurance</b></i> <b>Status Effect</b> by <b><span class=\"Highlight1\">6</span></b>/<b><span class=\"Highlight2\">8</span></b>/<b><span class=\"Highlight3\">10</span></b> <b>seconds</b> to <b><span class=\"Highlight1\">21</span></b>/<b><span class=\"Highlight2\">23</span></b>/<b><span class=\"Highlight3\">25</span></b> <b>seconds</b>.<br>• <b><i>Endurance</i></b> is cancelled prematurely when performing a <i>Conspicuous Action</i> of any kind.<br>• <b>Extends</b> the duration of the <i><b>Haste</b></i> <b>Status Effect</b> by <b><span class=\"Highlight1\">+10 seconds</span></b> to <b><span class=\"Highlight1\">25 seconds</span></b>.\n\n<i><span class=\"FlavorText\">\"Probably stings like hell, but it ain't gonna kill ya. Up and at 'em soldier. Time to move!\" — Bill Overbeck</span></i>"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "K36P03",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "65b438054135514e477318e64a8b56d6cfd314ad7e03f2312f1c31c0b6189ed9",
+  "corrected_text_sha256": "b17248e289c1b014cdf308ee0fdfab7a76fce4a54be55da10da23b7f278dd472",
+  "replace": [
+   [
+    "<b>Increases</b> all basic-attack recovery speeds by",
+    "<b>Increases</b> missed and obstructed basic-attack recovery speeds by"
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "S45P03",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "b732a2c2c4aac60287423371c7fc65e79b2a3d801e4d455f82cb91b5ad0d6b2f",
+  "corrected_text_sha256": "91993f64fb52c707982bb68912b58221b12a24171bfd5eb6849e53d8125e9089",
+  "replace": [
+   [
+    "<br>• <i>Shoulder the Burden</i> is then deactivated for all Survivors.",
+    ""
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "This_Is_Not_Happening",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "acd03be15eb087cf139a375efdc1c7908f47767eadbb132fd04377299c22ef38",
+  "corrected_text_sha256": "4e1e847147d383f670347aa277f2ff63fd0445edede6979084a8226e84bb974f",
+  "replace": [
+   [
+    "• <b>Increases</b> the Success zone for a <i>Great Skill Check</i> by <b><span class=\"Highlight1\">+30 %</span></b>.<br>",
+    ""
+   ]
+  ],
+  "append_html": ""
+ },
+ {
+  "dataset": "perks",
+  "id": "WindowsOfOpportunity",
+  "field": "desc_html_en",
+  "reviewed": "2026-10-07",
+  "source_url": "https://store.steampowered.com/news/app/381210/view/716791824502491334",
+  "expected_text_sha256": "078a0d1ce3f39cd1354e6de9906f5e32494d4869749e4f951926ce74e9ecfb5a",
+  "corrected_text_sha256": "eef31eee3b1f6602fb73cdb0e8b77737718c16c71c908ae6c9cb4b241999c936",
+  "replace": [
+   [
+    "revealed to you within <b><span class=\"Highlight1\">40</span></b>/<b><span class=\"Highlight2\">35</span></b>/<b><span class=\"Highlight3\">30</span></b> <b>seconds</b>..",
+    "revealed to you within <b><span class=\"Highlight1\">24 metres</span></b>."
+   ]
+  ],
+  "append_html": ""
  }
 ]
